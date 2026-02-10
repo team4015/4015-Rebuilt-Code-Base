@@ -4,7 +4,36 @@
 
 package frc.robot.controls;
 
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
+import frc.robot.Constants.OIConstants;
+import frc.robot.commands.SwerveCommands;
+import frc.robot.subsystems.Swerve.SwerveSubsystem;
+
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  
+  private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+  private final Joystick driverJoystick = new Joystick(Constants.OIConstants.kDriverControllerPort);
+
+  public RobotContainer(){
+    swerveSubsystem.setDefaultCommand(
+      new SwerveCommands(
+            swerveSubsystem,
+            () -> -driverJoystick.getRawAxis(OIConstants.kDriverYAxis),
+            () -> driverJoystick.getRawAxis(OIConstants.kDriverXAxis),
+            () -> driverJoystick.getRawAxis(OIConstants.kDriverRotAxis),
+            () -> !driverJoystick.getRawButton(OIConstants.kDriverFieldOrientedButtonIdx)
+        )
+      );
+
+      configureBindings(); 
+  }
+
+  private void configureBindings(){
+
+  }
+
+  public Command getAutonomousCommand() {
+    return null;
+  }
 }
