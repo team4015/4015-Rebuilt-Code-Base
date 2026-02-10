@@ -35,22 +35,25 @@ public class SwerveModule {
     private final double absoluteEncoderOffsetRad;
 
     public SwerveModule(int driveMotorID, int turningMotorID, boolean driveMotorReversed, boolean turningMotorReversed, 
-        int absoluteEncoderID, double absoluteEncoderOffset, boolean absoluteEncoderReveresed){
+        int absoluteEncoderID, double absoluteEncoderOffset, boolean absoluteEncoderReversed){
             
         this.absoluteEncoderOffsetRad = absoluteEncoderOffset;
-        this.absoluteEncoderReversed = absoluteEncoderReveresed;
+        this.absoluteEncoderReversed = absoluteEncoderReversed;
         absoluteEncoder = new AnalogInput(absoluteEncoderID);
 
         driveMotor = new SparkMax(driveMotorID, MotorType.kBrushless);
         turningMotor = new SparkMax(turningMotorID, MotorType.kBrushless);
-        
+
+        driveConfig = new SparkMaxConfig();
+        turningConfig = new SparkMaxConfig();
+
         driveConfig
             .inverted(driveMotorReversed)
             .idleMode(IdleMode.kBrake);
         
         driveConfig.encoder //change value
             .positionConversionFactor(ModuleConstants.kDriveEncoderRot2Meter)
-            .velocityConversionFactor(ModuleConstants.kDriveEncoderRPMMeterPerSec)
+            .velocityConversionFactor(ModuleConstants.kDriveEncoderRPM2MeterPerSec)
             .uvwMeasurementPeriod(10)
             .uvwAverageDepth(2);
         
@@ -72,6 +75,8 @@ public class SwerveModule {
 
         turningPIDcontroller = new PIDController(ModuleConstants.kPTurning, 0, 0);
         turningPIDcontroller.enableContinuousInput(-Math.PI, Math.PI);
+
+        resetEncoder();
     }
     
     public double getDrivePosition(){
