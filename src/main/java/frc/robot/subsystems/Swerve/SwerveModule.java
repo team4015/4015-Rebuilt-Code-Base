@@ -35,10 +35,10 @@ public class SwerveModule {
     private final double absoluteEncoderOffsetRad;
 
     public SwerveModule(int driveMotorID, int turningMotorID, boolean driveMotorReversed, boolean turningMotorReversed, 
-        int absoluteEncoderID, double absoluteEncoderOffset, boolean absoluteEncoderReveresed){
+        int absoluteEncoderID, double absoluteEncoderOffset, boolean absoluteEncoderReversed){
             
         this.absoluteEncoderOffsetRad = absoluteEncoderOffset;
-        this.absoluteEncoderReversed = absoluteEncoderReveresed;
+        this.absoluteEncoderReversed = absoluteEncoderReversed;
         absoluteEncoder = new AnalogInput(absoluteEncoderID);
 
         driveMotor = new SparkMax(driveMotorID, MotorType.kBrushless);

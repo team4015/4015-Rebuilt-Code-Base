@@ -11,24 +11,24 @@
   },
   "motors": {
     "drive": {
-      "frontLeft": 1,
-      "frontRight": 2,
-      "backLeft": 3,
-      "backRight": 4
+      "frontLeft": 0,
+      "frontRight": 0,
+      "backLeft": 0,
+      "backRight": 0
     },
     "turning": {
-      "frontLeft": 5,
-      "frontRight": 6,
-      "backLeft": 7,
-      "backRight": 8
+      "frontLeft": 0,
+      "frontRight": 0,
+      "backLeft": 0,
+      "backRight": 0
     }
   },
   "encoders": {
     "absolutePorts": {
       "frontLeft": 0,
-      "frontRight": 1,
-      "backLeft": 2,
-      "backRight": 3
+      "frontRight": 0,
+      "backLeft": 0,
+      "backRight": 0
     },
     "absoluteOffsetsRad": {
       "frontLeft": 0.0,

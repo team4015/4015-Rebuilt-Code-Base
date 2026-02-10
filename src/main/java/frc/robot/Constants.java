@@ -21,6 +21,10 @@ public final class Constants {
 
     public static final double kDriveEncoderRPM2MeterPerSec = kDriveEncoderRot2Meter / 60.0;
 
+    // Backward-compatible aliases for older references/typos.
+    public static final double kDriveEncoderRPMMeterPerSec = kDriveEncoderRPM2MeterPerSec;
+    public static final double kDriveencoderRPMMeterPerSec = kDriveEncoderRPM2MeterPerSec;
+
     public static final double kTurningEncoderRPM2RadPerSec = kTurningEncoderRot2Rad / 60.0;
 
     public static final double kPTurning = DRIVE.module.turningKP; 
