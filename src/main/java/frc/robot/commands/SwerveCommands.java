@@ -34,17 +34,17 @@ public class SwerveCommands extends Command{
 
     @Override
     public void execute(){
-        double xSpeed = MathUtil.applyDeadband(xSpeedSupplier.getAsDouble(), Constants.OIConstants.kDeadband);
-        double ySpeed = MathUtil.applyDeadband(ySpeedSupplier.getAsDouble(), Constants.OIConstants.kDeadband);
-        double turningSpeed = MathUtil.applyDeadband(turningSpeedSupplier.getAsDouble(), Constants.OIConstants.kDeadband);
+        double xSpeed = MathUtil.applyDeadband(xSpeedSupplier.getAsDouble(), Constants.OIConstants.deadband);
+        double ySpeed = MathUtil.applyDeadband(ySpeedSupplier.getAsDouble(), Constants.OIConstants.deadband);
+        double turningSpeed = MathUtil.applyDeadband(turningSpeedSupplier.getAsDouble(), Constants.OIConstants.deadband);
 
-        xSpeed = xLimiter.calculate(xSpeed) * Constants.DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
-        ySpeed = xLimiter.calculate(ySpeed) * Constants.DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
-        turningSpeed = xLimiter.calculate(turningSpeed) * Constants.DriveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond;
+        xSpeed = xLimiter.calculate(xSpeed) * Constants.DriveConstants.teleDriveMaxSpeedMetersPerSecond;
+        ySpeed = yLimiter.calculate(ySpeed) * Constants.DriveConstants.teleDriveMaxSpeedMetersPerSecond;
+        turningSpeed = turningLimiter.calculate(turningSpeed) * Constants.DriveConstants.teleDriveMaxAngularSpeedRadiansPerSecond;
 
         ChassisSpeeds chassisSpeeds = fieldOrientedSupplier.getAsBoolean() ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d()) : new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
 
-        SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+        SwerveModuleState[] moduleStates = DriveConstants.driveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModulesStates(moduleStates);
     }
 

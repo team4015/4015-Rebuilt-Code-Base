@@ -52,8 +52,8 @@ public class SwerveModule {
             .idleMode(IdleMode.kBrake);
         
         driveConfig.encoder //change value
-            .positionConversionFactor(ModuleConstants.kDriveEncoderRot2Meter)
-            .velocityConversionFactor(ModuleConstants.kDriveEncoderRPM2MeterPerSec)
+            .positionConversionFactor(ModuleConstants.driveEncoderRot2Meter)
+            .velocityConversionFactor(ModuleConstants.driveEncoderRPM2MeterPerSec)
             .uvwMeasurementPeriod(10)
             .uvwAverageDepth(2);
         
@@ -62,8 +62,8 @@ public class SwerveModule {
             .idleMode(IdleMode.kBrake);
         
         turningConfig.encoder //change value
-            .positionConversionFactor(ModuleConstants.kTurningEncoderRot2Rad)
-            .velocityConversionFactor(ModuleConstants.kTurningEncoderRPM2RadPerSec)
+            .positionConversionFactor(ModuleConstants.turningEncoderRot2Rad)
+            .velocityConversionFactor(ModuleConstants.turningEncoderRPM2RadPerSec)
             .uvwMeasurementPeriod(10)
             .uvwAverageDepth(2);
         
@@ -118,7 +118,7 @@ public class SwerveModule {
         }
 
         state = SwerveModuleState.optimize(state, getState().angle);
-        driveMotor.set(state.speedMetersPerSecond / Constants.DriveConstants.kPhysicalMaxSpeedMetersPerSecond); 
+        driveMotor.set(state.speedMetersPerSecond / Constants.DriveConstants.physicalMaxSpeedMetersPerSecond);
         turningMotor.set(turningPIDcontroller.calculate(getTurningPosition(), state.angle.getRadians()));
         SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString());
     }

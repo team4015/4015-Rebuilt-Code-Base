@@ -13,16 +13,16 @@ import frc.robot.subsystems.Swerve.SwerveSubsystem;
 
 public class RobotContainer {
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-  private final Joystick driverJoystick = new Joystick(Constants.OIConstants.kDriverControllerPort);
+  private final Joystick driverJoystick = new Joystick(Constants.OIConstants.driverControllerPort);
 
   public RobotContainer(){
     swerveSubsystem.setDefaultCommand(
       new SwerveCommands(
             swerveSubsystem,
-            () -> -driverJoystick.getRawAxis(OIConstants.kDriverYAxis),
-            () -> driverJoystick.getRawAxis(OIConstants.kDriverXAxis),
-            () -> driverJoystick.getRawAxis(OIConstants.kDriverRotAxis),
-            () -> !driverJoystick.getRawButton(OIConstants.kDriverFieldOrientedButtonIdx)
+            () -> -driverJoystick.getRawAxis(OIConstants.driverYAxis),
+            () -> driverJoystick.getRawAxis(OIConstants.driverXAxis),
+            () -> driverJoystick.getRawAxis(OIConstants.driverRotAxis),
+            () -> !driverJoystick.getRawButton(OIConstants.driverFieldOrientedButtonIdx)
         )
       );
 
