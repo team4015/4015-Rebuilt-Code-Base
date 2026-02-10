@@ -1,0 +1,62 @@
+{
+    "module":{
+        "wheelDiameterInches": 4.0,
+        "driveGearRatio": 5.8462,
+        "turningGearRatio": 18.0,
+        "tuningKP": 0.5
+    },
+
+    "dimensions": {
+        "trackWidthInches": 21.0,
+        "wheelBaseInches": 25.5
+    },
+
+    "motors":{
+        "drive":{
+            "frontLeft": 0,
+            "backLeft": 0,
+            "frontRight": 0,
+            "backRight": 0
+        },
+        "turning":{
+            "frontLeft": 0,
+            "backLeft": 0,
+            "frontRight": 0,
+            "backRight": 0
+        }
+    },
+
+    "encoder":{
+        "absolutePorts":{
+            "frontLeft": 0,
+            "backLeft": 0, 
+            "frontRight": 0, 
+            "backRight": 0
+        }, 
+        "absolutePortsOffsetRad":{
+            "frontLeft": 0,
+            "backLeft": 0, 
+            "frontRight": 0, 
+            "backRight": 0
+        },
+        "driveReversed":{
+            "frontLeft": true,
+            "frontRight": false,
+            "backLeft": true,
+            "backRight": false
+        },
+        "turningReversed":{
+            "frontLeft": true,
+            "frontRight": true,
+            "backLeft": true,
+            "backRight": true
+        }
+    }, 
+
+    "limits":{
+        "maxSpeed": 5.0, 
+        "maxAngularSpeedRadPerSec": 12.566,
+        "teleopSpeedScale": 0.25
+    }
+
+}

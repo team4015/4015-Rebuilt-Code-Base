@@ -57,6 +57,13 @@ dependencies {
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
 
+    implementation "com.pathplanner.lib:PathplannerLib-java:2026.1.2"
+    implementation "com.revrobotics.frc:REVLib-java:2026.0.1"
+    implementation "org.photonvision:photonlib-java:v2026.1.1"
+    implementation "org.photonvision:photontargeting-java:v2026.1.1"
+    implementation "com.studica.frc:Studica-java:2026.0.0"
+    implementation 'com.google.code.gson:gson:2.10.1'
+
     roborioDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.roborio)
     roborioDebug wpi.java.vendor.jniDebug(wpi.platforms.roborio)
 
