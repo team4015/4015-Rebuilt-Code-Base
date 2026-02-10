@@ -2,34 +2,34 @@
 
   "module": {
     "wheelDiameterInches": 4.0,
-    "driveGearRatio": 5.8462,
-    "turningGearRatio": 18.0,
+    "driveGearRatio": 6.75,
+    "turningGearRatio": 21.4285714286,
     "turningKP": 0.5
   },
   "dimensions": {
-    "trackWidthInches": 21.0,
-    "wheelBaseInches": 25.5
+    "trackWidthInches": 21.875,
+    "wheelBaseInches": 21.875
   },
   "motors": {
     "drive": {
-      "frontLeft": 0,
-      "frontRight": 0,
-      "backLeft": 0,
-      "backRight": 0
+      "frontLeft": 3,
+      "frontRight": 2,
+      "backLeft": 4,
+      "backRight": 1
     },
     "turning": {
-      "frontLeft": 0,
-      "frontRight": 0,
-      "backLeft": 0,
-      "backRight": 0
+      "frontLeft": 7,
+      "frontRight": 6,
+      "backLeft": 8,
+      "backRight": 5
     }
   },
   "encoders": {
     "absolutePorts": {
-      "frontLeft": 0,
-      "frontRight": 0,
-      "backLeft": 0,
-      "backRight": 0
+      "frontLeft": 3,
+      "frontRight": 2,
+      "backLeft": 4,
+      "backRight": 1
     },
     "absoluteOffsetsRad": {
       "frontLeft": 0.0,
