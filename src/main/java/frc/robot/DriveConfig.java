@@ -1,3 +1,13 @@
+/*************************************************************************************************
+ @Name: Gursahaj Chawla
+ @Date: 2/10/2026
+ @File: DriveConfig.java
+ @Description: This class in the program to get thee DriveConfig from the json file and get its
+ equivalent and put them into each object class. It used the @SerializedName which tells the Gson
+ what JSON key correspond to this java field. Each of these class related to the header of the
+ JSON file and each variable corresponds to the variables below it and value associated with it
+ ***********************************************************************************************/
+
 package frc.robot;
 
 import com.google.gson.annotations.SerializedName;
