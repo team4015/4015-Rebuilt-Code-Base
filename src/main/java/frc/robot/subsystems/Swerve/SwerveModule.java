@@ -176,6 +176,18 @@ public class SwerveModule {
         driveMotor.set(0);
         turningMotor.set(0);
     }
+    //Helps to configure the motor for whether the brakes are required
+    public void setBrakeMode(boolean enabled){
+        //IdleMode refers to how the motor behaves when it is receiving a neutral command
+        //If the brakes are enables, then it could brake, it the brakes are not enables, then it will be in a Coast state
+        IdleMode idleMode = enabled ? IdleMode.kBrake : IdleMode.kCoast;
+        //Configure the IdleMode of the robot with the statement result above
+        driveConfig.idleMode(idleMode);
+        turningConfig.idleMode(idleMode);
+        //send the updated configuration from above to the motors
+        driveMotor.configure(driveConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        turningMotor.configure(turningConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    }
 
     //This gets the absolute steering encoder and converts the angle into Rotational2d WPILib angle and returns the current steering direction
     public Rotation2d getTurningRotation() {

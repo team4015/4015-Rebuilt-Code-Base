@@ -145,6 +145,14 @@ public class SwerveSubsystem extends SubsystemBase{
         backRight.stop();
     }
 
+    //This sets the brake mode of the robot, if false, the brakes on the motor are off, if true the motor's brakes are on
+    public void setBrakeMode(boolean enabled){
+        frontLeft.setBrakeMode(enabled);
+        frontRight.setBrakeMode(enabled);
+        backLeft.setBrakeMode(enabled);
+        backRight.setBrakeMode(enabled);
+    }
+
     //Gets the SwerveModuleStates (explained before)
     public void setModulesStates(SwerveModuleState[] desiredStates){
         //Desaturated scales all wheel speeds proportional so that the fastest wheel is the max speed
@@ -155,5 +163,21 @@ public class SwerveSubsystem extends SubsystemBase{
         frontRight.setDesiredState(desiredStates[1]);
         backLeft.setDesiredState(desiredStates[2]);
         backRight.setDesiredState(desiredStates[3]);
+    }
+
+    public double getFrontLeftAbsoluteEncoderRad(){
+        return frontLeft.getAbsoluteEncoderRad();
+    }
+
+    public double getFrontRightAbsoluteEncoderRad(){
+        return frontRight.getAbsoluteEncoderRad();
+    }
+
+    public double getBackRightAbsoluteEncoderRad(){
+        return backLeft.getAbsoluteEncoderRad();
+    }
+
+    public double getBackLeftAbsoluteEncoderRad(){
+        return backLeft.getAbsoluteEncoderRad();
     }
 }
