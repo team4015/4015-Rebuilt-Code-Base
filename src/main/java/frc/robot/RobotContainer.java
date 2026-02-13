@@ -58,7 +58,7 @@ public class RobotContainer {
     
 
 
-    Command driveCmd = drivebase.driveCommand(() -> cmdXboxCtrl.getLeftX(), () -> cmdXboxCtrl.getLeftY(), () -> cmdXboxCtrl.getRightX());
+    Command driveCmd = drivebase.driveCommand(() -> cmdXboxCtrl.getLeftX(), () -> -cmdXboxCtrl.getLeftY(), () -> cmdXboxCtrl.getRightX());
     System.out.println("Reached ConfigureBindings in RobotContainer");
     drivebase.setDefaultCommand(driveCmd);
 
