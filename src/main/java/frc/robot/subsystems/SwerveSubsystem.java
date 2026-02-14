@@ -106,15 +106,15 @@ public class SwerveSubsystem extends SubsystemBase {
             double maxVelocity = swerveDrive.getMaximumChassisVelocity();
             
             //Getting the doublees from the double suppliers and multiplying them by their max velocity
-            double vxMetersPerSecond = translationX.getAsDouble() * maxVelocity;
-            double vyMetersPerSecond = translationY.getAsDouble() * maxVelocity;
-            double angularRotation = angularRotationX.getAsDouble() * swerveDrive.getMaximumChassisAngularVelocity();
+            double vxMetersPerSecond = MathUtil.applyDeadband(translationX.getAsDouble(), deadband);
+            double vyMetersPerSecond = MathUtil.applyDeadband(translationY.getAsDouble(), deadband);
+            double angularRotation = MathUtil.applyDeadband(angularRotationX.getAsDouble(), deadband);
             
             //Limit the slew rate of the speeds to prevent sporadic motion and apply a deadband
             
-            vxMetersPerSecond = MathUtil.applyDeadband(xLimiter.calculate(vxMetersPerSecond),deadband);
-            vyMetersPerSecond = MathUtil.applyDeadband(yLimiter.calculate(vyMetersPerSecond),deadband);
-            angularRotation = MathUtil.applyDeadband(turningLimiter.calculate(angularRotation),deadband);
+            vxMetersPerSecond = xLimiter.calculate(vxMetersPerSecond) * maxVelocity;
+            vyMetersPerSecond = yLimiter.calculate(vyMetersPerSecond) * maxVelocity;
+            angularRotation = turningLimiter.calculate(angularRotation) * swerveDrive.getMaximumChassisAngularVelocity();
 
             // Make the robot move
             
