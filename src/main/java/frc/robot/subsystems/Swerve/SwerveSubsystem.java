@@ -20,6 +20,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.DriveConfig;
+import frc.robot.DriveConfigWriter;
 
 public class SwerveSubsystem extends SubsystemBase{
     //creates four SwerveModule objects with all the parameters added
@@ -137,6 +139,26 @@ public class SwerveSubsystem extends SubsystemBase{
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
     }
 
+
+    public DriveConfig.DoubleGroup captureAbsoluteEncoderOffsets(){
+        DriveConfig.DoubleGroup offsets = new DriveConfig.DoubleGroup();
+        offsets.frontLeft = frontLeft.getAbsoluteEncoderRawRad();
+        offsets.frontRight = frontRight.getAbsoluteEncoderRawRad();
+        offsets.backLeft = backLeft.getAbsoluteEncoderRawRad();
+        offsets.backRight = backRight.getAbsoluteEncoderRawRad();
+        return offsets;
+    }
+
+    public void calibrateAbsoluteEncodersToCurrentZero(){
+        DriveConfig.DoubleGroup offsets = captureAbsoluteEncoderOffsets();
+        DriveConfigWriter.writeAbsoluteOffsets(offsets);
+
+        SmartDashboard.putString(
+            "Absolute Encoder Calibration",
+            "Saved offsets to deploy/driveConfig.json. Reboot robot code to apply."
+        );
+    }
+
     //stop all the swerve modules
     public void stopModules(){
         frontLeft.stop();
@@ -174,7 +196,7 @@ public class SwerveSubsystem extends SubsystemBase{
     }
 
     public double getBackRightAbsoluteEncoderRad(){
-        return backLeft.getAbsoluteEncoderRad();
+        return backRight.getAbsoluteEncoderRad();
     }
 
     public double getBackLeftAbsoluteEncoderRad(){

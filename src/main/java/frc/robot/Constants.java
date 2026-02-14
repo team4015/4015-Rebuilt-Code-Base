@@ -129,6 +129,7 @@ public final class Constants {
     public static final int driverRotAxis = 4;
     public static final int driverFieldOrientedButtonIdx = 1;
     public static final int driveUnlockSwerveButtonIdx = 2;
+    public static final int calibrateAbsoluteEncoderButtonIdx = 3;
 
     //This is deadband to avoid drift on the robot
     public static final double deadband = 0.05;
