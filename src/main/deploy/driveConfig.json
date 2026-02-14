@@ -12,30 +12,30 @@
   },
   "motors": {
     "drive": {
-      "frontLeft": 3,
-      "frontRight": 2,
-      "backLeft": 4,
-      "backRight": 1
+      "frontLeft": 1,
+      "frontRight": 4,
+      "backLeft": 2,
+      "backRight": 3
     },
     "turning": {
-      "frontLeft": 7,
-      "frontRight": 6,
-      "backLeft": 8,
-      "backRight": 5
+      "frontLeft": 5,
+      "frontRight": 8,
+      "backLeft": 6,
+      "backRight": 7
     }
   },
   "encoders": {
     "absolutePorts": {
-      "frontLeft": 3,
-      "frontRight": 2,
-      "backLeft": 4,
-      "backRight": 1
+      "frontLeft": 1,
+      "frontRight": 0,
+      "backLeft": 2,
+      "backRight": 3
     },
     "absoluteOffsetsRad": {
-      "frontLeft": 0.0,
-      "frontRight": 0.0,
-      "backLeft": 0.0,
-      "backRight": 0.0
+      "frontLeft": -2.193412,
+      "frontRight": -0.021496,
+      "backLeft": -2.186061,
+      "backRight": 2.503668
     },
     "driveReversed": {
       "frontLeft": false,
