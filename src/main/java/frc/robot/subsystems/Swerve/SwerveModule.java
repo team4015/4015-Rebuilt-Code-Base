@@ -128,11 +128,16 @@ public class SwerveModule {
 
     //get the absolute encoder values in radius
     public double getAbsoluteEncoderRad(){
-        //gets the voltages from the encoder then get the actual rail voltage which is divided to get the angle
-        double angle = absoluteEncoder.getVoltage() / RobotController.getCurrent5V();
-        angle *= 2.0 * Math.PI; //convert this angle into radians
+        double angle = getAbsoluteEncoderRawRad();
         angle -= absoluteEncoderOffsetRad;  //subtract the offset values to get its relative 0 to other modules
         return angle * (absoluteEncoderReversed ? -1.0: 1.0); //result the angles and multiples by 1 or -1 if the absolute encoder is reversed
+    }
+
+    //Get the absolute encoder angle in radians without applying offset or inversion
+    public double getAbsoluteEncoderRawRad(){
+        //gets the voltages from the encoder then get the actual rail voltage which is divided to get the angle
+        double angle = absoluteEncoder.getVoltage() / RobotController.getCurrent5V();
+        return angle * (2.0 * Math.PI); //convert this angle into radians
     }
 
     //this method set the position to 0 and set the turning encoder to the absolute encoder in radians

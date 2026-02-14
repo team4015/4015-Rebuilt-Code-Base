@@ -24,7 +24,7 @@ public class RobotContainer {
         )
       );
 
-      configureBindings(); 
+      configureBindings();
   }
 
   private void configureBindings(){
@@ -39,6 +39,14 @@ public class RobotContainer {
                                   swerveSubsystem.setBrakeMode(true);
                                   swerveSubsystem.stopModules();
                               },
+                              swerveSubsystem
+                      )
+              );
+
+      new JoystickButton(driverJoystick, OIConstants.calibrateAbsoluteEncoderButtonIdx)
+              .onTrue(
+                      Commands.runOnce(
+                              swerveSubsystem::calibrateAbsoluteEncodersToCurrentZero,
                               swerveSubsystem
                       )
               );
