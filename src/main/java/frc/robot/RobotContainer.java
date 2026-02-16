@@ -5,12 +5,10 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
 import frc.robot.commands.DrivetrainCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj.XboxController;
@@ -27,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   XboxController ctrl = new XboxController(0);
-
 
   // The robot's subsystems and commands are defined here...
   private final Drivetrain drivetrain = new Drivetrain();
@@ -47,7 +44,7 @@ public class RobotContainer {
     
   }
 
-  /**
+  /** HEY IF ANYONE IS LOOKING AT THIS CODE RIGHT NOW IGNORE THE FOLLOWING LINESok 
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
    * predicate, or via the named factories in {@link
@@ -55,7 +52,7 @@ public class RobotContainer {
    * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
-   */
+   following lines are pretty important*/
   private void configureBindings() {
     drivetrain.setDefaultCommand(driveCommand);
     intake.setDefaultCommand(intakeCommand);
@@ -67,8 +64,4 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(null);
-  }
 }

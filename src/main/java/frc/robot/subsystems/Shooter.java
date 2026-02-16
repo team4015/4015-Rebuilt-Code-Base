@@ -12,9 +12,12 @@ public class Shooter extends SubsystemBase{
         shooterSpeed = 0.8;
     }
 
-    public void setSpeed(boolean pressed){
-        if (pressed){shooterMotor.set(shooterSpeed);} 
-        else {shooterMotor.set(0);}
+    public void setSpeed(double motorSpeed){
+        shooterMotor.set(motorSpeed);
+    }
+
+    public void stop(){
+        shooterMotor.set(0);
     }
 
 }

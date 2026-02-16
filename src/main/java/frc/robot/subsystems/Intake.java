@@ -12,9 +12,13 @@ public class Intake extends SubsystemBase{
         intakeSpeed = 0.70;
     }
 
-    public void setSpeed(boolean pressed){
-        if (pressed){intakeMotor.set(intakeSpeed);} 
-        else {intakeMotor.set(0);}
+    public void setSpeed(double motorSpeed){
+        intakeMotor.set(motorSpeed);
     }
+
+    public void stop(){
+        intakeMotor.set(0);
+    }
+
 
 }
