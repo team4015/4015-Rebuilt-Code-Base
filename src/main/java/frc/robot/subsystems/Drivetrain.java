@@ -5,10 +5,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivetrain extends SubsystemBase {
@@ -75,7 +73,7 @@ public class Drivetrain extends SubsystemBase {
 
   }
 
-  //This is the method that actually applies a deadband to a value. 
+  //This is the method that actually applies a deadband to a value, called in the drive method. 
   public double applyDeadband(double value, double deadband){
     
     if (Math.abs(value) < deadband){//If the absolute value of the speed value (given by the joystick) is less than the deadband,

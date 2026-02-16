@@ -7,13 +7,13 @@ public class Shooter extends SubsystemBase{
     private final VictorSP shooterMotor;
     private final double shooterSpeed;
 
-    public Shooter(){
-        shooterMotor = new VictorSP(5);
-        shooterSpeed = 0.8;
+    public Shooter(double shooterSpeed){
+        this.shooterMotor = new VictorSP(5);
+        this.shooterSpeed = shooterSpeed;
     }
 
-    public void setSpeed(double motorSpeed){
-        shooterMotor.set(motorSpeed);
+    public void run(){
+        shooterMotor.set(shooterSpeed);
     }
 
     public void stop(){

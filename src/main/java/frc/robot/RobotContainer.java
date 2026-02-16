@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DrivetrainCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShooterCommand;
@@ -12,7 +11,6 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -28,8 +26,8 @@ public class RobotContainer {
 
   // The robot's subsystems and commands are defined here...
   private final Drivetrain drivetrain = new Drivetrain();
-  private final Intake intake = new Intake();
-  private final Shooter shooter = new Shooter();
+  private final Intake intake = new Intake(0.70);
+  private final Shooter shooter = new Shooter(0.80);
 
   private DrivetrainCommand driveCommand = new DrivetrainCommand(drivetrain, ctrl);
   private IntakeCommand intakeCommand = new IntakeCommand(intake, ctrl);
@@ -44,7 +42,7 @@ public class RobotContainer {
     
   }
 
-  /** HEY IF ANYONE IS LOOKING AT THIS CODE RIGHT NOW IGNORE THE FOLLOWING LINESok 
+  /** HEY IF ANYONE IS LOOKING AT THIS CODE RIGHT NOW IGNORE THE FOLLOWING LINES
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
    * predicate, or via the named factories in {@link

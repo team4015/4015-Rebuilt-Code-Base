@@ -7,13 +7,12 @@ public class Intake extends SubsystemBase{
     private final VictorSP intakeMotor;
     private final double intakeSpeed;
 
-
     public Intake(double intakeSpeed){
         this.intakeMotor = new VictorSP(4);
         this.intakeSpeed = intakeSpeed;
     }
 
-    public void setSpeed(){
+    public void run(){
         intakeMotor.set(intakeSpeed);
     }
 
