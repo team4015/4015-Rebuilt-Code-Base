@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,7 +16,7 @@ public class ShooterCommand extends Command {
   private XboxController ctrl = new XboxController(0);
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new command.
    *
    * @param subsystem The subsystem used by this command.
    */
@@ -36,14 +35,14 @@ public class ShooterCommand extends Command {
   @Override
   public void execute() {
     boolean buttonPressed = ctrl.getXButton();
-    shooter.setSpeed(buttonPressed);
-
-
+    if(buttonPressed){shooter.setSpeed(0.8);} 
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    shooter.stop();
+  }
 
   // Returns true when the command should end.
   @Override

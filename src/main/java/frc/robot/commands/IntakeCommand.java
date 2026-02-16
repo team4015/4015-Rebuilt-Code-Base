@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,7 +22,7 @@ public class IntakeCommand extends Command {
      */
     public IntakeCommand(Intake intake, XboxController ctrl) {
       this.intake = intake;
-      this.ctrl = ctrl;
+      
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
   }
@@ -37,14 +36,14 @@ public class IntakeCommand extends Command {
   public void execute() {
 
     boolean buttonPressed = ctrl.getAButton();
-    intake.setSpeed(buttonPressed);
+    if(buttonPressed){intake.setSpeed(0.70);}
     
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.setSpeed(false);
+    intake.stop();
   }
 
   // Returns true when the command should end.
