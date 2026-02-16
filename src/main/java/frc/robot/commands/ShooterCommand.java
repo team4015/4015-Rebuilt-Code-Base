@@ -7,13 +7,12 @@ package frc.robot.commands;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /** An example command that uses an example subsystem. */
 public class ShooterCommand extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Shooter shooter;
-  private XboxController ctrl = new XboxController(0);
+  private XboxController ctrl;
 
   /**
    * Creates a new command.
@@ -35,7 +34,7 @@ public class ShooterCommand extends Command {
   @Override
   public void execute() {
     boolean buttonPressed = ctrl.getXButton();
-    if(buttonPressed){shooter.setSpeed(0.8);} 
+    if(buttonPressed){shooter.run();} 
   }
 
   // Called once the command ends or is interrupted.

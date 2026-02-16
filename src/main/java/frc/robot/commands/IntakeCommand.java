@@ -7,13 +7,12 @@ package frc.robot.commands;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /** An example command that uses an example subsystem. */
 public class IntakeCommand extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Intake intake;
-  private XboxController ctrl = new XboxController(0);
+  private XboxController ctrl;
   
     /**
      * Creates a new ExampleCommand.
@@ -36,7 +35,7 @@ public class IntakeCommand extends Command {
   public void execute() {
 
     boolean buttonPressed = ctrl.getAButton();
-    if(buttonPressed){intake.setSpeed(0.70);}
+    if(buttonPressed){intake.run();}
     
   }
 

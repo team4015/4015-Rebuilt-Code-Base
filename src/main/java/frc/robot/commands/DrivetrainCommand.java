@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 /** An example command that uses an example subsystem. */
 public class DrivetrainCommand extends Command {
   private Drivetrain drivetrain;
-  private XboxController ctrl = new XboxController(0);
+  private XboxController ctrl;
 
   /**
    * Creates a new ExampleCommand.
