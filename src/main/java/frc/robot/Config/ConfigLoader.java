@@ -17,7 +17,6 @@ import com.google.gson.Gson;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.Config.Drive.DriveConfig;
-import frc.robot.Config.IntakeExtendable.IntakeExtendableConfig;
 
 public class ConfigLoader {
     public static DriveConfig loadDriveConfig() {
@@ -39,17 +38,35 @@ public class ConfigLoader {
         }
     }
 
-    public static IntakeExtendableConfig loadIntakeExtendableConfig(){
+    public static IntakeConfig loadIntakeConfig(){
         //this method (Filesystem) will return where the robot code is located and tells which JSON file to read from
         try {
             File file = new File(
                     Filesystem.getDeployDirectory(),
-                    "intakeExtendableConfig.json"
+                    "intakeConfig.json"
             );
 
             //This will also automatically close the file reader  and convert the JSON file into DriveConfig objects
             try (Reader reader = new FileReader(file)) {
-                IntakeExtendableConfig config = new Gson().fromJson(reader, IntakeExtendableConfig.class);
+                IntakeConfig config = new Gson().fromJson(reader, IntakeConfig.class);
+                return config;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load drive config", e); //tell if it couldn't load the configurations
+        }
+    }
+
+    public static ExtendableHopperConfig loadExtendableHopperConfig(){
+        //this method (Filesystem) will return where the robot code is located and tells which JSON file to read from
+        try {
+            File file = new File(
+                    Filesystem.getDeployDirectory(),
+                    "extendableHopper.json"
+            );
+
+            //This will also automatically close the file reader  and convert the JSON file into DriveConfig objects
+            try (Reader reader = new FileReader(file)) {
+                ExtendableHopperConfig config = new Gson().fromJson(reader, ExtendableHopperConfig.class);
                 return config;
             }
         } catch (Exception e) {

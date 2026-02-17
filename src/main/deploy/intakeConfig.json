@@ -1,0 +1,17 @@
+{
+  "gearRatio": {
+    "intake": 0.0,
+  },
+  "ports": {
+    "motors": {
+      "intake": 0
+    }
+  },
+  "pid": {
+    "intake": {
+      "P": 0.0,
+      "I": 0.0,
+      "D": 0.0
+    }
+  }
+}

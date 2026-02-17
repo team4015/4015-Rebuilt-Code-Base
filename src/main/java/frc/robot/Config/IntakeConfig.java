@@ -1,6 +1,6 @@
-package frc.robot.Config.IntakeExtendable;
+package frc.robot.Config;
 
-public class IntakeExtendableConfig {
+public class IntakeConfig {
     public GearRatio gearRatio;
     public Port port;
     public PID pid;

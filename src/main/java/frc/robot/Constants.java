@@ -14,12 +14,14 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Config.ConfigLoader;
 import frc.robot.Config.Drive.DriveConfig;
-import frc.robot.Config.IntakeExtendable.IntakeExtendableConfig;
+import frc.robot.Config.ExtendableHopperConfig;
+import frc.robot.Config.IntakeConfig;
 
 public final class Constants {
   //This is the DRIVE constant variables which has all the variables from the JSON file from the ConfigLoader
   public static final DriveConfig DRIVE = ConfigLoader.loadDriveConfig();
-  public static final IntakeExtendableConfig INTAKE_EXTENDABLE = ConfigLoader.loadIntakeExtendableConfig();
+  public static final IntakeConfig INTAKE = ConfigLoader.loadIntakeConfig();
+  public static final ExtendableHopperConfig EXTENDABLE_HOPPER = ConfigLoader.loadExtendableHopperConfig();
 
   //This static final class if for the ModuleConstants
   public static final class ModuleConstants {
@@ -123,23 +125,28 @@ public final class Constants {
     public static final double teleDriveMaxAngularSpeedRadiansPerSecond = physicalMaxAngularSpeedRadiansPerSecond * DRIVE.limits.teleopSpeedScale;
   }
 
-  public static final class IntakeExtendableConstants {
-      public static final double intakePValue = INTAKE_EXTENDABLE.pid.intake.p;
-      public static final double intakeIValue = INTAKE_EXTENDABLE.pid.intake.i;
-      public static final double intakeDValue = INTAKE_EXTENDABLE.pid.intake.d;
+  public static final class IntakeConstants {
+      public static final double intakePValue = INTAKE.pid.intake.p;
+      public static final double intakeIValue = INTAKE.pid.intake.i;
+      public static final double intakeDValue = INTAKE.pid.intake.d;
 
-      public static final double extendableHopperPValue = INTAKE_EXTENDABLE.pid.extendableHopper.p;
-      public static final double extendableHopperIValue = INTAKE_EXTENDABLE.pid.extendableHopper.i;
-      public static final double extendableHopperDValue = INTAKE_EXTENDABLE.pid.extendableHopper.d;
+      public static final int intakeMotorPort = INTAKE.port.intake.system;
 
-      public static final int intakeMotorPort = INTAKE_EXTENDABLE.port.intake.system;
-      public static final int extendableHopperMotorPort = INTAKE_EXTENDABLE.port.extendableHopper.system;
+      public static final double intakeGearRatio = 1.0 / INTAKE.gearRatio.intake;
 
-      public static final double intakeGearRatio = 1.0 / INTAKE_EXTENDABLE.gearRatio.intake;
-      public static final double extendableHopperGearRatio = 1.0 / INTAKE_EXTENDABLE.gearRatio.extendableHopper;
+  }
 
-      public static final int frontLimitSwitch = INTAKE_EXTENDABLE.port.frontSwitch.limitSwitch;
-      public static final int backLimitSwitch = INTAKE_EXTENDABLE.port.backSwitch.limitSwitch;
+  public static final class ExtendableHopperConstants {
+      public static final double extendableHopperPValue = EXTENDABLE_HOPPER.pid.extendableHopper.p;
+      public static final double extendableHopperIValue = EXTENDABLE_HOPPER.pid.extendableHopper.i;
+      public static final double extendableHopperDValue = EXTENDABLE_HOPPER.pid.extendableHopper.d;
+
+      public static final double extendableHopperGearRatio = 1.0 / EXTENDABLE_HOPPER.gearRatio.extendableHopper;
+
+      public static final int extendableHopperMotorPort = EXTENDABLE_HOPPER.port.extendableHopper.system;
+
+      public static final int frontLimitSwitch = EXTENDABLE_HOPPER.port.frontSwitch.limitSwitch;
+      public static final int backLimitSwitch = EXTENDABLE_HOPPER.port.backSwitch.limitSwitch;
   }
 
   //These ar the input-output constants for the robot and the controller like the controller port
