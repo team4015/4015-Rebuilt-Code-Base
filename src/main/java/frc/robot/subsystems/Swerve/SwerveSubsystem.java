@@ -20,8 +20,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.DriveConfig;
-import frc.robot.DriveConfigWriter;
+import frc.robot.Config.Drive.DriveConfig;
+import frc.robot.Config.Drive.DriveConfigWriter;
 
 public class SwerveSubsystem extends SubsystemBase{
     //creates four SwerveModule objects with all the parameters added

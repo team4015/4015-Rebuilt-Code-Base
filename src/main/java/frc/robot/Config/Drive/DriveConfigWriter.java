@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.Config.Drive;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import frc.robot.Config.ConfigLoader;
 
 public class DriveConfigWriter {
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();

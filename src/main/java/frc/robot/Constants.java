@@ -12,10 +12,14 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import frc.robot.Config.ConfigLoader;
+import frc.robot.Config.Drive.DriveConfig;
+import frc.robot.Config.IntakeExtendable.IntakeExtendableConfig;
 
 public final class Constants {
   //This is the DRIVE constant variables which has all the variables from the JSON file from the ConfigLoader
   public static final DriveConfig DRIVE = ConfigLoader.loadDriveConfig();
+  public static final IntakeExtendableConfig INTAKE_EXTENDABLE = ConfigLoader.loadIntakeExtendableConfig();
 
   //This static final class if for the ModuleConstants
   public static final class ModuleConstants {
@@ -119,6 +123,25 @@ public final class Constants {
     public static final double teleDriveMaxAngularSpeedRadiansPerSecond = physicalMaxAngularSpeedRadiansPerSecond * DRIVE.limits.teleopSpeedScale;
   }
 
+  public static final class IntakeExtendableConstants {
+      public static final double intakePValue = INTAKE_EXTENDABLE.pid.intake.p;
+      public static final double intakeIValue = INTAKE_EXTENDABLE.pid.intake.i;
+      public static final double intakeDValue = INTAKE_EXTENDABLE.pid.intake.d;
+
+      public static final double extendableHopperPValue = INTAKE_EXTENDABLE.pid.extendableHopper.p;
+      public static final double extendableHopperIValue = INTAKE_EXTENDABLE.pid.extendableHopper.i;
+      public static final double extendableHopperDValue = INTAKE_EXTENDABLE.pid.extendableHopper.d;
+
+      public static final int intakeMotorPort = INTAKE_EXTENDABLE.port.intake.system;
+      public static final int extendableHopperMotorPort = INTAKE_EXTENDABLE.port.extendableHopper.system;
+
+      public static final double intakeGearRatio = 1.0 / INTAKE_EXTENDABLE.gearRatio.intake;
+      public static final double extendableHopperGearRatio = 1.0 / INTAKE_EXTENDABLE.gearRatio.extendableHopper;
+
+      public static final int frontLimitSwitch = INTAKE_EXTENDABLE.port.frontSwitch.limitSwitch;
+      public static final int backLimitSwitch = INTAKE_EXTENDABLE.port.backSwitch.limitSwitch;
+  }
+
   //These ar the input-output constants for the robot and the controller like the controller port
   //and various pins on the joystick
   public static final class OIConstants {
@@ -130,6 +153,9 @@ public final class Constants {
     public static final int driverFieldOrientedButtonIdx = 1;
     public static final int driveUnlockSwerveButtonIdx = 2;
     public static final int calibrateAbsoluteEncoderButtonIdx = 3;
+
+    public static final int intakePort = 10;
+    public static final int extendableHopperPort = 11;
 
     //This is deadband to avoid drift on the robot
     public static final double deadband = 0.05;
