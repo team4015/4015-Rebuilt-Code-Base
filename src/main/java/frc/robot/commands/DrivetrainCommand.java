@@ -8,13 +8,14 @@ import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 
-/** An example command that uses an example subsystem. */
+/** A command that runs the drivetrain. */
 public class DrivetrainCommand extends Command {
   private Drivetrain drivetrain;
   private XboxController ctrl;
 
   /**
-   * Creates a new ExampleCommand.
+   * The commands are what make the subsystems actually run. 
+   * Every time the scheduler runs, the command does something that makes the subsystem work.
    *
    * @param subsystem The subsystem used by this command.
    */

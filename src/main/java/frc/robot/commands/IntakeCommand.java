@@ -15,7 +15,8 @@ public class IntakeCommand extends Command {
   private XboxController ctrl;
   
     /**
-     * Creates a new ExampleCommand.
+     * The commands are what make the subsystems actually run. 
+     * Every time the scheduler runs, the command does something that makes the subsystem work.
      *
      * @param subsystem The subsystem used by this command.
      */

@@ -15,10 +15,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
+ * This class is primarily used for binding subsystems to commands and commands to controls. 
+ * As we have already binded commands to controls in the three commands files:
+ *    - DrivetrainCommand.java Lines 35-36
+ *    - IntakeCommand.java Line 37
+ *    - ShooterCommand.java Line 37
+ * We do not need to bind commands to controls here. We just need to bind subsystems to commands.
  */
 public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -42,7 +44,7 @@ public class RobotContainer {
     
   }
 
-  /** HEY IF ANYONE IS LOOKING AT THIS CODE RIGHT NOW IGNORE THE FOLLOWING LINES
+  /** IF ANYONE IS LOOKING AT THIS CODE RIGHT NOW IGNORE THE FOLLOWING LINES
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
    * predicate, or via the named factories in {@link
@@ -52,6 +54,8 @@ public class RobotContainer {
    * joysticks}.
    following lines are pretty important*/
   private void configureBindings() {
+
+    // Binding subsystems to commands
     drivetrain.setDefaultCommand(driveCommand);
     intake.setDefaultCommand(intakeCommand);
     shooter.setDefaultCommand(shooterCommand);
