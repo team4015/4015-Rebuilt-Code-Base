@@ -29,9 +29,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
     SwerveDrive swerveDrive;
     double deadband = Constants.OperatorConstants.DEADBAND;
-    private final SlewRateLimiter xLimiter = new SlewRateLimiter(5);
-    private final SlewRateLimiter yLimiter = new SlewRateLimiter(5);
-    private final SlewRateLimiter turningLimiter = new SlewRateLimiter(5);        
+    private final SlewRateLimiter xLimiter = new SlewRateLimiter(3);
+    private final SlewRateLimiter yLimiter = new SlewRateLimiter(3);
+    private final SlewRateLimiter turningLimiter = new SlewRateLimiter(3);        
 
     public SwerveSubsystem(File directory) {
         try {
@@ -105,17 +105,20 @@ public class SwerveSubsystem extends SubsystemBase {
         return run(() -> {
             double maxVelocity = swerveDrive.getMaximumChassisVelocity();
             
-            //Getting the doublees from the double suppliers and multiplying them by their max velocity
+            //Getting the doublee from the double suppliers and multiplying them by their max velocity
             double vxMetersPerSecond = MathUtil.applyDeadband(translationX.getAsDouble(), deadband);
             double vyMetersPerSecond = MathUtil.applyDeadband(translationY.getAsDouble(), deadband);
-            double angularRotation = MathUtil.applyDeadband(angularRotationX.getAsDouble(), deadband);
+            double angularRotation = MathUtil.applyDeadband(angularRotationX.getAsDouble(), deadband + 0.075);
             
             //Limit the slew rate of the speeds to prevent sporadic motion and apply a deadband
             
-            vxMetersPerSecond = xLimiter.calculate(vxMetersPerSecond) * maxVelocity;
-            vyMetersPerSecond = yLimiter.calculate(vyMetersPerSecond) * maxVelocity;
-            angularRotation = turningLimiter.calculate(angularRotation) * swerveDrive.getMaximumChassisAngularVelocity();
-
+            vxMetersPerSecond = xLimiter.calculate(vxMetersPerSecond* maxVelocity) ;
+            vyMetersPerSecond = yLimiter.calculate(vyMetersPerSecond* maxVelocity) ;
+            angularRotation = turningLimiter.calculate(angularRotation * swerveDrive.getMaximumChassisAngularVelocity());
+            
+            if (Math.abs(angularRotation) < 0.1){
+                angularRotation = 0;
+            }
             // Make the robot move
             
             //Rotation2d angularHeading = swerveDrive.getOdometryHeading();
