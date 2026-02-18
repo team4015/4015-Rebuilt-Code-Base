@@ -135,6 +135,16 @@ public class SwerveSubsystem extends SubsystemBase{
         );
         SmartDashboard.putNumber("Robot Heading", getHeading());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+
+        SmartDashboard.putNumber("Absolute Encoder Front Left", frontLeft.getAbsoluteEncoderRad());
+        SmartDashboard.putNumber("Absolute Encoder Front Right", frontRight.getAbsoluteEncoderRad());
+        SmartDashboard.putNumber("Absolute Encoder Back Left", backLeft.getAbsoluteEncoderRad());
+        SmartDashboard.putNumber("Absolute Encoder Back Right", backRight.getAbsoluteEncoderRad());
+
+        SmartDashboard.putNumber("Turning Encoder Front Left", frontLeft.getTurningPosition());
+        SmartDashboard.putNumber("Turning Encoder Front Right", frontRight.getTurningPosition());
+        SmartDashboard.putNumber("Turning Encoder Back Left", backLeft.getTurningPosition());
+        SmartDashboard.putNumber("Turning Encoder Back Right", backRight.getTurningPosition());
     }
 
     //stop all the swerve modules
@@ -174,7 +184,7 @@ public class SwerveSubsystem extends SubsystemBase{
     }
 
     public double getBackRightAbsoluteEncoderRad(){
-        return backLeft.getAbsoluteEncoderRad();
+        return backRight.getAbsoluteEncoderRad();
     }
 
     public double getBackLeftAbsoluteEncoderRad(){
