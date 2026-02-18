@@ -34,8 +34,12 @@ public class ShooterCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    boolean buttonPressed = ctrl.getXButton();
-    if(buttonPressed){shooter.run();} 
+    boolean buttonXPressed = ctrl.getXButton();
+    boolean buttonYPressed = ctrl.getYButton();
+    
+
+    if(buttonXPressed){shooter.runShooter();} 
+    if(buttonYPressed){shooter.runHood();}
   }
 
   // Called once the command ends or is interrupted.
