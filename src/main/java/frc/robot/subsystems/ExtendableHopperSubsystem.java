@@ -16,8 +16,7 @@ public class ExtendableHopperSubsystem {
     private DigitalInput frontSwitch;
     private DigitalInput backSwitch;
 
-    boolean reverseExtendableHopper;
-    boolean isReverseExtendableHopper = true;
+    boolean shouldReverseExtendableHopper = true;
 
     public ExtendableHopperSubsystem(){
         extendableHopper = new SparkMax(ExtendableHopperConstants.extendableHopperMotorPort, MotorType.kBrushless);
@@ -27,7 +26,7 @@ public class ExtendableHopperSubsystem {
         extendableHopperConfig = new SparkMaxConfig();
 
         extendableHopperConfig
-                .inverted(isReverseExtendableHopper)
+                .inverted(shouldReverseExtendableHopper)
                 .idleMode(IdleMode.kBrake);
 
         extendableHopper.configure(extendableHopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -42,18 +41,20 @@ public class ExtendableHopperSubsystem {
         extendableHopper.stopMotor();
     }
 
-    public void runExtendableHopper(double speed){
-        speed = (reverseExtendableHopper) ? -speed: speed;
-        startExtendableHopperMotor(speed);
-
+    public void runExtendableHopper(double speed, boolean reverseExtendableHopper){
         if(frontSwitch.get()){
             stopExtendableHopperMotor();
-            reverseExtendableHopper = !reverseExtendableHopper;
+            reverseExtendableHopper = true;
+            return;
         }
 
         if(backSwitch.get()){
             stopExtendableHopperMotor();
-            reverseExtendableHopper = !reverseExtendableHopper;
+            reverseExtendableHopper = false;
+            return;
         }
+
+        ExtendableHopperConstants.extendableHopperSpeed = (reverseExtendableHopper) ? -speed: speed;
+        startExtendableHopperMotor(ExtendableHopperConstants.extendableHopperSpeed );
     }
 }

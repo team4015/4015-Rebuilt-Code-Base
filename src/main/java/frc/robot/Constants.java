@@ -147,6 +147,9 @@ public final class Constants {
 
       public static final int frontLimitSwitch = EXTENDABLE_HOPPER.port.frontSwitch.limitSwitch;
       public static final int backLimitSwitch = EXTENDABLE_HOPPER.port.backSwitch.limitSwitch;
+
+      public static boolean reverseExtendableHopper = false;
+      public static double extendableHopperSpeed = 0.0;
   }
 
   //These ar the input-output constants for the robot and the controller like the controller port
