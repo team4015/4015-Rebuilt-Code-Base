@@ -16,6 +16,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -113,7 +114,7 @@ public class SwerveModule {
 
     //get method for the turn motor position
     public double getTurningPosition(){
-        return turningEncoder.getPosition();
+        return normalizeTurningAngle(turningEncoder.getPosition());
     }
 
     //get the drive motor velocity
@@ -132,9 +133,14 @@ public class SwerveModule {
         double angle = absoluteEncoder.getVoltage() / RobotController.getCurrent5V();
         angle *= 2.0 * Math.PI; //convert this angle into radians
         angle -= absoluteEncoderOffsetRad;  //subtract the offset values to get its relative 0 to other modules
-        return angle * (absoluteEncoderReversed ? -1.0: 1.0); //result the angles and multiples by 1 or -1 if the absolute encoder is reversed
+        angle *= (absoluteEncoderReversed ? -1.0: 1.0); //result the angles and multiples by 1 or -1 if the absolute encoder is reversed
+        return normalizeTurningAngle(angle); //This angle is normalized to the continuous input range of -pi and pi
     }
 
+    //This method normalize any turning angle into continuous input range of -pi and pi
+    public double normalizeTurningAngle(double angleRad){
+        return MathUtil.angleModulus(angleRad);
+    }
     //this method set the position to 0 and set the turning encoder to the absolute encoder in radians
     public void resetEncoder(){
         driveEncoder.setPosition(0);
@@ -191,7 +197,7 @@ public class SwerveModule {
 
     //This gets the absolute steering encoder and converts the angle into Rotational2d WPILib angle and returns the current steering direction
     public Rotation2d getTurningRotation() {
-        return Rotation2d.fromRadians(getAbsoluteEncoderRad());
+        return Rotation2d.fromRadians(getTurningPosition());
     }
 
     //This will get the position of the driving and turning motor
