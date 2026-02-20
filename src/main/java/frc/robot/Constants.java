@@ -12,7 +12,6 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import org.w3c.dom.ls.LSOutput;
 
 public final class Constants {
     //This is the DRIVE constant variables which has all the variables from the JSON file from the ConfigLoader
