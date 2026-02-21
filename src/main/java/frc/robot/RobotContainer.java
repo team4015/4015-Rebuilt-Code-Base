@@ -10,8 +10,6 @@ import frc.robot.commands.ShooterCommand;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
-import swervelib.SwerveDrive;
-import swervelib.SwerveInputStream;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -19,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.io.File;
 
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.XboxController;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -29,12 +26,12 @@ import edu.wpi.first.wpilibj.XboxController;
  */
 public class RobotContainer {
 
-  private final XboxController ctrl = new XboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController ctrl = new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
-  private final Intake intake = new Intake(0.70, 0.1);
-  private final Shooter shooter = new Shooter(0.80, 0.1);
+  private final Intake intake = new Intake(0.7, 0.1);
+  private final Shooter shooter = new Shooter(0.8, 0.1,0.7);
 
   private final IntakeCommand intakeCMD = new IntakeCommand(intake, ctrl);
   private final ShooterCommand shooterCMD = new ShooterCommand(shooter, ctrl);
@@ -56,18 +53,14 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     
-    
-
-
     Command driveCmd = drivebase.driveCommand(() -> ctrl.getLeftX(), () -> -ctrl.getLeftY(), () -> ctrl.getRightX());
   
     drivebase.setDefaultCommand(driveCmd);
     intake.setDefaultCommand(intakeCMD);
     shooter.setDefaultCommand(shooterCMD);
 
-    ctrl.get().onTrue(drivebase.runOnce(() -> drivebase.toggleFieldOriented()));
+    ctrl.rightBumper().onTrue(drivebase.runOnce(() -> drivebase.toggleFieldOriented()));
     
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.

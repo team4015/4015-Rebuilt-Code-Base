@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Intake;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
@@ -21,7 +20,7 @@ public class IntakeCommand extends Command {
      *
      * @param subsystem The subsystem used by this command.
      */
-    public IntakeCommand(Intake intake, XboxController ctrl) {
+    public IntakeCommand(Intake intake, CommandXboxController ctrl) {
       this.intake = intake;
       this.ctrl = ctrl;
       

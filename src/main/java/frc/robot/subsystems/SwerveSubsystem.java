@@ -2,8 +2,6 @@ package frc.robot.subsystems;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.Filesystem;
@@ -18,7 +16,6 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
@@ -112,8 +109,8 @@ public class SwerveSubsystem extends SubsystemBase {
             
             //Limit the slew rate of the speeds to prevent sporadic motion and apply a deadband
             
-            vxMetersPerSecond = xLimiter.calculate(vxMetersPerSecond* maxVelocity) ;
-            vyMetersPerSecond = yLimiter.calculate(vyMetersPerSecond* maxVelocity) ;
+            vxMetersPerSecond = xLimiter.calculate(vxMetersPerSecond * maxVelocity) ;
+            vyMetersPerSecond = yLimiter.calculate(vyMetersPerSecond * maxVelocity) ;
             angularRotation = turningLimiter.calculate(angularRotation * swerveDrive.getMaximumChassisAngularVelocity());
             
             if (Math.abs(angularRotation) < 0.1){

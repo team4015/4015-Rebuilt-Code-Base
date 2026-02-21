@@ -1,35 +1,43 @@
 package frc.robot.subsystems;
 
-import java.nio.channels.Channel;
+
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase{
-    private final VictorSP intakeMotor;
-    private final VictorSP extendMotor;
+
+    //Declare motors, speeds, default intake extension direction, and limit switches
+    private final SparkMax intakeMotor;
+    private final SparkMax extendMotor;
+
     private final double intakeSpeed;
     private final double extendSpeed;
+
     private boolean extend = true;
-
-
 
     DigitalInput m_toplimitSwitch = new DigitalInput(0);
     DigitalInput m_bottomlimitSwitch = new DigitalInput(1);
 
+    //Initialize the intake
+
     public Intake(double intakeSpeed, double extendSpeed){
-        this.intakeMotor = new VictorSP(4);
-        this.extendMotor = new VictorSP(6);
+        this.intakeMotor = new SparkMax(10,MotorType.kBrushless);
+        this.extendMotor = new SparkMax(11, MotorType.kBrushless);
+
         this.intakeSpeed = intakeSpeed;
         this.extendSpeed = extendSpeed;
     }
+
+    //Run the intake
 
     public void runIntake(){
         intakeMotor.set(intakeSpeed);
     }
 
+    //Extend or retract the intake
 
     public void extendIntake(){
 
@@ -49,6 +57,7 @@ public class Intake extends SubsystemBase{
 
     }
 
+    //Stop everything
 
     public void stop(){
         intakeMotor.set(0);

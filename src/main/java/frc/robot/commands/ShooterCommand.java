@@ -5,14 +5,14 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Shooter;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /** An example command that uses an example subsystem. */
 public class ShooterCommand extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Shooter shooter;
-  private XboxController ctrl;
+  private CommandXboxController ctrl;
 
   /**
    * The commands are what make the subsystems actually run. 
@@ -20,7 +20,7 @@ public class ShooterCommand extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ShooterCommand(Shooter shooter, XboxController ctrl) {
+  public ShooterCommand(Shooter shooter, CommandXboxController ctrl) {
     this.shooter = shooter;
     this.ctrl = ctrl;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -34,11 +34,15 @@ public class ShooterCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    boolean buttonXPressed = ctrl.getXButton();
-    boolean buttonYPressed = ctrl.getYButton();
+
+    boolean buttonXPressed = ctrl.getHID().getXButton();
+    boolean buttonYPressed = ctrl.getHID().getYButton();
     
 
-    if(buttonXPressed){shooter.runShooter();} 
+    if(buttonXPressed){
+      shooter.runShooter();
+      shooter.runIndexer();
+    } 
     if(buttonYPressed){shooter.runHood();}
   }
 
