@@ -42,14 +42,6 @@ public class RobotContainer {
                               swerveSubsystem
                       )
               );
-
-      new JoystickButton(driverJoystick, OIConstants.calibrateAbsoluteEncoderButtonIdx)
-              .onTrue(
-                      Commands.runOnce(
-                              swerveSubsystem::calibrateAbsoluteEncodersToCurrentZero,
-                              swerveSubsystem
-                      )
-              );
   }
 
   public SwerveSubsystem getSwerveSubsystem(){

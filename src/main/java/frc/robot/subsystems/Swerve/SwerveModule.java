@@ -16,7 +16,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -114,7 +114,7 @@ public class SwerveModule {
 
     //get method for the turn motor position
     public double getTurningPosition(){
-        return turningEncoder.getPosition();
+        return normalizeTurningAngle(turningEncoder.getPosition());
     }
 
     //get the drive motor velocity
@@ -129,16 +129,24 @@ public class SwerveModule {
 
     //get the absolute encoder values in radius
     public double getAbsoluteEncoderRad(){
-        double angle = getAbsoluteEncoderRawRad();
+        //gets the voltages from the encoder then get the actual rail voltage which is divided to get the angle
+        double ratio = absoluteEncoder.getVoltage() / RobotController.getCurrent5V();
+        ratio = MathUtil.clamp(ratio, 0.0, 1.0);
+        double angle = ratio * 2.0 * Math.PI; //convert this angle into radians
+
+        //invert the absolute encoder first then do it
+        if (absoluteEncoderReversed) {
+            angle *= -1.0;
+        }
+
         angle -= absoluteEncoderOffsetRad;  //subtract the offset values to get its relative 0 to other modules
-        return angle * (absoluteEncoderReversed ? -1.0: 1.0); //result the angles and multiples by 1 or -1 if the absolute encoder is reversed
+        angle *= (absoluteEncoderReversed ? -1.0: 1.0); //result the angles and multiples by 1 or -1 if the absolute encoder is reversed
+        return normalizeTurningAngle(angle); //This angle is normalized to the continuous input range of -pi and pi
     }
 
-    //Get the absolute encoder angle in radians without applying offset or inversion
-    public double getAbsoluteEncoderRawRad(){
-        //gets the voltages from the encoder then get the actual rail voltage which is divided to get the angle
-        double angle = absoluteEncoder.getVoltage() / RobotController.getCurrent5V();
-        return angle * (2.0 * Math.PI); //convert this angle into radians
+    //This method normalize any turning angle into continuous input range of -pi and pi
+    public double normalizeTurningAngle(double angleRad){
+        return MathUtil.angleModulus(angleRad);
     }
 
     //this method set the position to 0 and set the turning encoder to the absolute encoder in radians
@@ -197,7 +205,7 @@ public class SwerveModule {
 
     //This gets the absolute steering encoder and converts the angle into Rotational2d WPILib angle and returns the current steering direction
     public Rotation2d getTurningRotation() {
-        return Rotation2d.fromRadians(getAbsoluteEncoderRad());
+        return Rotation2d.fromRadians(getTurningPosition());
     }
 
     //This will get the position of the driving and turning motor

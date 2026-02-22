@@ -8,7 +8,7 @@
  JSON file and each variable corresponds to the variables below it and value associated with it
  ***********************************************************************************************/
 
-package frc.robot.Config.Drive;
+package frc.robot.Config;
 
 import com.google.gson.annotations.SerializedName;
 

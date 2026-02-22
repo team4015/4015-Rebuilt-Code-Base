@@ -16,7 +16,6 @@ import java.io.Reader;
 import com.google.gson.Gson;
 
 import edu.wpi.first.wpilibj.Filesystem;
-import frc.robot.Config.Drive.DriveConfig;
 
 public class ConfigLoader {
     public static DriveConfig loadDriveConfig() {

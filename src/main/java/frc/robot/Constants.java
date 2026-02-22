@@ -13,7 +13,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Config.ConfigLoader;
-import frc.robot.Config.Drive.DriveConfig;
+import frc.robot.Config.DriveConfig;
 import frc.robot.Config.ExtendableHopperConfig;
 import frc.robot.Config.IntakeConfig;
 
