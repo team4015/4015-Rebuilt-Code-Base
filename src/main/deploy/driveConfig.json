@@ -50,10 +50,10 @@
       "backRight": false
     },
     "absoluteReversed": {
-      "frontLeft": false,
-      "frontRight": false,
-      "backLeft": false,
-      "backRight": false
+      "frontLeft": true,
+      "frontRight": true,
+      "backLeft": true,
+      "backRight": true
     }
   },
   "limits": {
