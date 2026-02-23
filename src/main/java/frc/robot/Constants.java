@@ -163,11 +163,23 @@ public final class Constants {
     public static final int driverFieldOrientedButtonIdx = 1;
     public static final int driveUnlockSwerveButtonIdx = 2;
     public static final int calibrateAbsoluteEncoderButtonIdx = 3;
+    public static final int aprilTagAlignButtonIdx = 4;
 
     public static final int intakePort = 10;
     public static final int extendableHopperPort = 11;
 
     //This is deadband to avoid drift on the robot
     public static final double deadband = 0.05;
+  }
+
+  public static final class VisionConstants {
+      public static final String limelightName = "limelight";
+      public static final double cameraMountHeightMeters = Units.inchesToMeters(18.0);
+      public static final double aprilTagCenterHeightMeters = Units.inchesToMeters(57.0);
+      public static final double cameraMountPitchDegrees = 20.0;
+
+      public static final double alignKp = 0.02;
+      public static final double alignMinCommand = 0.05;
+      public static final double alignToleranceDegrees = 1.0;
   }
 }
