@@ -32,10 +32,10 @@
       "backRight": 1
     },
     "absoluteOffsetsRad": {
-      "frontLeft": 4.097262264882849,
+      "frontLeft": -2.185923042296738,
       "frontRight": 2.495786486321376,
-      "backLeft": 3.2995923368637246,
-      "backRight": 3.8779030346775896
+      "backLeft": -2.405282272501996,
+      "backRight": -2.983592970315861
     },
     "driveReversed": {
       "frontLeft": false,
@@ -44,10 +44,10 @@
       "backRight": false
     },
     "turningReversed": {
-      "frontLeft": false,
-      "frontRight": false,
-      "backLeft": false,
-      "backRight": false
+      "frontLeft": true,
+      "frontRight": true,
+      "backLeft": true,
+      "backRight": true
     },
     "absoluteReversed": {
       "frontLeft": true,
