@@ -145,6 +145,20 @@ public class SwerveSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("Turning Encoder Front Right", frontRight.getTurningPosition());
         SmartDashboard.putNumber("Turning Encoder Back Left", backLeft.getTurningPosition());
         SmartDashboard.putNumber("Turning Encoder Back Right", backRight.getTurningPosition());
+
+        publishModuleDiagnostics("Front Left", frontLeft);
+        publishModuleDiagnostics("Front Right", frontRight);
+        publishModuleDiagnostics("Back Left", backLeft);
+        publishModuleDiagnostics("Back Right", backRight);
+
+    }
+
+    private void publishModuleDiagnostics(String name, SwerveModule module){
+        SmartDashboard.putNumber(name + " Raw Absolute Encoder", module.getRawAbsoluteEncoderRad());
+        SmartDashboard.putNumber(name + " Absolute Encoder Offset", module.getAbsoluteEncoderOffsetRad());
+        SmartDashboard.putBoolean(name + " Absolute Reversed", module.isAbsoluteEncoderReversed());
+        SmartDashboard.putNumber(name + " Absolute Encoder Channel", module.getAbsoluteEncoderChannel());
+        SmartDashboard.putNumber( name + " Turn-Abs Error", module.normalizeTurningAngle(module.getTurningPosition() - module.getAbsoluteEncoderRad()));
     }
 
     //stop all the swerve modules
