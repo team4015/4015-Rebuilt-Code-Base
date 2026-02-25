@@ -23,12 +23,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.ModuleConstants;
 
 public class SwerveModule {
+    private static final double LOOP_PERIOD_SEC = 0.02;
     //SparKMax motor controller for single drive and turning motor
     private final SparkMax driveMotor;
     private final SparkMax turningMotor;
@@ -51,12 +53,34 @@ public class SwerveModule {
     //variable to get the absolute encoder offset in radians
     private final double absoluteEncoderOffsetRad;
 
+    private final boolean simMode;
+    private double simDrivePositionMeters;
+    private double simDriveVelocityMetersPerSec;
+    private double simTurningVelocityRadPerSec;
+    private double simTurningPositionRad;
+
     //The constructor of the class which has parameters of most of the final variables above
     public SwerveModule(int driveMotorID, int turningMotorID, boolean driveMotorReversed, boolean turningMotorReversed, 
         int absoluteEncoderID, double absoluteEncoderOffset, boolean absoluteEncoderReversed){
             
         this.absoluteEncoderOffsetRad = absoluteEncoderOffset; //initialize variable
         this.absoluteEncoderReversed = absoluteEncoderReversed; //initialize variable
+        this.simMode = RobotBase.isSimulation();
+
+        if(simMode){
+            driveMotor = null;
+            turningMotor = null;
+            driveConfig = null;
+            turningConfig = null;
+            driveEncoder = null;
+            turningEncoder= null;
+            absoluteEncoder = null;
+
+            turningPIDcontroller = new PIDController(ModuleConstants.kPTurning, 0, 0);
+            turningPIDcontroller.enableContinuousInput(-Math.PI, Math.PI);
+            simTurningPositionRad = 0.0;
+            return;
+        }
         absoluteEncoder = new AnalogInput(absoluteEncoderID); //initialize the absolute Encoder by inputting the ID
 
         //initialize the drive and turning motor by giving the motor ID and the type of motor (brushless motor)
@@ -110,21 +134,33 @@ public class SwerveModule {
 
     //get method for the drive motor position
     public double getDrivePosition(){
+        if(simMode){
+            return simDrivePositionMeters;
+        }
         return driveEncoder.getPosition();
     }
 
     //get method for the turn motor position
     public double getTurningPosition(){
+        if(simMode) {
+            return normalizeTurningAngle(simTurningPositionRad);
+        }
         return normalizeTurningAngle(turningEncoder.getPosition());
     }
 
     //get the drive motor velocity
     public double getDriveVelocity(){
+        if(simMode){
+            return simDriveVelocityMetersPerSec;
+        }
         return driveEncoder.getVelocity();
     }
 
     //get the turn motor velocity
     public double getTurningVelocity(){
+        if(simMode){
+            return simTurningVelocityRadPerSec;
+        }
         return turningEncoder.getVelocity();
     }
 
@@ -138,6 +174,9 @@ public class SwerveModule {
     }
 
     public double getRawAbsoluteEncoderRad(){
+        if(simMode){
+            return normalizeTurningAngle(simTurningPositionRad + absoluteEncoderOffsetRad);
+        }
         double ratio = absoluteEncoder.getVoltage() / RobotController.getCurrent5V();
         ratio = MathUtil.clamp(ratio, 0.0, 1.0);
         double angle = ratio * 2.0 * Math.PI; //convert this angle into radians
@@ -158,11 +197,21 @@ public class SwerveModule {
     }
 
     public int getAbsoluteEncoderChannel(){
+        if(simMode){
+            return -1;
+        }
         return absoluteEncoder.getChannel();
     }
 
     //this method set the position to 0 and set the turning encoder to the absolute encoder in radians
     public void resetEncoder(){
+        if(simMode){
+            simDrivePositionMeters = 0.0;
+            simDriveVelocityMetersPerSec = 0.0;
+            simTurningPositionRad = 0.0;
+            simTurningVelocityRadPerSec = 0.0;
+            return;
+        }
         driveEncoder.setPosition(0);
         turningEncoder.setPosition(getAbsoluteEncoderRad());
     }
@@ -188,6 +237,16 @@ public class SwerveModule {
         //this will optimize the state of the motor to remove unnecessary wheel rotation (over rotating)
         //e.g instead of rotating 340 degrees it will just rotate  -20 degrees
         state = SwerveModuleState.optimize(state, getState().angle);
+
+        if(simMode) {
+            simDriveVelocityMetersPerSec = state.speedMetersPerSecond;
+            double turnOutput = turningPIDcontroller.calculate(getTurningPosition(), state.angle.getRadians());
+            simTurningVelocityRadPerSec = MathUtil.clamp(turnOutput, -Constants.DriveConstants.physicalMaxAngularSpeedRadiansPerSecond, Constants.DriveConstants.physicalMaxAngularSpeedRadiansPerSecond);
+            simTurningPositionRad = normalizeTurningAngle(simTurningPositionRad + simTurningVelocityRadPerSec * LOOP_PERIOD_SEC);
+            simDrivePositionMeters += simDriveVelocityMetersPerSec * LOOP_PERIOD_SEC;
+            SmartDashboard.putString("Swerve[sim] state", state.toString());
+            return;
+        }
         //This will set the speed of the drive motor from -1.0 to 1.0
         //desired speed/max speed = motor output scalar value
         driveMotor.set(state.speedMetersPerSecond / Constants.DriveConstants.physicalMaxSpeedMetersPerSecond);
@@ -199,11 +258,18 @@ public class SwerveModule {
     }
 
     public void stop(){
+        if(simMode){
+            simDriveVelocityMetersPerSec = 0.0;
+            simTurningVelocityRadPerSec = 0.0;
+        }
         driveMotor.set(0);
         turningMotor.set(0);
     }
     //Helps to configure the motor for whether the brakes are required
     public void setBrakeMode(boolean enabled){
+        if(simMode){
+            return;
+        }
         //IdleMode refers to how the motor behaves when it is receiving a neutral command
         //If the brakes are enables, then it could brake, it the brakes are not enables, then it will be in a Coast state
         IdleMode idleMode = enabled ? IdleMode.kBrake : IdleMode.kCoast;

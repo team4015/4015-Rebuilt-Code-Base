@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -19,14 +21,16 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-      robotContainer = new RobotContainer();
-      tab = Shuffleboard.getTab("Encoder Offsets");
+        DataLogManager.start();
+        DriverStation.startDataLog(DataLogManager.getLog());
+        robotContainer = new RobotContainer();
+        tab = Shuffleboard.getTab("Encoder Offsets");
 
-      SwerveSubsystem swerveSubsystem = robotContainer.getSwerveSubsystem();
-      tab.addNumber("Front Left Absolute Encoder", swerveSubsystem::getFrontLeftAbsoluteEncoderRad);
-      tab.addNumber("Front Right Absolute Encoder", swerveSubsystem::getFrontRightAbsoluteEncoderRad);
-      tab.addNumber("Back Left Absolute Encoder", swerveSubsystem::getBackLeftAbsoluteEncoderRad);
-      tab.addNumber("Back Right Absolute Encoder", swerveSubsystem::getBackRightAbsoluteEncoderRad);
+        SwerveSubsystem swerveSubsystem = robotContainer.getSwerveSubsystem();
+        tab.addNumber("Front Left Absolute Encoder", swerveSubsystem::getFrontLeftAbsoluteEncoderRad);
+        tab.addNumber("Front Right Absolute Encoder", swerveSubsystem::getFrontRightAbsoluteEncoderRad);
+        tab.addNumber("Back Left Absolute Encoder", swerveSubsystem::getBackLeftAbsoluteEncoderRad);
+        tab.addNumber("Back Right Absolute Encoder", swerveSubsystem::getBackRightAbsoluteEncoderRad);
     }
 
     @Override
@@ -36,18 +40,18 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-    autonomousCommand = robotContainer.getAutonomousCommand();
+        autonomousCommand = robotContainer.getAutonomousCommand();
 
-    if (autonomousCommand != null) {
-      CommandScheduler.getInstance().schedule(autonomousCommand);
-    }
+        if (autonomousCommand != null) {
+        CommandScheduler.getInstance().schedule(autonomousCommand);
+        }
     }
 
     @Override
     public void teleopInit() {
-    if (autonomousCommand != null) {
-      autonomousCommand.cancel();
-    }
+        if (autonomousCommand != null) {
+        autonomousCommand.cancel();
+        }
     }
 
     @Override
@@ -68,7 +72,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
-    CommandScheduler.getInstance().cancelAll();
+        CommandScheduler.getInstance().cancelAll();
     }
 
     @Override

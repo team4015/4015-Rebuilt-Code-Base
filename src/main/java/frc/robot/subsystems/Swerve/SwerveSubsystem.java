@@ -13,15 +13,18 @@ import com.studica.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.kinematics.*;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
 public class SwerveSubsystem extends SubsystemBase{
+    private static final double LOOP_PERIOD_SEC = 0.02;
+    
     //creates four SwerveModule objects with all the parameters added
     private final SwerveModule frontLeft = new SwerveModule(
         DriveConstants.frontLeftDriveMotorPort,
@@ -65,7 +68,11 @@ public class SwerveSubsystem extends SubsystemBase{
 
 
     //Create an object and initialize the NavX gyro
-    private final AHRS gyro = new AHRS(AHRS.NavXComType.kMXP_SPI);
+    private final AHRS gyro;
+    private Rotation2d simHeading = new Rotation2d();
+    private final StructPublisher<Pose2d> posePublisher = NetworkTableInstance.getDefault().getStructTopic("AdvantageScope/Drive/Pose", Pose2d.struct).publish();
+    private final StructArrayPublisher<SwerveModuleState> moduleStatesPublisher = NetworkTableInstance.getDefault().getStructArrayTopic("AdvantageScope/Drive/ModuleStates", SwerveModuleState.struct).publish();
+
 
     //The SwerveDriveOdometry class tracks the robot's pose (position) on the field as x, y coordinates (meters) and rotation
     private final SwerveDriveOdometry odometer= new SwerveDriveOdometry(
@@ -82,6 +89,8 @@ public class SwerveSubsystem extends SubsystemBase{
 
     //The constructor create a Thread to sleep the program
     public SwerveSubsystem(){
+        gyro = RobotBase.isSimulation() ? null : new AHRS(AHRS.NavXComType.kMXP_SPI);
+
         new Thread(() -> {
             try {
                 Thread.sleep(1000);
@@ -93,11 +102,18 @@ public class SwerveSubsystem extends SubsystemBase{
 
     //This method is a void method to reset the gyro heading to 0
     public void zeroHeading(){
+        if(RobotBase.isSimulation()) {
+            simHeading = new Rotation2d();
+            return;
+        }
         gyro.reset();
     }
 
     //This gets the heading angle between 0-360 (related acute angle from -π to π)
     public double getHeading(){
+        if(RobotBase.isSimulation()){
+            return simHeading.getDegrees();
+        }
         return Math.IEEEremainder(gyro.getAngle(), 360);
     }
 
@@ -151,6 +167,9 @@ public class SwerveSubsystem extends SubsystemBase{
         publishModuleDiagnostics("Back Left", backLeft);
         publishModuleDiagnostics("Back Right", backRight);
 
+        posePublisher.set(getPose());
+        moduleStatesPublisher.set(getModuleStates());
+
     }
 
     private void publishModuleDiagnostics(String name, SwerveModule module){
@@ -187,7 +206,22 @@ public class SwerveSubsystem extends SubsystemBase{
         frontRight.setDesiredState(desiredStates[1]);
         backLeft.setDesiredState(desiredStates[2]);
         backRight.setDesiredState(desiredStates[3]);
+
+        if(RobotBase.isSimulation()){
+            ChassisSpeeds simChassisSpeeds = DriveConstants.driveKinematics.toChassisSpeeds(desiredStates);
+            simHeading = simHeading.plus(Rotation2d.fromRadians(simChassisSpeeds.omegaRadiansPerSecond * LOOP_PERIOD_SEC));
+        }
     }
+
+    public SwerveModuleState[] getModuleStates() {
+        return new SwerveModuleState[] {
+                frontLeft.getState(),
+                frontRight.getState(),
+                backLeft.getState(),
+                backRight.getState()
+        };
+    }
+
 
     public double getFrontLeftAbsoluteEncoderRad(){
         return frontLeft.getAbsoluteEncoderRad();
