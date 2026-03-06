@@ -1,137 +1,167 @@
-/*************************************************************************************************
-@Name: Gursahaj Chawla
-@Date: 2/10/2026
-@File: Constants.java
-@Description: This static class has all the relevant constants and calculations for the Code Base
-Each static final class will have constants relevant for each subsystem. All constant values are
-stored in the JSON files via the deployment folder using the ConfigLoader class
-***********************************************************************************************/
 package frc.robot;
 
-//WPILib imports and external library imports
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
+/**
+ * Robot-wide constants derived from static values and deploy-time JSON config.
+ */
 public final class Constants {
-    //This is the DRIVE constant variables which has all the variables from the JSON file from the ConfigLoader
+    /** Loaded drivetrain configuration from {@code src/main/deploy/driveConfig.json}. */
     public static final DriveConfig DRIVE = ConfigLoader.loadDriveConfig();
 
-    //This static final class if for the ModuleConstants
+    private Constants() {
+    }
+
+    /**
+     * Constants specific to module mechanics, encoder conversions, and steering control gain.
+     */
     public static final class ModuleConstants {
-        //Get the wheel diameter in meters converted from Inches --> Meters
+        /** Wheel diameter in meters. */
         public static final double wheelDiameterMeters = Units.inchesToMeters(DRIVE.module.wheelDiameterInches);
 
-        //Get the driveMotor and turnMotor Gear Ratio, the reciprocal operation is done to convert reduction ratio into overdrive ratio
+        /** Reciprocal drive reduction used to convert motor rotations to wheel rotations. */
         public static final double driveMotorGearRatio = 1.0 / DRIVE.module.driveGearRatio;
+        /** Reciprocal steering reduction used to convert motor rotations to module angle rotations. */
         public static final double turningMotorGearRatio = 1.0 / DRIVE.module.turningGearRatio;
 
-        //This encoder rotation variables converts the Encoder position into meters
-        //Calculation: This calculates the distance traveled in one full rotation by finding circumference and considering
-        //the gear ratio
+        /** Drive encoder position conversion (motor rotations -> wheel meters). */
         public static final double driveEncoderRot2Meter = driveMotorGearRatio * Math.PI * wheelDiameterMeters;
-
-        //Similar to the previous variable only difference is that the converts the angular displacement using
-        // the full circumference of a circle 2π in radian and considering the gear ratio
+        /** Turning encoder position conversion (motor rotations -> radians). */
         public static final double turningEncoderRot2Rad = turningMotorGearRatio * 2.0 * Math.PI;
 
-        //Converting the drive and turning encoder into RPM by dividing the distance (driving encoder)
-        //or the (turning encoder) by 60 seconds (1 minute)
+        /** Drive encoder velocity conversion (motor RPM -> wheel m/s). */
         public static final double driveEncoderRPM2MeterPerSec = driveEncoderRot2Meter / 60.0;
+        /** Turning encoder velocity conversion (motor RPM -> rad/s). */
         public static final double turningEncoderRPM2RadPerSec = turningEncoderRot2Rad / 60.0;
 
-        //This variable get the PID parameter for turning (proportional gain for turning)
+        /** Proportional steering gain for module angle controller. */
         public static final double kPTurning = DRIVE.module.turningKP;
+
+        private ModuleConstants() {
+        }
     }
 
-        public static final class DriveConstants {
-        //This gets the track width (the lateral distance between the centerlines of the two wheels on the same axles) converted from inches --> meters
+    /**
+     * Drivetrain dimensions, IDs, inversion flags, and speed limits.
+     */
+    public static final class DriveConstants {
+        /** Track width in meters (left-to-right wheel center distance). */
         public static final double trackWidth = Units.inchesToMeters(DRIVE.dimensions.trackWidthInches);
-
-        //This gets the wheelbase (the horizontal distance between the centerlines of the two wheels on the front and rear wheels) converted from inches --> meters
+        /** Wheel base in meters (front-to-back wheel center distance). */
         public static final double wheelBase = Units.inchesToMeters(DRIVE.dimensions.wheelBaseInches);
 
-        //This variable uses the SwerveDriveKinematic class to do the important calculations
-        //This converts the chassis speed vx, vy, yz into individual wheel speed and angles for each swerve module
-
+        /** Swerve kinematics model based on module corner positions relative to robot center. */
         public static final SwerveDriveKinematics driveKinematics =
             new SwerveDriveKinematics(
-                //Translation2d represents the positions of the wheels relative to the robot center
-                //new Translations2d(x, y), +X --> Forward, +Y --> Left, -X --> Backwards, -Y --> Right
-                new Translation2d( wheelBase / 2,  trackWidth / 2), //front left wheel, +X, +Y
-                new Translation2d( wheelBase / 2, -trackWidth / 2), //front right wheel, +X, -Y
-                new Translation2d(-wheelBase / 2,  trackWidth / 2),// back right wheel, -X, +Y
-                new Translation2d(-wheelBase / 2, -trackWidth / 2) //back right wheel, -X, -Y
+                new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
+                new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
+                new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
+                new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0)
             );
 
-        //Get the motor ports for all the four swerve modules drive motors
+        /** Front-left drive motor CAN ID. */
         public static final int frontLeftDriveMotorPort = DRIVE.motors.drive.frontLeft;
+        /** Front-right drive motor CAN ID. */
         public static final int frontRightDriveMotorPort = DRIVE.motors.drive.frontRight;
+        /** Back-left drive motor CAN ID. */
         public static final int backLeftDriveMotorPort = DRIVE.motors.drive.backLeft;
+        /** Back-right drive motor CAN ID. */
         public static final int backRightDriveMotorPort = DRIVE.motors.drive.backRight;
 
-        //Get the motor ports for all the four swerve modules turn motors
+        /** Front-left turning motor CAN ID. */
         public static final int frontLeftTurningMotorPort = DRIVE.motors.turning.frontLeft;
+        /** Front-right turning motor CAN ID. */
         public static final int frontRightTurningMotorPort = DRIVE.motors.turning.frontRight;
+        /** Back-left turning motor CAN ID. */
         public static final int backLeftTurningMotorPort = DRIVE.motors.turning.backLeft;
+        /** Back-right turning motor CAN ID. */
         public static final int backRightTurningMotorPort = DRIVE.motors.turning.backRight;
 
-        //Get the Absolute encoder ports from each of the four swerve modules
+        /** Front-left absolute encoder analog channel. */
         public static final int frontLeftDriveAbsoluteEncoderPort = DRIVE.encoders.absolutePorts.frontLeft;
+        /** Front-right absolute encoder analog channel. */
         public static final int frontRightDriveAbsoluteEncoderPort = DRIVE.encoders.absolutePorts.frontRight;
+        /** Back-left absolute encoder analog channel. */
         public static final int backLeftDriveAbsoluteEncoderPort = DRIVE.encoders.absolutePorts.backLeft;
+        /** Back-right absolute encoder analog channel. */
         public static final int backRightDriveAbsoluteEncoderPort = DRIVE.encoders.absolutePorts.backRight;
 
-        //Get the Encoder offset in radians (This makes is such that all of then understand relative 0
+        /** Front-left absolute steering offset in radians. */
         public static final double frontLeftDriveAbsoluteEncoderOffsetRad = DRIVE.encoders.absoluteOffsetsRad.frontLeft;
+        /** Front-right absolute steering offset in radians. */
         public static final double frontRightDriveAbsoluteEncoderOffsetRad = DRIVE.encoders.absoluteOffsetsRad.frontRight;
+        /** Back-left absolute steering offset in radians. */
         public static final double backLeftDriveAbsoluteEncoderOffsetRad = DRIVE.encoders.absoluteOffsetsRad.backLeft;
+        /** Back-right absolute steering offset in radians. */
         public static final double backRightDriveAbsoluteEncoderOffsetRad = DRIVE.encoders.absoluteOffsetsRad.backRight;
 
-        //Get the boolean states for each of the encoder values for if the drive encoders values are reversed
+        /** Front-left drive encoder inversion flag. */
         public static final boolean frontLeftDriveEncoderReversed = DRIVE.encoders.driveReversed.frontLeft;
+        /** Front-right drive encoder inversion flag. */
         public static final boolean frontRightDriveEncoderReversed = DRIVE.encoders.driveReversed.frontRight;
+        /** Back-left drive encoder inversion flag. */
         public static final boolean backLeftDriveEncoderReversed = DRIVE.encoders.driveReversed.backLeft;
+        /** Back-right drive encoder inversion flag. */
         public static final boolean backRightDriveEncoderReversed = DRIVE.encoders.driveReversed.backRight;
 
-        //Get the boolean states for each of the encoder values for if the turning encoders values are reversed
+        /** Front-left turning encoder inversion flag. */
         public static final boolean frontLeftTurningEncoderReversed = DRIVE.encoders.turningReversed.frontLeft;
+        /** Front-right turning encoder inversion flag. */
         public static final boolean frontRightTurningEncoderReversed = DRIVE.encoders.turningReversed.frontRight;
+        /** Back-left turning encoder inversion flag. */
         public static final boolean backLeftTurningEncoderReversed = DRIVE.encoders.turningReversed.backLeft;
+        /** Back-right turning encoder inversion flag. */
         public static final boolean backRightTurningEncoderReversed = DRIVE.encoders.turningReversed.backRight;
 
-        //Get the boolean states for each of the encoder values for if the absolute encoders values are reversed
+        /** Front-left absolute encoder reversal flag. */
         public static final boolean frontLeftDriveAbsoluteEncoderReversed = DRIVE.encoders.absoluteReversed.frontLeft;
+        /** Front-right absolute encoder reversal flag. */
         public static final boolean frontRightDriveAbsoluteEncoderReversed = DRIVE.encoders.absoluteReversed.frontRight;
+        /** Back-left absolute encoder reversal flag. */
         public static final boolean backLeftDriveAbsoluteEncoderReversed = DRIVE.encoders.absoluteReversed.backLeft;
+        /** Back-right absolute encoder reversal flag. */
         public static final boolean backRightDriveAbsoluteEncoderReversed = DRIVE.encoders.absoluteReversed.backRight;
 
-        // Speed limits
-        //this gets the maximum Speed of the robot to avoid overburning
+        /** Physical drivetrain translation speed limit (m/s). */
         public static final double physicalMaxSpeedMetersPerSecond = DRIVE.limits.maxSpeedMps;
-
-        //this gets the maximum angles speed of the turning components of the robot to avoid overburning
+        /** Physical drivetrain angular speed limit (rad/s). */
         public static final double physicalMaxAngularSpeedRadiansPerSecond = DRIVE.limits.maxAngularSpeedRadPerSec;
 
-        //Maximum Speed in the teleop period for driving speed
-        public static final double teleDriveMaxSpeedMetersPerSecond = physicalMaxSpeedMetersPerSecond * DRIVE.limits.teleopSpeedScale;
+        /** Teleop translation speed limit (m/s), scaled from physical max. */
+        public static final double teleDriveMaxSpeedMetersPerSecond =
+            physicalMaxSpeedMetersPerSecond * DRIVE.limits.teleopSpeedScale;
+        /** Teleop angular speed limit (rad/s), scaled from physical max. */
+        public static final double teleDriveMaxAngularSpeedRadiansPerSecond =
+            physicalMaxAngularSpeedRadiansPerSecond * DRIVE.limits.teleopSpeedScale;
 
-        //Maximum turning Speed in the teleop period for turning speed
-        public static final double teleDriveMaxAngularSpeedRadiansPerSecond = physicalMaxAngularSpeedRadiansPerSecond * DRIVE.limits.teleopSpeedScale;
+        private DriveConstants() {
+        }
     }
 
-    //These ar the input-output constants for the robot and the controller like the controller port
-    //and various pins on the joystick
+    /**
+     * Operator-input constants for joystick mapping and deadband.
+     */
     public static final class OIConstants {
-    public static final int driverControllerPort = 0;
+        /** USB port index for the primary driver controller. */
+        public static final int driverControllerPort = 0;
 
-    public static final int driverYAxis = 1;
-    public static final int driverXAxis = 0;
-    public static final int driverRotAxis = 4;
-    public static final int driverFieldOrientedButtonIdx = 1;
-    public static final int driveUnlockSwerveButtonIdx = 2;
+        /** Axis index for forward/backward command. */
+        public static final int driverYAxis = 1;
+        /** Axis index for left/right strafe command. */
+        public static final int driverXAxis = 0;
+        /** Axis index for rotational command. */
+        public static final int driverRotAxis = 4;
+        /** Button index used to enable field-oriented driving while held. */
+        public static final int driverFieldOrientedButtonIdx = 1;
+        /** Button index used to temporarily unlock/coast swerve modules while held. */
+        public static final int driveUnlockSwerveButtonIdx = 2;
 
-    //This is deadband to avoid drift on the robot
-    public static final double deadband = 0.05;
+        /** Joystick deadband used to suppress small stick noise/drift. */
+        public static final double deadband = 0.05;
+
+        private OIConstants() {
+        }
     }
 }

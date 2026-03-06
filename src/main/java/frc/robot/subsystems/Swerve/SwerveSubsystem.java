@@ -1,28 +1,32 @@
-/*************************************************************************************************
- @Name: Gursahaj Chawla
- @Date: 2/10/2026
- @File: SwerveSubsystem.java
- @Description: This class in the program and the setup for the whole Swerve Subsystem in which
- all the methods and created inorder for them to be used to execute the program using the
- Command code from SwerveCommands.java
- ***********************************************************************************************/
-
 package frc.robot.subsystems.Swerve;
 
 import com.studica.frc.AHRS;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
-public class SwerveSubsystem extends SubsystemBase{
-    //creates four SwerveModule objects with all the parameters added
+/**
+ * Swerve drivetrain subsystem.
+ *
+ * <p>This class owns the four module objects, heading/odometry updates, and a dedicated
+ * Shuffleboard workflow for calibrating absolute steering encoder offsets.</p>
+ */
+public class SwerveSubsystem extends SubsystemBase {
+    private static final double TWO_PI = 2.0 * Math.PI;
+
     private final SwerveModule frontLeft = new SwerveModule(
         DriveConstants.frontLeftDriveMotorPort,
         DriveConstants.frontLeftTurningMotorPort,
@@ -63,15 +67,50 @@ public class SwerveSubsystem extends SubsystemBase{
         DriveConstants.backRightDriveAbsoluteEncoderReversed
     );
 
+    private final SwerveModule[] modules = new SwerveModule[]{frontLeft, frontRight, backLeft, backRight};
+    private final String[] moduleNames = new String[]{"Front Left", "Front Right", "Back Left", "Back Right"};
 
-    //Create an object and initialize the NavX gyro
+    // Running sum of raw absolute angle samples (radians) for each module.
+    private final double[] calibrationRawSumRad = new double[4];
+    // Number of samples accumulated in calibrationRawSumRad.
+    private int calibrationSampleCount = 0;
+
+    // Shuffleboard control entries (operator input).
+    private GenericEntry calCollectEntry;
+    private GenericEntry calResetEntry;
+    private GenericEntry calTargetDegEntry;
+    private GenericEntry calSampleCountEntry;
+
+    // Shuffleboard per-module telemetry entries.
+    private final GenericEntry[] rawNowDegEntries = new GenericEntry[4];
+    private final GenericEntry[] rawAvgDegEntries = new GenericEntry[4];
+    private final GenericEntry[] correctedDegEntries = new GenericEntry[4];
+    private final GenericEntry[] turnAbsErrorDegEntries = new GenericEntry[4];
+    private final GenericEntry[] configOffsetRadEntries = new GenericEntry[4];
+    private final GenericEntry[] recommendedOffsetDegEntries = new GenericEntry[4];
+    private final GenericEntry[] recommendedOffsetRadEntries = new GenericEntry[4];
+    private final GenericEntry[] absoluteReversedEntries = new GenericEntry[4];
+    private final GenericEntry[] turningMotorReversedEntries = new GenericEntry[4];
+    private final GenericEntry[] driveMotorReversedEntries = new GenericEntry[4];
+    private final GenericEntry[] absTurnSignMatchEntries = new GenericEntry[4];
+    private final GenericEntry[] turnAppliedSignMatchEntries = new GenericEntry[4];
+    private final GenericEntry[] driveAppliedSignMatchEntries = new GenericEntry[4];
+    private final GenericEntry[] rawDeltaDegEntries = new GenericEntry[4];
+    private final GenericEntry[] turningAppliedEntries = new GenericEntry[4];
+    private final GenericEntry[] driveAppliedEntries = new GenericEntry[4];
+    private final GenericEntry[] turningVelocityEntries = new GenericEntry[4];
+    private final GenericEntry[] driveVelocityEntries = new GenericEntry[4];
+    private final GenericEntry[] channelEntries = new GenericEntry[4];
+    private final double[] previousRawAbsoluteRad = new double[4];
+    private final boolean[] previousRawInitialized = new boolean[4];
+
+    // NavX gyro source for robot heading.
     private final AHRS gyro = new AHRS(AHRS.NavXComType.kMXP_SPI);
 
-    //The SwerveDriveOdometry class tracks the robot's pose (position) on the field as x, y coordinates (meters) and rotation
-    private final SwerveDriveOdometry odometer= new SwerveDriveOdometry(
-        DriveConstants.driveKinematics, //SwerveDriveKinematic Object which helps tell the geometry of the robot
-        Rotation2d.fromDegrees(0), //set initial heading to 0
-        //This is an array of initial position of each swerve module and returns the distance driven and angle
+    // Tracks robot pose from heading + module positions.
+    private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(
+        DriveConstants.driveKinematics,
+        Rotation2d.fromDegrees(0),
         new SwerveModulePosition[]{
             frontLeft.getPosition(),
             frontRight.getPosition(),
@@ -80,129 +119,364 @@ public class SwerveSubsystem extends SubsystemBase{
         }
     );
 
-    //The constructor create a Thread to sleep the program
-    public SwerveSubsystem(){
+    /**
+     * Constructs the subsystem, builds calibration UI, and zeroes heading after a short startup
+     * delay so sensors can stabilize.
+     */
+    public SwerveSubsystem() {
+        initializeCalibrationDashboard();
         new Thread(() -> {
             try {
                 Thread.sleep(1000);
-                zeroHeading(); //call the method
-            } catch (Exception e) {
+                zeroHeading();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
-        }).start(); 
+        }).start();
     }
 
-    //This method is a void method to reset the gyro heading to 0
-    public void zeroHeading(){
+    /**
+     * Resets gyro heading to zero.
+     */
+    public void zeroHeading() {
         gyro.reset();
     }
 
-    //This gets the heading angle between 0-360 (related acute angle from -π to π)
-    public double getHeading(){
-        return Math.IEEEremainder(gyro.getAngle(), 360);
+    /**
+     * Returns heading in degrees wrapped near [-180, 180].
+     *
+     * @return current robot heading in degrees
+     */
+    public double getHeading() {
+        return Math.IEEEremainder(gyro.getAngle(), 360.0);
     }
 
-    //Get the WPILid normalized angle from the heading angle
-    public Rotation2d getRotation2d(){
+    /**
+     * Returns heading as a {@link Rotation2d}, converting NavX sign to WPILib convention.
+     *
+     * @return current robot rotation
+     */
+    public Rotation2d getRotation2d() {
         // NavX yaw sign is opposite of WPILib's CCW-positive convention.
         return Rotation2d.fromDegrees(-getHeading());
     }
 
-    //gets the positions of the robot in (x,y,z)
-    public Pose2d getPose(){
+    /**
+     * Returns the current pose estimate.
+     *
+     * @return robot pose in meters/radians
+     */
+    public Pose2d getPose() {
         return odometer.getPoseMeters();
     }
 
-    //This resets the position of the robot
-    public void resetOdometry(Pose2d pose){
-        odometer.resetPosition(getRotation2d(), 
+    /**
+     * Resets odometry to a provided pose.
+     *
+     * @param pose target pose after reset
+     */
+    public void resetOdometry(Pose2d pose) {
+        odometer.resetPosition(
+            getRotation2d(),
             new SwerveModulePosition[]{
                 frontLeft.getPosition(),
                 frontRight.getPosition(),
                 backLeft.getPosition(),
                 backRight.getPosition()
-            }, pose
+            },
+            pose
         );
     }
 
-    //This periodic() method updates the odometer of the swerve module to get the updates position of the swerve modules
+    /**
+     * Periodic loop:
+     * 1) process calibration controls,
+     * 2) update odometry,
+     * 3) publish calibration telemetry.
+     */
     @Override
-    public void periodic(){
-        odometer.update(getRotation2d(), new SwerveModulePosition[]{
+    public void periodic() {
+        updateCalibrationSampling();
+        odometer.update(
+            getRotation2d(),
+            new SwerveModulePosition[]{
                 frontLeft.getPosition(),
                 frontRight.getPosition(),
                 backLeft.getPosition(),
                 backRight.getPosition()
             }
         );
-        SmartDashboard.putNumber("Robot Heading", getHeading());
-        SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
-
-        SmartDashboard.putNumber("Absolute Encoder Front Left", frontLeft.getAbsoluteEncoderRad());
-        SmartDashboard.putNumber("Absolute Encoder Front Right", frontRight.getAbsoluteEncoderRad());
-        SmartDashboard.putNumber("Absolute Encoder Back Left", backLeft.getAbsoluteEncoderRad());
-        SmartDashboard.putNumber("Absolute Encoder Back Right", backRight.getAbsoluteEncoderRad());
-
-        SmartDashboard.putNumber("Turning Encoder Front Left", frontLeft.getTurningPosition());
-        SmartDashboard.putNumber("Turning Encoder Front Right", frontRight.getTurningPosition());
-        SmartDashboard.putNumber("Turning Encoder Back Left", backLeft.getTurningPosition());
-        SmartDashboard.putNumber("Turning Encoder Back Right", backRight.getTurningPosition());
-
-        publishModuleDiagnostics("Front Left", frontLeft);
-        publishModuleDiagnostics("Front Right", frontRight);
-        publishModuleDiagnostics("Back Left", backLeft);
-        publishModuleDiagnostics("Back Right", backRight);
-
+        publishCalibrationTelemetry();
     }
 
-    private void publishModuleDiagnostics(String name, SwerveModule module){
-        SmartDashboard.putNumber(name + " Raw Absolute Encoder", module.getRawAbsoluteEncoderRad());
-        SmartDashboard.putNumber(name + " Absolute Encoder Offset", module.getAbsoluteEncoderOffsetRad());
-        SmartDashboard.putBoolean(name + " Absolute Reversed", module.isAbsoluteEncoderReversed());
-        SmartDashboard.putNumber(name + " Absolute Encoder Channel", module.getAbsoluteEncoderChannel());
-        SmartDashboard.putNumber( name + " Turn-Abs Error", module.normalizeTurningAngle(module.getTurningPosition() - module.getAbsoluteEncoderRad()));
+    /**
+     * Builds the "Encoder Calibration" Shuffleboard tab and all widgets.
+     */
+    private void initializeCalibrationDashboard() {
+        ShuffleboardTab calibrationTab = Shuffleboard.getTab("Encoder Calibration");
+
+        ShuffleboardLayout controlsLayout = calibrationTab
+            .getLayout("Controls", BuiltInLayouts.kList)
+            .withPosition(0, 0)
+            .withSize(2, 6);
+
+        calTargetDegEntry = controlsLayout
+            .add("Target Angle (deg)", 0.0)
+            .withWidget(BuiltInWidgets.kTextView)
+            .getEntry();
+        calCollectEntry = controlsLayout
+            .add("Collect Samples", false)
+            .withWidget(BuiltInWidgets.kToggleSwitch)
+            .getEntry();
+        calResetEntry = controlsLayout
+            .add("Reset Samples", false)
+            .withWidget(BuiltInWidgets.kToggleButton)
+            .getEntry();
+        calSampleCountEntry = controlsLayout
+            .add("Sample Count", 0)
+            .withWidget(BuiltInWidgets.kTextView)
+            .getEntry();
+        controlsLayout
+            .add(
+                "Instructions",
+                "Point wheels to target angle, reset samples once, collect 150+ samples, copy Recommended Offset (rad) to driveConfig.json"
+            )
+            .withWidget(BuiltInWidgets.kTextView);
+        controlsLayout
+            .add(
+                "Inversion Guide",
+                "While driving slowly on blocks: SignMatch fields should be true when module motion is above threshold."
+            )
+            .withWidget(BuiltInWidgets.kTextView);
+
+        for (int i = 0; i < modules.length; i++) {
+            // Arrange module panels in a 2x2 grid for quick matching with robot corners.
+            int col = 2 + (i % 2) * 4;
+            int row = (i / 2) * 6;
+            ShuffleboardLayout moduleLayout = calibrationTab
+                .getLayout(moduleNames[i], BuiltInLayouts.kList)
+                .withPosition(col, row)
+                .withSize(4, 6);
+
+            rawNowDegEntries[i] = moduleLayout.add("Raw Now (deg)", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
+            rawAvgDegEntries[i] = moduleLayout.add("Raw Avg (deg)", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
+            correctedDegEntries[i] = moduleLayout.add("Corrected (deg)", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
+            turnAbsErrorDegEntries[i] = moduleLayout.add("Turn-Abs Error (deg)", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
+            configOffsetRadEntries[i] = moduleLayout.add("Config Offset (rad)", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
+            recommendedOffsetDegEntries[i] = moduleLayout.add("Recommended Offset (deg)", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
+            recommendedOffsetRadEntries[i] = moduleLayout.add("Recommended Offset (rad)", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
+            absoluteReversedEntries[i] = moduleLayout.add("Absolute Reversed", false).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
+            turningMotorReversedEntries[i] = moduleLayout.add("Turning Motor Reversed", false).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
+            driveMotorReversedEntries[i] = moduleLayout.add("Drive Motor Reversed", false).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
+            rawDeltaDegEntries[i] = moduleLayout.add("Raw Delta/Loop (deg)", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
+            turningAppliedEntries[i] = moduleLayout.add("Turning Applied", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
+            driveAppliedEntries[i] = moduleLayout.add("Drive Applied", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
+            turningVelocityEntries[i] = moduleLayout.add("Turning Vel (rad/s)", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
+            driveVelocityEntries[i] = moduleLayout.add("Drive Vel (m/s)", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
+            absTurnSignMatchEntries[i] = moduleLayout.add("Abs vs Turn Sign Match", false).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
+            turnAppliedSignMatchEntries[i] = moduleLayout.add("Turn Cmd vs Vel Match", false).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
+            driveAppliedSignMatchEntries[i] = moduleLayout.add("Drive Cmd vs Vel Match", false).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
+            channelEntries[i] = moduleLayout.add("Encoder Channel", 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+        }
     }
 
-    //stop all the swerve modules
-    public void stopModules(){
+    /**
+     * Executes calibration control actions from Shuffleboard.
+     *
+     * <p>Reset is treated as a one-shot action and forced back to false after execution.</p>
+     */
+    private void updateCalibrationSampling() {
+        if (calResetEntry.getBoolean(false)) {
+            resetCalibrationSamples();
+            calResetEntry.setBoolean(false);
+        }
+        if (calCollectEntry.getBoolean(false)) {
+            captureCalibrationSample();
+        }
+    }
+
+    /**
+     * Clears all accumulated calibration sample data.
+     */
+    private void resetCalibrationSamples() {
+        calibrationSampleCount = 0;
+        for (int i = 0; i < calibrationRawSumRad.length; i++) {
+            calibrationRawSumRad[i] = 0.0;
+        }
+    }
+
+    /**
+     * Adds one raw absolute-angle sample from each module.
+     *
+     * <p>Offsets are computed from average raw angle to reduce noise effects.</p>
+     */
+    private void captureCalibrationSample() {
+        for (int i = 0; i < modules.length; i++) {
+            calibrationRawSumRad[i] += modules[i].getRawAbsoluteEncoderRad();
+        }
+        calibrationSampleCount++;
+    }
+
+    /**
+     * Pushes calibration telemetry values to Shuffleboard.
+     */
+    private void publishCalibrationTelemetry() {
+        calSampleCountEntry.setInteger(calibrationSampleCount);
+        double targetDeg = calTargetDegEntry.getDouble(0.0);
+        double targetRad = Math.toRadians(targetDeg);
+
+        for (int i = 0; i < modules.length; i++) {
+            double rawNowRad = modules[i].getRawAbsoluteEncoderRad();
+            double rawDeltaRad = 0.0;
+            if (previousRawInitialized[i]) {
+                rawDeltaRad = MathUtil.angleModulus(rawNowRad - previousRawAbsoluteRad[i]);
+            } else {
+                previousRawInitialized[i] = true;
+            }
+            previousRawAbsoluteRad[i] = rawNowRad;
+
+            double avgRawRad = calibrationSampleCount > 0
+                ? (calibrationRawSumRad[i] / calibrationSampleCount)
+                : rawNowRad;
+            double correctedRad = modules[i].getAbsoluteEncoderRad();
+            double turnAbsErrorRad = modules[i].normalizeTurningAngle(modules[i].getTurningPosition() - correctedRad);
+            double recommendedOffsetRad = calculateRecommendedOffsetRad(
+                avgRawRad,
+                targetRad,
+                modules[i].isAbsoluteEncoderReversed()
+            );
+            double turningApplied = modules[i].getTurningAppliedOutput();
+            double driveApplied = modules[i].getDriveAppliedOutput();
+            double turningVelocity = modules[i].getTurningVelocity();
+            double driveVelocity = modules[i].getDriveVelocity();
+            boolean absTurnSignMatch = signsMatchWithThreshold(rawDeltaRad, turningVelocity, Math.toRadians(0.08), 0.10);
+            boolean turnCmdSignMatch = signsMatchWithThreshold(turningApplied, turningVelocity, 0.05, 0.10);
+            boolean driveCmdSignMatch = signsMatchWithThreshold(driveApplied, driveVelocity, 0.05, 0.08);
+
+            rawNowDegEntries[i].setDouble(Math.toDegrees(rawNowRad));
+            rawAvgDegEntries[i].setDouble(Math.toDegrees(avgRawRad));
+            correctedDegEntries[i].setDouble(Math.toDegrees(correctedRad));
+            turnAbsErrorDegEntries[i].setDouble(Math.toDegrees(turnAbsErrorRad));
+            configOffsetRadEntries[i].setDouble(modules[i].getAbsoluteEncoderOffsetRad());
+            recommendedOffsetDegEntries[i].setDouble(Math.toDegrees(recommendedOffsetRad));
+            recommendedOffsetRadEntries[i].setDouble(recommendedOffsetRad);
+            absoluteReversedEntries[i].setBoolean(modules[i].isAbsoluteEncoderReversed());
+            turningMotorReversedEntries[i].setBoolean(modules[i].isTurningMotorReversed());
+            driveMotorReversedEntries[i].setBoolean(modules[i].isDriveMotorReversed());
+            rawDeltaDegEntries[i].setDouble(Math.toDegrees(rawDeltaRad));
+            turningAppliedEntries[i].setDouble(turningApplied);
+            driveAppliedEntries[i].setDouble(driveApplied);
+            turningVelocityEntries[i].setDouble(turningVelocity);
+            driveVelocityEntries[i].setDouble(driveVelocity);
+            absTurnSignMatchEntries[i].setBoolean(absTurnSignMatch);
+            turnAppliedSignMatchEntries[i].setBoolean(turnCmdSignMatch);
+            driveAppliedSignMatchEntries[i].setBoolean(driveCmdSignMatch);
+            channelEntries[i].setInteger(modules[i].getAbsoluteEncoderChannel());
+        }
+    }
+
+    /**
+     * Checks whether two signals have matching sign while both are above minimum thresholds.
+     *
+     * <p>Returns true when either signal is below threshold, so the dashboard does not report false
+     * mismatch when the module is stationary.</p>
+     *
+     * @param signalA first signal
+     * @param signalB second signal
+     * @param minAbsA minimum magnitude for signalA to be considered active
+     * @param minAbsB minimum magnitude for signalB to be considered active
+     * @return true if signs match or if inactive due to thresholds
+     */
+    private boolean signsMatchWithThreshold(double signalA, double signalB, double minAbsA, double minAbsB) {
+        if (Math.abs(signalA) < minAbsA || Math.abs(signalB) < minAbsB) {
+            return true;
+        }
+        return Math.signum(signalA) == Math.signum(signalB);
+    }
+
+    /**
+     * Computes the recommended absolute offset for one module.
+     *
+     * <p>Model used in module code:
+     * {@code corrected = sign * (raw - offset)}, where sign is {@code -1} if reversed and {@code +1}
+     * otherwise. Solving for offset gives:
+     * {@code offset = raw - desired * sign}.
+     * Result is wrapped to {@code [0, 2pi)} for stable storage in config.</p>
+     *
+     * @param measuredRawRad averaged raw module angle in radians
+     * @param desiredModuleAngleRad target mechanical angle in radians
+     * @param reversed whether this module absolute angle is reversed
+     * @return recommended offset in radians wrapped to {@code [0, 2pi)}
+     */
+    private double calculateRecommendedOffsetRad(
+        double measuredRawRad,
+        double desiredModuleAngleRad,
+        boolean reversed
+    ) {
+        double sign = reversed ? -1.0 : 1.0;
+        return MathUtil.inputModulus(measuredRawRad - (desiredModuleAngleRad * sign), 0.0, TWO_PI);
+    }
+
+    /**
+     * Stops all module motors.
+     */
+    public void stopModules() {
         frontLeft.stop();
         frontRight.stop();
         backLeft.stop();
         backRight.stop();
     }
 
-    //This sets the brake mode of the robot, if false, the brakes on the motor are off, if true the motor's brakes are on
-    public void setBrakeMode(boolean enabled){
+    /**
+     * Sets brake mode for all modules.
+     *
+     * @param enabled true for brake, false for coast
+     */
+    public void setBrakeMode(boolean enabled) {
         frontLeft.setBrakeMode(enabled);
         frontRight.setBrakeMode(enabled);
         backLeft.setBrakeMode(enabled);
         backRight.setBrakeMode(enabled);
     }
 
-    //Gets the SwerveModuleStates (explained before)
-    public void setModulesStates(SwerveModuleState[] desiredStates){
-        //Desaturated scales all wheel speeds proportional so that the fastest wheel is the max speed
-        //This is to limit the kinematics producing wheelSpeeds higher than the physical speed
+    /**
+     * Applies desired module states after desaturating to physical max speed.
+     *
+     * @param desiredStates ordered as [frontLeft, frontRight, backLeft, backRight]
+     */
+    public void setModulesStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.physicalMaxSpeedMetersPerSecond);
-        //Set the desired States for each by reducing it by a scaled factor
         frontLeft.setDesiredState(desiredStates[0]);
         frontRight.setDesiredState(desiredStates[1]);
         backLeft.setDesiredState(desiredStates[2]);
         backRight.setDesiredState(desiredStates[3]);
     }
 
-    public double getFrontLeftAbsoluteEncoderRad(){
+    /**
+     * @return front-left corrected absolute steering angle in radians
+     */
+    public double getFrontLeftAbsoluteEncoderRad() {
         return frontLeft.getAbsoluteEncoderRad();
     }
 
-    public double getFrontRightAbsoluteEncoderRad(){
+    /**
+     * @return front-right corrected absolute steering angle in radians
+     */
+    public double getFrontRightAbsoluteEncoderRad() {
         return frontRight.getAbsoluteEncoderRad();
     }
 
-    public double getBackRightAbsoluteEncoderRad(){
+    /**
+     * @return back-right corrected absolute steering angle in radians
+     */
+    public double getBackRightAbsoluteEncoderRad() {
         return backRight.getAbsoluteEncoderRad();
     }
 
-    public double getBackLeftAbsoluteEncoderRad(){
+    /**
+     * @return back-left corrected absolute steering angle in radians
+     */
+    public double getBackLeftAbsoluteEncoderRad() {
         return backLeft.getAbsoluteEncoderRad();
     }
 }

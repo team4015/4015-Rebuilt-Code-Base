@@ -1,12 +1,3 @@
-/*************************************************************************************************
- @Name: Gursahaj Chawla
- @Date: 2/10/2026
- @File: ConfigLoader.java
- @Description: This class is used to load all the configurations from the JSON file from the
- deploy folder then is used in the Constants.java. This program will read the JSON file and
- converts the Java object and validates all the fields present
- ***********************************************************************************************/
-
 package frc.robot;
 
 import java.io.File;
@@ -17,27 +8,38 @@ import com.google.gson.Gson;
 
 import edu.wpi.first.wpilibj.Filesystem;
 
-public class ConfigLoader {
-    public static DriveConfig loadDriveConfig() {
-        //this method (Filesystem) will return where the robot code is located and tells which JSON file to read from
-        try {
-            File file = new File(
-                Filesystem.getDeployDirectory(),
-                "driveConfig.json"
-            );
+/**
+ * Utility for loading and validating drivetrain configuration from deploy JSON.
+ */
+public final class ConfigLoader {
+    private ConfigLoader() {
+    }
 
-            //This will also automatically close the file reader  and convert the JSON file into DriveConfig objects
+    /**
+     * Loads {@code driveConfig.json} from the robot deploy directory.
+     *
+     * @return parsed and validated drive configuration
+     * @throws RuntimeException if file read/parse/validation fails
+     */
+    public static DriveConfig loadDriveConfig() {
+        try {
+            File file = new File(Filesystem.getDeployDirectory(), "driveConfig.json");
             try (Reader reader = new FileReader(file)) {
                 DriveConfig config = new Gson().fromJson(reader, DriveConfig.class);
                 validateConfig(config);
                 return config;
             }
         } catch (Exception e) {
-            throw new RuntimeException("Failed to load drive config", e); //tell if it couldn't load the configurations
+            throw new RuntimeException("Failed to load drive config", e);
         }
     }
 
-    //This method checks each critical  section of the JSON is present . Throws and exception if anything is missing
+    /**
+     * Validates required sections of the drive config before constants are consumed.
+     *
+     * @param config parsed config object
+     * @throws IllegalArgumentException if any required section is missing
+     */
     private static void validateConfig(DriveConfig config) {
         if (config == null
             || config.module == null
