@@ -15,6 +15,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
@@ -46,10 +47,14 @@ public class SwerveCommands extends Command{
 
     @Override
     public void execute(){
+        double rawXSpeed = xSpeedSupplier.getAsDouble();
+        double rawYSpeed = ySpeedSupplier.getAsDouble();
+        double rawTurningSpeed = turningSpeedSupplier.getAsDouble();
+
         //set the speeds to the Suppliers and applies the deadbands to the joystick for all the components
-        double xSpeed = MathUtil.applyDeadband(xSpeedSupplier.getAsDouble(), Constants.OIConstants.deadband);
-        double ySpeed = MathUtil.applyDeadband(ySpeedSupplier.getAsDouble(), Constants.OIConstants.deadband);
-        double turningSpeed = MathUtil.applyDeadband(turningSpeedSupplier.getAsDouble(), Constants.OIConstants.deadband);
+        double xSpeed = MathUtil.applyDeadband(rawXSpeed, Constants.OIConstants.deadband);
+        double ySpeed = MathUtil.applyDeadband(rawYSpeed, Constants.OIConstants.deadband);
+        double turningSpeed = MathUtil.applyDeadband(rawTurningSpeed, Constants.OIConstants.deadband);
 
         //reinitialize the variable with the SlewRateLimiter and also adding the max speed of a robot in teleoperidic
         xSpeed = xLimiter.calculate(xSpeed) * Constants.DriveConstants.teleDriveMaxSpeedMetersPerSecond;
@@ -63,6 +68,11 @@ public class SwerveCommands extends Command{
         //Set the moduleStates for each of the swerveModules and the drive Kinematics
         SwerveModuleState[] moduleStates = DriveConstants.driveKinematics.toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setModulesStates(moduleStates);
+
+        SmartDashboard.putNumber("OI Raw X", rawXSpeed);
+        SmartDashboard.putNumber("OI Raw Y", rawYSpeed);
+        SmartDashboard.putNumber("OI Raw Rot", rawTurningSpeed);
+        SmartDashboard.putBoolean("OI Field Oriented", fieldOrientedSupplier.getAsBoolean());
     }
 
     //when the program ends all the swerveModules stop

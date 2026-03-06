@@ -7,35 +7,35 @@
     "turningKP": 0.5
   },
   "dimensions": {
-    "trackWidthInches": 21.875,
-    "wheelBaseInches": 21.875
+    "trackWidthInches": 21.75,
+    "wheelBaseInches": 21.75
   },
   "motors": {
     "drive": {
-      "frontLeft": 3,
-      "frontRight": 2,
+      "backRight": 1,
       "backLeft": 4,
-      "backRight": 1
+      "frontRight": 2,
+      "frontLeft": 3
     },
     "turning": {
-      "frontLeft": 7,
-      "frontRight": 6,
+      "backRight": 5,
       "backLeft": 8,
-      "backRight": 5
+      "frontRight": 6,
+      "frontLeft": 7
     }
   },
   "encoders": {
     "absolutePorts": {
-      "frontLeft": 3,
-      "frontRight": 2,
-      "backLeft": 4,
-      "backRight": 1
+      "backRight": 2,
+      "backLeft": 1,
+      "frontRight": 0,
+      "frontLeft": 3
     },
     "absoluteOffsetsRad": {
-      "frontLeft": -2.185923042296738,
-      "frontRight": 2.495786486321376,
-      "backLeft": -2.405282272501996,
-      "backRight": -2.983592970315861
+      "frontLeft": 5.621990633403318,
+      "frontRight": 5.374987724082476,
+      "backLeft": 4.043554387013977,
+      "backRight": 4.834212827346017074
     },
     "driveReversed": {
       "frontLeft": false,
@@ -44,16 +44,16 @@
       "backRight": false
     },
     "turningReversed": {
-      "frontLeft": true,
-      "frontRight": true,
-      "backLeft": true,
-      "backRight": true
+      "frontLeft": false,
+      "frontRight": false,
+      "backLeft": false,
+      "backRight": false
     },
     "absoluteReversed": {
-      "frontLeft": true,
-      "frontRight": true,
-      "backLeft": true,
-      "backRight": true
+      "frontLeft": false,
+      "frontRight": false,
+      "backLeft": false,
+      "backRight": false
     }
   },
   "limits": {

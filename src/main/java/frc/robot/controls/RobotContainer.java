@@ -20,7 +20,8 @@ public class RobotContainer {
             () -> -driverJoystick.getRawAxis(OIConstants.driverYAxis),
             () -> driverJoystick.getRawAxis(OIConstants.driverXAxis),
             () -> driverJoystick.getRawAxis(OIConstants.driverRotAxis),
-            () -> !driverJoystick.getRawButton(OIConstants.driverFieldOrientedButtonIdx)
+            // Hold button to enable field-oriented mode; default is robot-oriented.
+            () -> driverJoystick.getRawButton(OIConstants.driverFieldOrientedButtonIdx)
         )
       );
 

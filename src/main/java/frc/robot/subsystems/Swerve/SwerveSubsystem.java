@@ -103,7 +103,8 @@ public class SwerveSubsystem extends SubsystemBase{
 
     //Get the WPILid normalized angle from the heading angle
     public Rotation2d getRotation2d(){
-        return Rotation2d.fromDegrees(getHeading());
+        // NavX yaw sign is opposite of WPILib's CCW-positive convention.
+        return Rotation2d.fromDegrees(-getHeading());
     }
 
     //gets the positions of the robot in (x,y,z)

@@ -179,15 +179,18 @@ public class SwerveModule {
     //The commands are the drive motor telling how fast to roll and the turning motor (where to point)
     //Get the SwerveModuleState state to see the angle and rotation of the swerve module
     public void setDesiredState(SwerveModuleState state){
+        double speed = state.speedMetersPerSecond;
         //This deadband won't twitch when stopped to remove the jitter, wheel hunting and early exits
-        if(Math.abs(state.speedMetersPerSecond) < 0.001){
-            stop();
+        if(Math.abs(speed) < 0.05){
+            driveMotor.set(0);
+            turningMotor.set(turningPIDcontroller.calculate(getTurningPosition(), getTurningPosition()));
             return;
         }
 
         //this will optimize the state of the motor to remove unnecessary wheel rotation (over rotating)
         //e.g instead of rotating 340 degrees it will just rotate  -20 degrees
-        state = SwerveModuleState.optimize(state, getState().angle);
+        //state = SwerveModuleState.optimize(state, getState().angle); //comment out if it doesn't work
+        state.optimize(getState().angle);
         //This will set the speed of the drive motor from -1.0 to 1.0
         //desired speed/max speed = motor output scalar value
         driveMotor.set(state.speedMetersPerSecond / Constants.DriveConstants.physicalMaxSpeedMetersPerSecond);

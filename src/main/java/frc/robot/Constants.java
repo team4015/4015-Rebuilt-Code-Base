@@ -4,7 +4,7 @@
 @File: Constants.java
 @Description: This static class has all the relevant constants and calculations for the Code Base
 Each static final class will have constants relevant for each subsystem. All constant values are
-stored in the JSON files via the deploy folder using the ConfigLoader class
+stored in the JSON files via the deployment folder using the ConfigLoader class
 ***********************************************************************************************/
 package frc.robot;
 
