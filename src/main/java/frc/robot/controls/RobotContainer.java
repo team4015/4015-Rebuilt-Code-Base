@@ -8,12 +8,14 @@ import frc.robot.Constants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.SwerveCommands;
 import frc.robot.subsystems.Swerve.SwerveSubsystem;
+import frc.robot.subsystems.Vision.LimelightSubsystem;
 
 /**
  * Central wiring class for subsystems, default commands, and button bindings.
  */
 public class RobotContainer {
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+    private final LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
     private final Joystick driverJoystick = new Joystick(Constants.OIConstants.driverControllerPort);
 
     /**
@@ -27,7 +29,9 @@ public class RobotContainer {
                 () -> driverJoystick.getRawAxis(OIConstants.driverXAxis),
                 () -> driverJoystick.getRawAxis(OIConstants.driverRotAxis),
                 // Hold button to enable field-oriented mode; default is robot-oriented.
-                () -> driverJoystick.getRawButton(OIConstants.driverFieldOrientedButtonIdx)
+                () -> driverJoystick.getRawButton(OIConstants.driverFieldOrientedButtonIdx),
+                () -> driverJoystick.getRawButton(OIConstants.aimAtTagButtonIdx),
+                limelightSubsystem
             )
         );
 
@@ -62,6 +66,13 @@ public class RobotContainer {
      */
     public SwerveSubsystem getSwerveSubsystem() {
         return swerveSubsystem;
+    }
+
+    /**
+     * @return Limelight subsystem
+     */
+    public LimelightSubsystem getLimelightSubsystem() {
+        return limelightSubsystem;
     }
 
     /**

@@ -5,6 +5,7 @@ import com.studica.frc.AHRS;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -450,6 +451,32 @@ public class SwerveSubsystem extends SubsystemBase {
         frontRight.setDesiredState(desiredStates[1]);
         backLeft.setDesiredState(desiredStates[2]);
         backRight.setDesiredState(desiredStates[3]);
+    }
+
+    /**
+     * Drives the robot using either field-relative or robot-relative chassis commands.
+     *
+     * @param xSpeedMetersPerSecond forward speed command
+     * @param ySpeedMetersPerSecond left speed command
+     * @param omegaRadiansPerSecond counterclockwise angular speed command
+     * @param fieldRelative true to interpret x/y in field frame
+     */
+    public void drive(
+        double xSpeedMetersPerSecond,
+        double ySpeedMetersPerSecond,
+        double omegaRadiansPerSecond,
+        boolean fieldRelative
+    ) {
+        ChassisSpeeds chassisSpeeds = fieldRelative
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(
+                xSpeedMetersPerSecond,
+                ySpeedMetersPerSecond,
+                omegaRadiansPerSecond,
+                getRotation2d()
+            )
+            : new ChassisSpeeds(xSpeedMetersPerSecond, ySpeedMetersPerSecond, omegaRadiansPerSecond);
+
+        setModulesStates(DriveConstants.driveKinematics.toSwerveModuleStates(chassisSpeeds));
     }
 
     /**

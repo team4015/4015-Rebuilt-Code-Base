@@ -26,11 +26,30 @@ public final class ConfigLoader {
             File file = new File(Filesystem.getDeployDirectory(), "driveConfig.json");
             try (Reader reader = new FileReader(file)) {
                 DriveConfig config = new Gson().fromJson(reader, DriveConfig.class);
-                validateConfig(config);
+                validateDriveConfig(config);
                 return config;
             }
         } catch (Exception e) {
             throw new RuntimeException("Failed to load drive config", e);
+        }
+    }
+
+    /**
+     * Loads {@code visionConfig.json} from the robot deploy directory.
+     *
+     * @return parsed and validated vision configuration
+     * @throws RuntimeException if file read/parse/validation fails
+     */
+    public static VisionConfig loadVisionConfig() {
+        try {
+            File file = new File(Filesystem.getDeployDirectory(), "visionConfig.json");
+            try (Reader reader = new FileReader(file)) {
+                VisionConfig config = new Gson().fromJson(reader, VisionConfig.class);
+                validateVisionConfig(config);
+                return config;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load vision config", e);
         }
     }
 
@@ -40,7 +59,7 @@ public final class ConfigLoader {
      * @param config parsed config object
      * @throws IllegalArgumentException if any required section is missing
      */
-    private static void validateConfig(DriveConfig config) {
+    private static void validateDriveConfig(DriveConfig config) {
         if (config == null
             || config.module == null
             || config.dimensions == null
@@ -55,6 +74,21 @@ public final class ConfigLoader {
             || config.encoders.absoluteReversed == null
             || config.limits == null) {
             throw new IllegalArgumentException("driveConfig.json is missing one or more required sections");
+        }
+    }
+
+    /**
+     * Validates required sections of the vision config.
+     *
+     * @param config parsed config object
+     * @throws IllegalArgumentException if any required section is missing
+     */
+    private static void validateVisionConfig(VisionConfig config) {
+        if (config == null
+            || config.limelight == null
+            || config.limelight.name == null
+            || config.aim == null) {
+            throw new IllegalArgumentException("visionConfig.json is missing one or more required sections");
         }
     }
 }

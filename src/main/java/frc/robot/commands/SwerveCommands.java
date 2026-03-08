@@ -5,13 +5,11 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Swerve.SwerveSubsystem;
+import frc.robot.subsystems.Vision.LimelightSubsystem;
 
 /**
  * Default teleop drive command for the swerve subsystem.
@@ -25,6 +23,8 @@ public class SwerveCommands extends Command {
     private final DoubleSupplier ySpeedSupplier;
     private final DoubleSupplier turningSpeedSupplier;
     private final BooleanSupplier fieldOrientedSupplier;
+    private final BooleanSupplier autoAimSupplier;
+    private final LimelightSubsystem limelightSubsystem;
 
     // Rate limiters smooth operator input and reduce jerk.
     private final SlewRateLimiter xLimiter = new SlewRateLimiter(5);
@@ -39,19 +39,25 @@ public class SwerveCommands extends Command {
      * @param ySpeedSupplier supplier for left/right joystick input
      * @param turningSpeedSupplier supplier for rotational joystick input
      * @param fieldOrientdSupplier supplier for field-oriented enable state
+     * @param autoAimSupplier supplier for whether Limelight auto-aim is enabled
+     * @param limelightSubsystem Limelight interface used for AprilTag aiming and distance
      */
     public SwerveCommands(
         SwerveSubsystem swerveSubsystem,
         DoubleSupplier xSpeedSupplier,
         DoubleSupplier ySpeedSupplier,
         DoubleSupplier turningSpeedSupplier,
-        BooleanSupplier fieldOrientdSupplier
+        BooleanSupplier fieldOrientdSupplier,
+        BooleanSupplier autoAimSupplier,
+        LimelightSubsystem limelightSubsystem
     ) {
         this.swerveSubsystem = swerveSubsystem;
         this.xSpeedSupplier = xSpeedSupplier;
         this.ySpeedSupplier = ySpeedSupplier;
         this.turningSpeedSupplier = turningSpeedSupplier;
         this.fieldOrientedSupplier = fieldOrientdSupplier;
+        this.autoAimSupplier = autoAimSupplier;
+        this.limelightSubsystem = limelightSubsystem;
         addRequirements(swerveSubsystem);
     }
 
@@ -75,17 +81,21 @@ public class SwerveCommands extends Command {
         turningSpeed = turningLimiter.calculate(turningSpeed)
             * Constants.DriveConstants.teleDriveMaxAngularSpeedRadiansPerSecond;
 
-        ChassisSpeeds chassisSpeeds = fieldOrientedSupplier.getAsBoolean()
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d())
-            : new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
+        boolean autoAimEnabled = autoAimSupplier.getAsBoolean();
+        boolean hasVisionTarget = limelightSubsystem.hasValidTarget();
+        if (autoAimEnabled && hasVisionTarget) {
+            turningSpeed = limelightSubsystem.getAimAngularSpeedRadPerSec();
+        }
 
-        SwerveModuleState[] moduleStates = DriveConstants.driveKinematics.toSwerveModuleStates(chassisSpeeds);
-        swerveSubsystem.setModulesStates(moduleStates);
+        swerveSubsystem.drive(xSpeed, ySpeed, turningSpeed, fieldOrientedSupplier.getAsBoolean());
 
         SmartDashboard.putNumber("OI Raw X", rawXSpeed);
         SmartDashboard.putNumber("OI Raw Y", rawYSpeed);
         SmartDashboard.putNumber("OI Raw Rot", rawTurningSpeed);
         SmartDashboard.putBoolean("OI Field Oriented", fieldOrientedSupplier.getAsBoolean());
+        SmartDashboard.putBoolean("OI Auto Aim Enabled", autoAimEnabled);
+        SmartDashboard.putBoolean("OI Auto Aim Active", autoAimEnabled && hasVisionTarget);
+        SmartDashboard.putNumber("OI Auto Aim Omega", turningSpeed);
     }
 
     /**

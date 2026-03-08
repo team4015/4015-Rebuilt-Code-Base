@@ -10,6 +10,8 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
     /** Loaded drivetrain configuration from {@code src/main/deploy/driveConfig.json}. */
     public static final DriveConfig DRIVE = ConfigLoader.loadDriveConfig();
+    /** Loaded vision configuration from {@code src/main/deploy/visionConfig.json}. */
+    public static final VisionConfig VISION = ConfigLoader.loadVisionConfig();
 
     private Constants() {
     }
@@ -157,11 +159,45 @@ public final class Constants {
         public static final int driverFieldOrientedButtonIdx = 1;
         /** Button index used to temporarily unlock/coast swerve modules while held. */
         public static final int driveUnlockSwerveButtonIdx = 2;
+        /** Button index used to hold automatic AprilTag aiming. */
+        public static final int aimAtTagButtonIdx = 3;
 
         /** Joystick deadband used to suppress small stick noise/drift. */
         public static final double deadband = 0.05;
 
         private OIConstants() {
+        }
+    }
+
+    /**
+     * Limelight network table and camera mounting constants.
+     */
+    public static final class LimelightConstants {
+        /** NetworkTables name of Limelight 2. */
+        public static final String limelightName = VISION.limelight.name;
+        /** Camera lens height from floor (meters). */
+        public static final double lensHeightMeters = Units.inchesToMeters(VISION.limelight.lensHeightInches);
+        /** Upward camera mount angle relative to floor (degrees). */
+        public static final double mountAngleDegrees = VISION.limelight.mountAngleDegrees;
+        /** Assumed AprilTag center height for trig fallback (meters). */
+        public static final double defaultTagHeightMeters = Units.inchesToMeters(VISION.limelight.defaultTagHeightInches);
+
+        private LimelightConstants() {
+        }
+    }
+
+    /**
+     * Vision-assisted aiming control constants.
+     */
+    public static final class VisionConstants {
+        /** Proportional gain converting tx error (deg) to angular speed (rad/s). */
+        public static final double aimKp = VISION.aim.kp;
+        /** Max angular speed command while aiming (rad/s). */
+        public static final double aimMaxAngularSpeedRadPerSec = VISION.aim.maxAngularSpeedRadPerSec;
+        /** Error threshold considered "aimed" (deg). */
+        public static final double aimToleranceDegrees = VISION.aim.toleranceDegrees;
+
+        private VisionConstants() {
         }
     }
 }
