@@ -8,47 +8,55 @@ import frc.robot.Constants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.SwerveCommands;
 import frc.robot.subsystems.Swerve.SwerveSubsystem;
+import frc.robot.subsystems.Vision.LimelightSubsystem;
 
 public class RobotContainer {
-  private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-  private final Joystick driverJoystick = new Joystick(Constants.OIConstants.driverControllerPort);
+    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+    private final LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
+    private final Joystick driverJoystick = new Joystick(Constants.OIConstants.driverControllerPort);
 
-  public RobotContainer(){
-    swerveSubsystem.setDefaultCommand(
-      new SwerveCommands(
-            swerveSubsystem,
-            () -> -driverJoystick.getRawAxis(OIConstants.driverYAxis),
-            () -> driverJoystick.getRawAxis(OIConstants.driverXAxis),
-            () -> driverJoystick.getRawAxis(OIConstants.driverRotAxis),
-            () -> !driverJoystick.getRawButton(OIConstants.driverFieldOrientedButtonIdx)
-        )
-      );
+    public RobotContainer() {
+        swerveSubsystem.setDefaultCommand(
+            new SwerveCommands(
+                swerveSubsystem,
+                () -> -driverJoystick.getRawAxis(OIConstants.driverYAxis),
+                () -> driverJoystick.getRawAxis(OIConstants.driverXAxis),
+                () -> driverJoystick.getRawAxis(OIConstants.driverRotAxis),
+                () -> driverJoystick.getRawButton(OIConstants.driverFieldOrientedButtonIdx),
+                () -> driverJoystick.getRawButton(OIConstants.aimAtTagButtonIdx),
+                limelightSubsystem
+            )
+        );
 
-      configureBindings();
-  }
+        configureBindings();
+    }
 
-  private void configureBindings(){
-      new JoystickButton(driverJoystick, OIConstants.driveUnlockSwerveButtonIdx)
-              .whileTrue(
-                      Commands.startEnd(
-                              () -> {
-                                  swerveSubsystem.setBrakeMode(false);
-                                  swerveSubsystem.stopModules();
-                              },
-                              () -> {
-                                  swerveSubsystem.setBrakeMode(true);
-                                  swerveSubsystem.stopModules();
-                              },
-                              swerveSubsystem
-                      )
-              );
-  }
+    private void configureBindings() {
+        new JoystickButton(driverJoystick, OIConstants.driveUnlockSwerveButtonIdx)
+            .whileTrue(
+                Commands.startEnd(
+                    () -> {
+                        swerveSubsystem.setBrakeMode(false);
+                        swerveSubsystem.stopModules();
+                    },
+                    () -> {
+                        swerveSubsystem.setBrakeMode(true);
+                        swerveSubsystem.stopModules();
+                    },
+                    swerveSubsystem
+                )
+            );
+    }
 
-  public SwerveSubsystem getSwerveSubsystem(){
-      return swerveSubsystem;
-  }
+    public SwerveSubsystem getSwerveSubsystem() {
+        return swerveSubsystem;
+    }
 
-  public Command getAutonomousCommand() {
-    return null;
-  }
+    public LimelightSubsystem getLimelightSubsystem() {
+        return limelightSubsystem;
+    }
+
+    public Command getAutonomousCommand() {
+        return null;
+    }
 }

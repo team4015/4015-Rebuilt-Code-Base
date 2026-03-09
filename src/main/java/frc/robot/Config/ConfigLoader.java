@@ -1,12 +1,3 @@
-/*************************************************************************************************
- @Name: Gursahaj Chawla
- @Date: 2/10/2026
- @File: ConfigLoader.java
- @Description: This class is used to load all the configurations from the JSON file from the
- deploy folder then is used in the Constants.java. This program will read the JSON file and
- converts the Java object and validates all the fields present
- ***********************************************************************************************/
-
 package frc.robot.Config;
 
 import java.io.File;
@@ -16,65 +7,61 @@ import java.io.Reader;
 import com.google.gson.Gson;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import frc.robot.VisionConfig;
 
-public class ConfigLoader {
+public final class ConfigLoader {
+    private ConfigLoader() {
+    }
+
     public static DriveConfig loadDriveConfig() {
-        //this method (Filesystem) will return where the robot code is located and tells which JSON file to read from
         try {
-            File file = new File(
-                Filesystem.getDeployDirectory(),
-                "driveConfig.json"
-            );
-
-            //This will also automatically close the file reader  and convert the JSON file into DriveConfig objects
+            File file = new File(Filesystem.getDeployDirectory(), "driveConfig.json");
             try (Reader reader = new FileReader(file)) {
                 DriveConfig config = new Gson().fromJson(reader, DriveConfig.class);
-                validateConfig(config);
+                validateDriveConfig(config);
                 return config;
             }
         } catch (Exception e) {
-            throw new RuntimeException("Failed to load drive config", e); //tell if it couldn't load the configurations
+            throw new RuntimeException("Failed to load drive config", e);
         }
     }
 
-    public static IntakeConfig loadIntakeConfig(){
-        //this method (Filesystem) will return where the robot code is located and tells which JSON file to read from
+    public static VisionConfig loadVisionConfig() {
         try {
-            File file = new File(
-                    Filesystem.getDeployDirectory(),
-                    "intakeConfig.json"
-            );
-
-            //This will also automatically close the file reader  and convert the JSON file into DriveConfig objects
+            File file = new File(Filesystem.getDeployDirectory(), "visionConfig.json");
             try (Reader reader = new FileReader(file)) {
-                IntakeConfig config = new Gson().fromJson(reader, IntakeConfig.class);
+                VisionConfig config = new Gson().fromJson(reader, VisionConfig.class);
+                validateVisionConfig(config);
                 return config;
             }
         } catch (Exception e) {
-            throw new RuntimeException("Failed to load drive config", e); //tell if it couldn't load the configurations
+            throw new RuntimeException("Failed to load vision config", e);
         }
     }
 
-    public static ExtendableHopperConfig loadExtendableHopperConfig(){
-        //this method (Filesystem) will return where the robot code is located and tells which JSON file to read from
+    public static IntakeConfig loadIntakeConfig() {
         try {
-            File file = new File(
-                    Filesystem.getDeployDirectory(),
-                    "extendableHopper.json"
-            );
-
-            //This will also automatically close the file reader  and convert the JSON file into DriveConfig objects
+            File file = new File(Filesystem.getDeployDirectory(), "intakeConfig.json");
             try (Reader reader = new FileReader(file)) {
-                ExtendableHopperConfig config = new Gson().fromJson(reader, ExtendableHopperConfig.class);
-                return config;
+                return new Gson().fromJson(reader, IntakeConfig.class);
             }
         } catch (Exception e) {
-            throw new RuntimeException("Failed to load drive config", e); //tell if it couldn't load the configurations
+            throw new RuntimeException("Failed to load intake config", e);
         }
     }
 
-    //This method checks each critical  section of the JSON is present . Throws and exception if anything is missing
-    private static void validateConfig(DriveConfig config) {
+    public static ExtendableHopperConfig loadExtendableHopperConfig() {
+        try {
+            File file = new File(Filesystem.getDeployDirectory(), "extendableHopper.json");
+            try (Reader reader = new FileReader(file)) {
+                return new Gson().fromJson(reader, ExtendableHopperConfig.class);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load extendable hopper config", e);
+        }
+    }
+
+    private static void validateDriveConfig(DriveConfig config) {
         if (config == null
             || config.module == null
             || config.dimensions == null
@@ -89,6 +76,40 @@ public class ConfigLoader {
             || config.encoders.absoluteReversed == null
             || config.limits == null) {
             throw new IllegalArgumentException("driveConfig.json is missing one or more required sections");
+        }
+
+        requirePositive(config.module.wheelDiameterInches, "module.wheelDiameterInches");
+        requirePositive(config.module.driveGearRatio, "module.driveGearRatio");
+        requirePositive(config.module.turningGearRatio, "module.turningGearRatio");
+        requireNonNegative(config.module.turningKP, "module.turningKP");
+        requirePositive(config.dimensions.trackWidthInches, "dimensions.trackWidthInches");
+        requirePositive(config.dimensions.wheelBaseInches, "dimensions.wheelBaseInches");
+        requirePositive(config.limits.maxSpeedMps, "limits.maxSpeedMps");
+        requirePositive(config.limits.maxAngularSpeedRadPerSec, "limits.maxAngularSpeedRadPerSec");
+
+        if (config.limits.teleopSpeedScale < 0.0 || config.limits.teleopSpeedScale > 1.0) {
+            throw new IllegalArgumentException("limits.teleopSpeedScale must be in the range [0, 1]");
+        }
+    }
+
+    private static void validateVisionConfig(VisionConfig config) {
+        if (config == null
+            || config.limelight == null
+            || config.limelight.name == null
+            || config.aim == null) {
+            throw new IllegalArgumentException("visionConfig.json is missing one or more required sections");
+        }
+    }
+
+    private static void requirePositive(double value, String fieldName) {
+        if (!Double.isFinite(value) || value <= 0.0) {
+            throw new IllegalArgumentException(fieldName + " must be a finite positive number");
+        }
+    }
+
+    private static void requireNonNegative(double value, String fieldName) {
+        if (!Double.isFinite(value) || value < 0.0) {
+            throw new IllegalArgumentException(fieldName + " must be a finite non-negative number");
         }
     }
 }
