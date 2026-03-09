@@ -7,6 +7,7 @@ import frc.robot.Config.ConfigLoader;
 import frc.robot.Config.DriveConfig;
 import frc.robot.Config.ExtendableHopperConfig;
 import frc.robot.Config.IntakeConfig;
+import frc.robot.Config.VisionConfig;
 
 public final class Constants {
     public static final DriveConfig DRIVE = ConfigLoader.loadDriveConfig();
@@ -95,6 +96,7 @@ public final class Constants {
         public static final double intakeDValue = INTAKE.pid.intake.d;
         public static final int intakeMotorPort = INTAKE.port.intake.system;
         public static final double intakeGearRatio = 1.0 / INTAKE.gearRatio.intake;
+        public static final boolean intakeMotorReversed = INTAKE.settings.intakeMotorReversed;
 
         private IntakeConstants() {
         }
@@ -108,6 +110,8 @@ public final class Constants {
         public static final int extendableHopperMotorPort = EXTENDABLE_HOPPER.port.extendableHopper.system;
         public static final int frontLimitSwitch = EXTENDABLE_HOPPER.port.frontSwitch.limitSwitch;
         public static final int backLimitSwitch = EXTENDABLE_HOPPER.port.backSwitch.limitSwitch;
+        public static final double matchStartForwardSpeed = EXTENDABLE_HOPPER.settings.matchStartForwardSpeed;
+        public static final double manualSpeed = EXTENDABLE_HOPPER.settings.manualSpeed;
         public static boolean reverseExtendableHopper = false;
         public static double extendableHopperSpeed = 0.0;
 
@@ -116,18 +120,21 @@ public final class Constants {
     }
 
     public static final class OIConstants {
-        public static final int driverControllerPort = 0;
-        public static final int driverYAxis = 1;
-        public static final int driverXAxis = 0;
-        public static final int driverRotAxis = 4;
-        public static final int driverFieldOrientedButtonIdx = 1;
-        public static final int driveUnlockSwerveButtonIdx = 2;
-        public static final int aimAtTagButtonIdx = 3;
-        public static final int calibrateAbsoluteEncoderButtonIdx = 3;
-        public static final int aprilTagAlignButtonIdx = 4;
-        public static final int intakePort = 10;
-        public static final int extendableHopperPort = 11;
-        public static final double deadband = 0.05;
+        public static final int driverControllerPort = DRIVE.oi.driverControllerPort;
+        public static final int driverYAxis = DRIVE.oi.driverYAxis;
+        public static final int driverXAxis = DRIVE.oi.driverXAxis;
+        public static final int driverRotAxis = DRIVE.oi.driverRotAxis;
+        public static final int driverLeftTriggerAxis = DRIVE.oi.driverLeftTriggerAxis;
+        public static final int driverRightTriggerAxis = DRIVE.oi.driverRightTriggerAxis;
+        public static final int driverFieldOrientedButtonIdx = DRIVE.oi.driverFieldOrientedButtonIdx;
+        public static final int driveUnlockSwerveButtonIdx = DRIVE.oi.driveUnlockSwerveButtonIdx;
+        public static final int aimAtTagButtonIdx = DRIVE.oi.aimAtTagButtonIdx;
+        public static final int calibrateAbsoluteEncoderButtonIdx = DRIVE.oi.calibrateAbsoluteEncoderButtonIdx;
+        public static final int aprilTagAlignButtonIdx = DRIVE.oi.aprilTagAlignButtonIdx;
+        public static final double triggerPressedThreshold = DRIVE.oi.triggerPressedThreshold;
+        public static final int intakePort = DRIVE.oi.intakePort;
+        public static final int extendableHopperPort = DRIVE.oi.extendableHopperPort;
+        public static final double deadband = DRIVE.oi.deadband;
 
         private OIConstants() {
         }

@@ -1,21 +1,20 @@
 package frc.robot.Config;
 
+import com.google.gson.annotations.SerializedName;
+
 public class IntakeConfig {
     public GearRatio gearRatio;
+    @SerializedName(value = "port", alternate = {"ports"})
     public Port port;
     public PID pid;
+    public Settings settings;
 
     public static class GearRatio{
         public double intake;
-        public double extendableHopper;
     }
 
     public static class Port{
         public Motors intake;
-        public Motors extendableHopper;
-
-        public DigitalInput frontSwitch;
-        public DigitalInput backSwitch;
     }
 
     public static class Motors{
@@ -28,12 +27,15 @@ public class IntakeConfig {
 
     public static class PID{
         public PIDValue intake;
-        public PIDValue extendableHopper;
     }
 
     public static class PIDValue{
         public double p;
         public double i;
         public double d;
+    }
+
+    public static class Settings {
+        public boolean intakeMotorReversed;
     }
 }

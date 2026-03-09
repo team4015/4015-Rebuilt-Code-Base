@@ -4,14 +4,18 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.ExtendableHopperCommand;
 import frc.robot.commands.SwerveCommands;
+import frc.robot.subsystems.ExtendableHopperSubsystem;
 import frc.robot.subsystems.Swerve.SwerveSubsystem;
 import frc.robot.subsystems.Vision.LimelightSubsystem;
 
 public class RobotContainer {
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+    private final ExtendableHopperSubsystem extendableHopperSubsystem = new ExtendableHopperSubsystem();
     private final LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
     private final Joystick driverJoystick = new Joystick(Constants.OIConstants.driverControllerPort);
 
@@ -32,6 +36,12 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        new Trigger(() -> driverJoystick.getRawAxis(OIConstants.driverRightTriggerAxis) > OIConstants.triggerPressedThreshold)
+            .whileTrue(new ExtendableHopperCommand(extendableHopperSubsystem, false));
+
+        new Trigger(() -> driverJoystick.getRawAxis(OIConstants.driverLeftTriggerAxis) > OIConstants.triggerPressedThreshold)
+            .whileTrue(new ExtendableHopperCommand(extendableHopperSubsystem, true));
+
         new JoystickButton(driverJoystick, OIConstants.driveUnlockSwerveButtonIdx)
             .whileTrue(
                 Commands.startEnd(
@@ -54,6 +64,10 @@ public class RobotContainer {
 
     public LimelightSubsystem getLimelightSubsystem() {
         return limelightSubsystem;
+    }
+
+    public ExtendableHopperSubsystem getExtendableHopperSubsystem() {
+        return extendableHopperSubsystem;
     }
 
     public Command getAutonomousCommand() {

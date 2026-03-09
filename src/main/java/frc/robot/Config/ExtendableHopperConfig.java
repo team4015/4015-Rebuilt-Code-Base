@@ -1,9 +1,13 @@
 package frc.robot.Config;
 
+import com.google.gson.annotations.SerializedName;
+
 public class ExtendableHopperConfig {
-    public IntakeConfig.GearRatio gearRatio;
-    public IntakeConfig.Port port;
-    public IntakeConfig.PID pid;
+    public GearRatio gearRatio;
+    @SerializedName(value = "port", alternate = {"ports"})
+    public Port port;
+    public PID pid;
+    public Settings settings;
 
     public static class GearRatio{
         public double extendableHopper;
@@ -24,13 +28,12 @@ public class ExtendableHopperConfig {
         public int limitSwitch;
     }
 
-    public static class PID{ ;
+    public static class PID {
         public IntakeConfig.PIDValue extendableHopper;
     }
 
-    public static class PIDValue{
-        public double p;
-        public double i;
-        public double d;
+    public static class Settings {
+        public double matchStartForwardSpeed;
+        public double manualSpeed;
     }
 }

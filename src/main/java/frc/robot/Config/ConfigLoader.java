@@ -7,7 +7,6 @@ import java.io.Reader;
 import com.google.gson.Gson;
 
 import edu.wpi.first.wpilibj.Filesystem;
-import frc.robot.VisionConfig;
 
 public final class ConfigLoader {
     private ConfigLoader() {
@@ -74,7 +73,8 @@ public final class ConfigLoader {
             || config.encoders.driveReversed == null
             || config.encoders.turningReversed == null
             || config.encoders.absoluteReversed == null
-            || config.limits == null) {
+            || config.limits == null
+            || config.oi == null) {
             throw new IllegalArgumentException("driveConfig.json is missing one or more required sections");
         }
 
@@ -90,6 +90,9 @@ public final class ConfigLoader {
         if (config.limits.teleopSpeedScale < 0.0 || config.limits.teleopSpeedScale > 1.0) {
             throw new IllegalArgumentException("limits.teleopSpeedScale must be in the range [0, 1]");
         }
+
+        requireNonNegative(config.oi.triggerPressedThreshold, "oi.triggerPressedThreshold");
+        requireNonNegative(config.oi.deadband, "oi.deadband");
     }
 
     private static void validateVisionConfig(VisionConfig config) {

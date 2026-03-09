@@ -1,35 +1,22 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.PersistMode;
-import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ExtendableHopperConstants;
 
-public class ExtendableHopperSubsystem {
-    private SparkMax extendableHopper;
-    private SparkMaxConfig extendableHopperConfig;
+public class ExtendableHopperSubsystem extends SubsystemBase {
+    private final PWMSparkMax extendableHopper;
 
-    private DigitalInput frontSwitch;
-    private DigitalInput backSwitch;
+    private final DigitalInput frontSwitch;
+    private final DigitalInput backSwitch;
 
     boolean shouldReverseExtendableHopper = true;
 
     public ExtendableHopperSubsystem(){
-        extendableHopper = new SparkMax(ExtendableHopperConstants.extendableHopperMotorPort, MotorType.kBrushless);
+        extendableHopper = new PWMSparkMax(ExtendableHopperConstants.extendableHopperMotorPort);
         frontSwitch = new DigitalInput(ExtendableHopperConstants.frontLimitSwitch);
         backSwitch = new DigitalInput(ExtendableHopperConstants.backLimitSwitch);
-
-        extendableHopperConfig = new SparkMaxConfig();
-
-        extendableHopperConfig
-                .inverted(shouldReverseExtendableHopper)
-                .idleMode(IdleMode.kBrake);
-
-        extendableHopper.configure(extendableHopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     }
 
@@ -40,6 +27,7 @@ public class ExtendableHopperSubsystem {
     public void stopExtendableHopperMotor(){
         extendableHopper.stopMotor();
     }
+
 
     public void runExtendableHopper(double speed, boolean reverseExtendableHopper){
         if(frontSwitch.get()){
@@ -57,4 +45,25 @@ public class ExtendableHopperSubsystem {
         ExtendableHopperConstants.extendableHopperSpeed = (reverseExtendableHopper) ? -speed: speed;
         startExtendableHopperMotor(ExtendableHopperConstants.extendableHopperSpeed );
     }
+
+    public void startForwardAtMatchStart() {
+        if (frontSwitch.get()) {
+            stopExtendableHopperMotor();
+            return;
+        }
+
+        ExtendableHopperConstants.reverseExtendableHopper = false;
+        runExtendableHopper(ExtendableHopperConstants.matchStartForwardSpeed, false);
+    }
+
+    public void runForwardManual() {
+        ExtendableHopperConstants.reverseExtendableHopper = false;
+        runExtendableHopper(ExtendableHopperConstants.manualSpeed, false);
+    }
+
+    public void runBackwardManual() {
+        ExtendableHopperConstants.reverseExtendableHopper = true;
+        runExtendableHopper(ExtendableHopperConstants.manualSpeed, true);
+    }
+
 }

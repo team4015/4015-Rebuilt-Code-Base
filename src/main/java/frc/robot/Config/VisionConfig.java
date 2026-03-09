@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.Config;
 
 /**
  * Typed representation of {@code visionConfig.json}.

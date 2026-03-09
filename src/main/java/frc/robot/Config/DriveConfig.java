@@ -9,6 +9,7 @@ public class DriveConfig {
     @SerializedName(value = "encoders", alternate = {"encoder"})
     public Encoders encoders;
     public Limits limits;
+    public OI oi;
 
     public static class Module {
         public double wheelDiameterInches;
@@ -65,5 +66,23 @@ public class DriveConfig {
         public double maxSpeedMps;
         public double maxAngularSpeedRadPerSec;
         public double teleopSpeedScale;
+    }
+
+    public static class OI {
+        public int driverControllerPort;
+        public int driverYAxis;
+        public int driverXAxis;
+        public int driverRotAxis;
+        public int driverLeftTriggerAxis;
+        public int driverRightTriggerAxis;
+        public int driverFieldOrientedButtonIdx;
+        public int driveUnlockSwerveButtonIdx;
+        public int aimAtTagButtonIdx;
+        public int calibrateAbsoluteEncoderButtonIdx;
+        public int aprilTagAlignButtonIdx;
+        public double triggerPressedThreshold;
+        public int intakePort;
+        public int extendableHopperPort;
+        public double deadband;
     }
 }
