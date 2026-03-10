@@ -19,6 +19,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.ModuleConstants;
 
+/**
+ * Represents a single swerve module consisting of a drive motor, turning motor, and absolute encoder.
+ */
 public class SwerveModule {
     private static final double TWO_PI = 2.0 * Math.PI;
 
@@ -35,6 +38,17 @@ public class SwerveModule {
     private final boolean absoluteEncoderReversed;
     private final double absoluteEncoderOffsetRad;
 
+    /**
+     * Creates and configures a swerve module.
+     *
+     * @param driveMotorID CAN ID of the drive motor
+     * @param turningMotorID CAN ID of the turning motor
+     * @param driveMotorReversed whether the drive motor output is inverted
+     * @param turningMotorReversed whether the turning motor output is inverted
+     * @param absoluteEncoderID analog input channel of the absolute encoder
+     * @param absoluteEncoderOffset configured absolute encoder offset in radians
+     * @param absoluteEncoderReversed whether the absolute encoder direction is inverted
+     */
     public SwerveModule(
         int driveMotorID,
         int turningMotorID,
@@ -88,22 +102,47 @@ public class SwerveModule {
         resetEncoder();
     }
 
+    /**
+     * Returns drive wheel position in meters.
+     *
+     * @return drive distance in meters
+     */
     public double getDrivePosition() {
         return driveEncoder.getPosition();
     }
 
+    /**
+     * Returns module steering angle in radians.
+     *
+     * @return steering angle in radians
+     */
     public double getTurningPosition() {
         return normalizeTurningAngle(turningEncoder.getPosition());
     }
 
+    /**
+     * Returns drive velocity in meters per second.
+     *
+     * @return drive velocity in meters per second
+     */
     public double getDriveVelocity() {
         return driveEncoder.getVelocity();
     }
 
+    /**
+     * Returns steering velocity in radians per second.
+     *
+     * @return steering velocity in radians per second
+     */
     public double getTurningVelocity() {
         return turningEncoder.getVelocity();
     }
 
+    /**
+     * Returns corrected absolute encoder angle in radians.
+     *
+     * @return corrected absolute angle in radians
+     */
     public double getAbsoluteEncoderRad() {
         double correctedAngle = getRawAbsoluteEncoderRad() - absoluteEncoderOffsetRad;
         if (absoluteEncoderReversed) {
@@ -112,65 +151,138 @@ public class SwerveModule {
         return normalizeTurningAngle(correctedAngle);
     }
 
+    /**
+     * Returns the raw absolute encoder angle in radians without offset correction.
+     *
+     * @return raw absolute angle in radians
+     */
     public double getRawAbsoluteEncoderRad() {
         double ratio = absoluteEncoder.getVoltage() / RobotController.getCurrent5V();
         ratio = MathUtil.clamp(ratio, 0.0, 1.0);
         return normalizeAngle0To2Pi(ratio * TWO_PI);
     }
 
+    /**
+     * Returns the raw absolute encoder angle in degrees.
+     *
+     * @return raw absolute angle in degrees
+     */
     public double getRawAbsoluteEncoderDeg() {
         return Math.toDegrees(getRawAbsoluteEncoderRad());
     }
 
+    /**
+     * Returns corrected absolute encoder angle in degrees.
+     *
+     * @return corrected absolute angle in degrees
+     */
     public double getAbsoluteEncoderDeg() {
         return Math.toDegrees(getAbsoluteEncoderRad());
     }
 
+    /**
+     * Normalizes an angle into the range {@code [0, 2pi)}.
+     *
+     * @param angleRad input angle in radians
+     * @return normalized angle in radians
+     */
     public double normalizeAngle0To2Pi(double angleRad) {
         return MathUtil.inputModulus(angleRad, 0.0, TWO_PI);
     }
 
+    /**
+     * Normalizes an angle into the continuous turning-controller range {@code [-pi, pi)}.
+     *
+     * @param angleRad input angle in radians
+     * @return normalized angle in radians
+     */
     public double normalizeTurningAngle(double angleRad) {
         return MathUtil.angleModulus(angleRad);
     }
 
+    /**
+     * Returns the configured absolute encoder offset.
+     *
+     * @return offset in radians
+     */
     public double getAbsoluteEncoderOffsetRad() {
         return absoluteEncoderOffsetRad;
     }
 
+    /**
+     * Returns whether the absolute encoder direction is inverted.
+     *
+     * @return {@code true} when the encoder is inverted
+     */
     public boolean isAbsoluteEncoderReversed() {
         return absoluteEncoderReversed;
     }
 
+    /**
+     * Returns the analog input channel used by the absolute encoder.
+     *
+     * @return analog input channel
+     */
     public int getAbsoluteEncoderChannel() {
         return absoluteEncoder.getChannel();
     }
 
+    /**
+     * Returns the current drive motor applied output.
+     *
+     * @return normalized applied output
+     */
     public double getDriveAppliedOutput() {
         return driveMotor.get();
     }
 
+    /**
+     * Returns the current turning motor applied output.
+     *
+     * @return normalized applied output
+     */
     public double getTurningAppliedOutput() {
         return turningMotor.get();
     }
 
+    /**
+     * Returns whether the drive motor is inverted.
+     *
+     * @return {@code true} when the drive motor is inverted
+     */
     public boolean isDriveMotorReversed() {
         return driveMotorReversed;
     }
 
+    /**
+     * Returns whether the turning motor is inverted.
+     *
+     * @return {@code true} when the turning motor is inverted
+     */
     public boolean isTurningMotorReversed() {
         return turningMotorReversed;
     }
 
+    /** Resets the drive encoder and aligns the turning encoder to the absolute encoder. */
     public void resetEncoder() {
         driveEncoder.setPosition(0);
         turningEncoder.setPosition(getAbsoluteEncoderRad());
     }
 
+    /**
+     * Returns the current measured module state.
+     *
+     * @return current module state
+     */
     public SwerveModuleState getState() {
         return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
     }
 
+    /**
+     * Commands the module to the desired state.
+     *
+     * @param state desired module state
+     */
     public void setDesiredState(SwerveModuleState state) {
         state.optimize(getState().angle);
         double speed = state.speedMetersPerSecond;
@@ -185,11 +297,17 @@ public class SwerveModule {
         SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString());
     }
 
+    /** Stops both motors in the module. */
     public void stop() {
         driveMotor.set(0);
         turningMotor.set(0);
     }
 
+    /**
+     * Sets brake or coast mode on both module motors.
+     *
+     * @param enabled {@code true} for brake mode, {@code false} for coast mode
+     */
     public void setBrakeMode(boolean enabled) {
         IdleMode idleMode = enabled ? IdleMode.kBrake : IdleMode.kCoast;
         driveConfig.idleMode(idleMode);
@@ -198,10 +316,20 @@ public class SwerveModule {
         turningMotor.configure(turningConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
+    /**
+     * Returns the module steering angle as a {@link Rotation2d}.
+     *
+     * @return steering rotation
+     */
     public Rotation2d getTurningRotation() {
         return Rotation2d.fromRadians(getTurningPosition());
     }
 
+    /**
+     * Returns the module position for odometry updates.
+     *
+     * @return module position
+     */
     public SwerveModulePosition getPosition() {
         return new SwerveModulePosition(getDrivePosition(), getTurningRotation());
     }

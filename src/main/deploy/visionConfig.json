@@ -9,5 +9,12 @@
     "kp": 0.05,
     "maxAngularSpeedRadPerSec": 2.5,
     "toleranceDegrees": 1.5
+  },
+  "hub": {
+    "centerHeightMeters": 2.64,
+    "openingWidthMeters": 1.22,
+    "openingHeightMeters": 0.61,
+    "frontEdgeToCenterMeters": 0.30,
+    "aprilTagLateralOffsetMeters": 0.0
   }
 }

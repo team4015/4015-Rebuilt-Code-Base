@@ -1,0 +1,54 @@
+{
+  "motors": {
+    "flywheel": {
+      "leader": 0,
+      "follower": 0,
+      "leaderInverted": false,
+      "followerInverted": true
+    },
+    "indexer": {
+      "system": 0,
+      "inverted": false
+    },
+    "hood": {
+      "system": 0,
+      "inverted": false
+    }
+  },
+  "limits": {
+    "hoodMinLimitSwitch": 0,
+    "hoodMaxLimitSwitch": 0
+  },
+  "flywheel": {
+    "fullSpeed": 1.0,
+    "launchVelocityMetersPerSecond": 18.0
+  },
+  "indexer": {
+    "fullSpeed": 1.0
+  },
+  "hood": {
+    "gearRatio": 100.0,
+    "initialAngleDegrees": 18.0,
+    "maxAngleDegrees": 62.0,
+    "homingOutput": -0.15,
+    "maxControlOutput": 0.4,
+    "toleranceDegrees": 1.0,
+    "pid": {
+      "p": 1.4,
+      "i": 0.0,
+      "d": 0.05
+    }
+  },
+  "projectile": {
+    "releaseHeightMeters": 0.8,
+    "ballMassKg": 0.27,
+    "ballDiameterMeters": 0.24,
+    "dragCoefficient": 0.47,
+    "airDensityKgPerCubicMeter": 1.225,
+    "flywheelBallFrictionCoefficient": 0.9,
+    "gravityMetersPerSecondSquared": 9.80665,
+    "solverTimeStepSeconds": 0.01,
+    "solverMaxTimeSeconds": 2.5,
+    "controlLatencySeconds": 0.05
+  }
+}

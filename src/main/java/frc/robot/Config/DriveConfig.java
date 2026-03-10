@@ -2,6 +2,9 @@ package frc.robot.Config;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * Typed representation of {@code driveConfig.json}.
+ */
 public class DriveConfig {
     public Module module;
     public Dimensions dimensions;
@@ -9,7 +12,9 @@ public class DriveConfig {
     @SerializedName(value = "encoders", alternate = {"encoder"})
     public Encoders encoders;
     public Limits limits;
+    public OI oi;
 
+    /** Swerve module hardware ratios and steering gain. */
     public static class Module {
         public double wheelDiameterInches;
         public double driveGearRatio;
@@ -18,17 +23,20 @@ public class DriveConfig {
         public double turningKP;
     }
 
+    /** Drivetrain geometry values. */
     public static class Dimensions {
         @SerializedName(value = "trackWidthInches", alternate = {"trachWidthInches"})
         public double trackWidthInches;
         public double wheelBaseInches;
     }
 
+    /** Drive and steering motor IDs. */
     public static class Motors {
         public IntGroup drive;
         public IntGroup turning;
     }
 
+    /** Absolute encoder ports, offsets, and inversion flags. */
     public static class Encoders {
         @SerializedName(value = "absolutePorts", alternate = {"absolutePort"})
         public IntGroup absolutePorts;
@@ -39,6 +47,7 @@ public class DriveConfig {
         public BooleanGroup absoluteReversed;
     }
 
+    /** Integer values grouped by module corner. */
     public static class IntGroup {
         public int frontLeft;
         public int frontRight;
@@ -46,6 +55,7 @@ public class DriveConfig {
         public int backRight;
     }
 
+    /** Double values grouped by module corner. */
     public static class DoubleGroup {
         public double frontLeft;
         public double frontRight;
@@ -53,6 +63,7 @@ public class DriveConfig {
         public double backRight;
     }
 
+    /** Boolean values grouped by module corner. */
     public static class BooleanGroup {
         public boolean frontLeft;
         public boolean frontRight;
@@ -60,10 +71,33 @@ public class DriveConfig {
         public boolean backRight;
     }
 
+    /** Drivetrain speed limits. */
     public static class Limits {
         @SerializedName(value = "maxSpeedMps", alternate = {"maxSpeed"})
         public double maxSpeedMps;
         public double maxAngularSpeedRadPerSec;
         public double teleopSpeedScale;
+    }
+
+    /** Controller bindings used by drive-related features. */
+    public static class OI {
+        public int driverControllerPort;
+        public int driverYAxis;
+        public int driverXAxis;
+        public int driverRotAxis;
+        public int intakeToggleButtonIdx;
+        public int shooterToggleButtonIdx;
+        public int hoodResetButtonIdx;
+        public int driverLeftTriggerAxis;
+        public int driverRightTriggerAxis;
+        public int driverFieldOrientedButtonIdx;
+        public int driveUnlockSwerveButtonIdx;
+        public int aimAtTagButtonIdx;
+        public int calibrateAbsoluteEncoderButtonIdx;
+        public int aprilTagAlignButtonIdx;
+        public double triggerPressedThreshold;
+        public int intakePort;
+        public int extendableHopperPort;
+        public double deadband;
     }
 }

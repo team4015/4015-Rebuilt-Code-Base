@@ -1,39 +1,33 @@
 package frc.robot.Config;
 
+import com.google.gson.annotations.SerializedName;
+
+/**
+ * Typed representation of {@code intakeConfig.json}.
+ */
 public class IntakeConfig {
-    public GearRatio gearRatio;
+    @SerializedName(value = "port", alternate = {"ports"})
     public Port port;
-    public PID pid;
+    public Settings settings;
 
-    public static class GearRatio{
-        public double intake;
-        public double extendableHopper;
-    }
-
+    /** Intake motor ports. */
     public static class Port{
         public Motors intake;
-        public Motors extendableHopper;
-
-        public DigitalInput frontSwitch;
-        public DigitalInput backSwitch;
     }
 
+    /** Single motor assignment. */
     public static class Motors{
         public int system;
     }
 
+    /** Single digital input assignment. */
     public static class DigitalInput{
         public int limitSwitch;
     }
 
-    public static class PID{
-        public PIDValue intake;
-        public PIDValue extendableHopper;
-    }
-
-    public static class PIDValue{
-        public double p;
-        public double i;
-        public double d;
+    /** Intake operating settings. */
+    public static class Settings {
+        public boolean intakeMotorReversed;
+        public double fullSpeed;
     }
 }

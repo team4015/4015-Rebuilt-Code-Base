@@ -1,14 +1,16 @@
 package frc.robot.Config;
 
+import com.google.gson.annotations.SerializedName;
+
+/**
+ * Typed representation of {@code extendableHopper.json}.
+ */
 public class ExtendableHopperConfig {
-    public IntakeConfig.GearRatio gearRatio;
-    public IntakeConfig.Port port;
-    public IntakeConfig.PID pid;
+    @SerializedName(value = "port", alternate = {"ports"})
+    public Port port;
+    public Settings settings;
 
-    public static class GearRatio{
-        public double extendableHopper;
-    }
-
+    /** Hopper motor and limit-switch ports. */
     public static class Port{
         public IntakeConfig.Motors extendableHopper;
 
@@ -16,21 +18,19 @@ public class ExtendableHopperConfig {
         public IntakeConfig.DigitalInput backSwitch;
     }
 
+    /** Single motor assignment. */
     public static class Motors{
         public int system;
     }
 
+    /** Single digital input assignment. */
     public static class DigitalInput{
         public int limitSwitch;
     }
 
-    public static class PID{ ;
-        public IntakeConfig.PIDValue extendableHopper;
-    }
-
-    public static class PIDValue{
-        public double p;
-        public double i;
-        public double d;
+    /** Hopper operating settings. */
+    public static class Settings {
+        public double matchStartForwardSpeed;
+        public double manualSpeed;
     }
 }

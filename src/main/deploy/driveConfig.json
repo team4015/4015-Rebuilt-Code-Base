@@ -59,5 +59,25 @@
     "maxSpeedMps": 5.0,
     "maxAngularSpeedRadPerSec": 12.566,
     "teleopSpeedScale": 0.25
+  },
+  "oi": {
+    "driverControllerPort": 0,
+    "driverYAxis": 1,
+    "driverXAxis": 0,
+    "driverRotAxis": 4,
+    "intakeToggleButtonIdx": 6,
+    "shooterToggleButtonIdx": 5,
+    "hoodResetButtonIdx": 7,
+    "driverLeftTriggerAxis": 2,
+    "driverRightTriggerAxis": 3,
+    "driverFieldOrientedButtonIdx": 1,
+    "driveUnlockSwerveButtonIdx": 2,
+    "aimAtTagButtonIdx": 3,
+    "calibrateAbsoluteEncoderButtonIdx": 3,
+    "aprilTagAlignButtonIdx": 4,
+    "triggerPressedThreshold": 0.2,
+    "intakePort": 10,
+    "extendableHopperPort": 11,
+    "deadband": 0.05
   }
 }

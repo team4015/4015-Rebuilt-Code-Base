@@ -21,6 +21,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
+/**
+ * Swerve drivetrain subsystem with odometry and encoder-calibration utilities.
+ */
 public class SwerveSubsystem extends SubsystemBase {
     private static final double TWO_PI = 2.0 * Math.PI;
 
@@ -112,27 +115,63 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     );
 
+    /** Creates the swerve subsystem and initializes calibration telemetry. */
     public SwerveSubsystem() {
         initializeCalibrationDashboard();
         startupTimer.start();
     }
 
+    /** Resets the NavX heading to zero. */
     public void zeroHeading() {
         gyro.reset();
     }
 
+    /**
+     * Returns the robot heading in degrees.
+     *
+     * @return wrapped heading in degrees
+     */
     public double getHeading() {
         return Math.IEEEremainder(gyro.getAngle(), 360.0);
     }
 
+    /**
+     * Returns the robot heading as a {@link Rotation2d}.
+     *
+     * @return robot rotation
+     */
     public Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(-getHeading());
     }
 
+    /**
+     * Returns the current estimated robot pose.
+     *
+     * @return current pose in meters
+     */
     public Pose2d getPose() {
         return odometer.getPoseMeters();
     }
 
+    /**
+     * Returns measured robot-relative chassis speeds derived from the modules.
+     *
+     * @return robot-relative chassis speeds
+     */
+    public ChassisSpeeds getRobotRelativeSpeeds() {
+        return DriveConstants.driveKinematics.toChassisSpeeds(
+            frontLeft.getState(),
+            frontRight.getState(),
+            backLeft.getState(),
+            backRight.getState()
+        );
+    }
+
+    /**
+     * Resets odometry to the specified pose.
+     *
+     * @param pose new pose estimate
+     */
     public void resetOdometry(Pose2d pose) {
         odometer.resetPosition(
             getRotation2d(),
@@ -351,6 +390,7 @@ public class SwerveSubsystem extends SubsystemBase {
         );
     }
 
+    /** Stops all four swerve modules. */
     public void stopModules() {
         frontLeft.stop();
         frontRight.stop();
@@ -358,6 +398,11 @@ public class SwerveSubsystem extends SubsystemBase {
         backRight.stop();
     }
 
+    /**
+     * Sets brake or coast mode on all modules.
+     *
+     * @param enabled {@code true} for brake mode, {@code false} for coast mode
+     */
     public void setBrakeMode(boolean enabled) {
         frontLeft.setBrakeMode(enabled);
         frontRight.setBrakeMode(enabled);
@@ -365,6 +410,11 @@ public class SwerveSubsystem extends SubsystemBase {
         backRight.setBrakeMode(enabled);
     }
 
+    /**
+     * Applies desired states to all modules after wheel-speed desaturation.
+     *
+     * @param desiredStates desired module states in standard order
+     */
     public void setModulesStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.physicalMaxSpeedMetersPerSecond);
         frontLeft.setDesiredState(desiredStates[0]);
@@ -373,6 +423,14 @@ public class SwerveSubsystem extends SubsystemBase {
         backRight.setDesiredState(desiredStates[3]);
     }
 
+    /**
+     * Drives the robot using chassis-speed commands.
+     *
+     * @param xSpeedMetersPerSecond forward speed
+     * @param ySpeedMetersPerSecond sideways speed
+     * @param omegaRadiansPerSecond angular speed
+     * @param fieldRelative whether the translation commands are field-relative
+     */
     public void drive(
         double xSpeedMetersPerSecond,
         double ySpeedMetersPerSecond,
@@ -391,18 +449,38 @@ public class SwerveSubsystem extends SubsystemBase {
         setModulesStates(DriveConstants.driveKinematics.toSwerveModuleStates(chassisSpeeds));
     }
 
+    /**
+     * Returns the front-left corrected absolute encoder angle.
+     *
+     * @return angle in radians
+     */
     public double getFrontLeftAbsoluteEncoderRad() {
         return frontLeft.getAbsoluteEncoderRad();
     }
 
+    /**
+     * Returns the front-right corrected absolute encoder angle.
+     *
+     * @return angle in radians
+     */
     public double getFrontRightAbsoluteEncoderRad() {
         return frontRight.getAbsoluteEncoderRad();
     }
 
+    /**
+     * Returns the back-right corrected absolute encoder angle.
+     *
+     * @return angle in radians
+     */
     public double getBackRightAbsoluteEncoderRad() {
         return backRight.getAbsoluteEncoderRad();
     }
 
+    /**
+     * Returns the back-left corrected absolute encoder angle.
+     *
+     * @return angle in radians
+     */
     public double getBackLeftAbsoluteEncoderRad() {
         return backLeft.getAbsoluteEncoderRad();
     }
