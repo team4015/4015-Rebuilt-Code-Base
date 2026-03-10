@@ -7,7 +7,6 @@ import java.io.Reader;
 import com.google.gson.Gson;
 
 import edu.wpi.first.wpilibj.Filesystem;
-import frc.robot.VisionConfig;
 
 public final class ConfigLoader {
     private ConfigLoader() {
@@ -23,41 +22,6 @@ public final class ConfigLoader {
             }
         } catch (Exception e) {
             throw new RuntimeException("Failed to load drive config", e);
-        }
-    }
-
-    public static VisionConfig loadVisionConfig() {
-        try {
-            File file = new File(Filesystem.getDeployDirectory(), "visionConfig.json");
-            try (Reader reader = new FileReader(file)) {
-                VisionConfig config = new Gson().fromJson(reader, VisionConfig.class);
-                validateVisionConfig(config);
-                return config;
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to load vision config", e);
-        }
-    }
-
-    public static IntakeConfig loadIntakeConfig() {
-        try {
-            File file = new File(Filesystem.getDeployDirectory(), "intakeConfig.json");
-            try (Reader reader = new FileReader(file)) {
-                return new Gson().fromJson(reader, IntakeConfig.class);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to load intake config", e);
-        }
-    }
-
-    public static ExtendableHopperConfig loadExtendableHopperConfig() {
-        try {
-            File file = new File(Filesystem.getDeployDirectory(), "extendableHopper.json");
-            try (Reader reader = new FileReader(file)) {
-                return new Gson().fromJson(reader, ExtendableHopperConfig.class);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to load extendable hopper config", e);
         }
     }
 
@@ -91,16 +55,6 @@ public final class ConfigLoader {
             throw new IllegalArgumentException("limits.teleopSpeedScale must be in the range [0, 1]");
         }
     }
-
-    private static void validateVisionConfig(VisionConfig config) {
-        if (config == null
-            || config.limelight == null
-            || config.limelight.name == null
-            || config.aim == null) {
-            throw new IllegalArgumentException("visionConfig.json is missing one or more required sections");
-        }
-    }
-
     private static void requirePositive(double value, String fieldName) {
         if (!Double.isFinite(value) || value <= 0.0) {
             throw new IllegalArgumentException(fieldName + " must be a finite positive number");

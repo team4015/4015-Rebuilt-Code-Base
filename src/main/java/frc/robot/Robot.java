@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.controls.RobotContainer;
 import frc.robot.subsystems.Swerve.SwerveSubsystem;
-import frc.robot.subsystems.Vision.LimelightSubsystem;
 
 /**
  * Main robot lifecycle class.
@@ -19,7 +18,6 @@ public class Robot extends TimedRobot {
     private RobotContainer robotContainer;
     private Command autonomousCommand;
     private ShuffleboardTab tab;
-    private ShuffleboardTab visionTab;
 
     /**
      * Robot-wide initialization hook called once on startup.
@@ -28,20 +26,12 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         robotContainer = new RobotContainer();
         tab = Shuffleboard.getTab("Encoder Offsets");
-        visionTab = Shuffleboard.getTab("Vision");
 
         SwerveSubsystem swerveSubsystem = robotContainer.getSwerveSubsystem();
-        LimelightSubsystem limelightSubsystem = robotContainer.getLimelightSubsystem();
         tab.addNumber("Front Left Absolute Encoder", swerveSubsystem::getFrontLeftAbsoluteEncoderRad);
         tab.addNumber("Front Right Absolute Encoder", swerveSubsystem::getFrontRightAbsoluteEncoderRad);
         tab.addNumber("Back Left Absolute Encoder", swerveSubsystem::getBackLeftAbsoluteEncoderRad);
         tab.addNumber("Back Right Absolute Encoder", swerveSubsystem::getBackRightAbsoluteEncoderRad);
-
-        visionTab.addBoolean("Has Target", limelightSubsystem::hasValidTarget);
-        visionTab.addNumber("Tag ID", limelightSubsystem::getTargetTagId);
-        visionTab.addNumber("TX (deg)", limelightSubsystem::getTxDegrees);
-        visionTab.addNumber("Distance (m)", limelightSubsystem::getDistanceToTagMeters);
-        visionTab.addBoolean("Aimed", limelightSubsystem::isAimedAtTag);
     }
 
     /**

@@ -21,6 +21,9 @@ import frc.robot.Constants.ModuleConstants;
 
 public class SwerveModule {
     private static final double TWO_PI = 2.0 * Math.PI;
+    private static final double TURNING_RESYNC_MAX_VELOCITY_RAD_PER_SEC = 0.1;
+    private static final double DRIVE_RESYNC_MAX_VELOCITY_MPS = 0.05;
+    private static final double TURNING_RESYNC_ERROR_RAD = Math.toRadians(2.0);
 
     private final SparkMax driveMotor;
     private final SparkMax turningMotor;
@@ -165,6 +168,22 @@ public class SwerveModule {
     public void resetEncoder() {
         driveEncoder.setPosition(0);
         turningEncoder.setPosition(getAbsoluteEncoderRad());
+    }
+
+    public void syncTurningEncoderToAbsoluteIfStopped() {
+        double turningVelocity = Math.abs(getTurningVelocity());
+        double driveVelocity = Math.abs(getDriveVelocity());
+        if (turningVelocity > TURNING_RESYNC_MAX_VELOCITY_RAD_PER_SEC
+            || driveVelocity > DRIVE_RESYNC_MAX_VELOCITY_MPS) {
+            return;
+        }
+
+        double absoluteAngle = getAbsoluteEncoderRad();
+        double turningAngle = getTurningPosition();
+        double angleError = Math.abs(normalizeTurningAngle(turningAngle - absoluteAngle));
+        if (angleError >= TURNING_RESYNC_ERROR_RAD) {
+            turningEncoder.setPosition(absoluteAngle);
+        }
     }
 
     public SwerveModuleState getState() {

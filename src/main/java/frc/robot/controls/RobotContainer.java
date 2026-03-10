@@ -8,11 +8,9 @@ import frc.robot.Constants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.SwerveCommands;
 import frc.robot.subsystems.Swerve.SwerveSubsystem;
-import frc.robot.subsystems.Vision.LimelightSubsystem;
 
 public class RobotContainer {
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-    private final LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
     private final Joystick driverJoystick = new Joystick(Constants.OIConstants.driverControllerPort);
 
     public RobotContainer() {
@@ -22,9 +20,7 @@ public class RobotContainer {
                 () -> -driverJoystick.getRawAxis(OIConstants.driverYAxis),
                 () -> driverJoystick.getRawAxis(OIConstants.driverXAxis),
                 () -> driverJoystick.getRawAxis(OIConstants.driverRotAxis),
-                () -> driverJoystick.getRawButton(OIConstants.driverFieldOrientedButtonIdx),
-                () -> driverJoystick.getRawButton(OIConstants.aimAtTagButtonIdx),
-                limelightSubsystem
+                () -> driverJoystick.getRawButton(OIConstants.driverFieldOrientedButtonIdx)
             )
         );
 
@@ -50,10 +46,6 @@ public class RobotContainer {
 
     public SwerveSubsystem getSwerveSubsystem() {
         return swerveSubsystem;
-    }
-
-    public LimelightSubsystem getLimelightSubsystem() {
-        return limelightSubsystem;
     }
 
     public Command getAutonomousCommand() {

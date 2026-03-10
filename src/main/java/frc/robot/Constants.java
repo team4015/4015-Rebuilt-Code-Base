@@ -5,14 +5,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Config.ConfigLoader;
 import frc.robot.Config.DriveConfig;
-import frc.robot.Config.ExtendableHopperConfig;
-import frc.robot.Config.IntakeConfig;
 
 public final class Constants {
     public static final DriveConfig DRIVE = ConfigLoader.loadDriveConfig();
-    public static final IntakeConfig INTAKE = ConfigLoader.loadIntakeConfig();
-    public static final ExtendableHopperConfig EXTENDABLE_HOPPER = ConfigLoader.loadExtendableHopperConfig();
-    public static final VisionConfig VISION = ConfigLoader.loadVisionConfig();
 
     private Constants() {
     }
@@ -89,32 +84,6 @@ public final class Constants {
         }
     }
 
-    public static final class IntakeConstants {
-        public static final double intakePValue = INTAKE.pid.intake.p;
-        public static final double intakeIValue = INTAKE.pid.intake.i;
-        public static final double intakeDValue = INTAKE.pid.intake.d;
-        public static final int intakeMotorPort = INTAKE.port.intake.system;
-        public static final double intakeGearRatio = 1.0 / INTAKE.gearRatio.intake;
-
-        private IntakeConstants() {
-        }
-    }
-
-    public static final class ExtendableHopperConstants {
-        public static final double extendableHopperPValue = EXTENDABLE_HOPPER.pid.extendableHopper.p;
-        public static final double extendableHopperIValue = EXTENDABLE_HOPPER.pid.extendableHopper.i;
-        public static final double extendableHopperDValue = EXTENDABLE_HOPPER.pid.extendableHopper.d;
-        public static final double extendableHopperGearRatio = 1.0 / EXTENDABLE_HOPPER.gearRatio.extendableHopper;
-        public static final int extendableHopperMotorPort = EXTENDABLE_HOPPER.port.extendableHopper.system;
-        public static final int frontLimitSwitch = EXTENDABLE_HOPPER.port.frontSwitch.limitSwitch;
-        public static final int backLimitSwitch = EXTENDABLE_HOPPER.port.backSwitch.limitSwitch;
-        public static boolean reverseExtendableHopper = false;
-        public static double extendableHopperSpeed = 0.0;
-
-        private ExtendableHopperConstants() {
-        }
-    }
-
     public static final class OIConstants {
         public static final int driverControllerPort = 0;
         public static final int driverYAxis = 1;
@@ -122,33 +91,9 @@ public final class Constants {
         public static final int driverRotAxis = 4;
         public static final int driverFieldOrientedButtonIdx = 1;
         public static final int driveUnlockSwerveButtonIdx = 2;
-        public static final int aimAtTagButtonIdx = 3;
-        public static final int calibrateAbsoluteEncoderButtonIdx = 3;
-        public static final int aprilTagAlignButtonIdx = 4;
-        public static final int intakePort = 10;
-        public static final int extendableHopperPort = 11;
         public static final double deadband = 0.05;
 
         private OIConstants() {
-        }
-    }
-
-    public static final class LimelightConstants {
-        public static final String limelightName = VISION.limelight.name;
-        public static final double lensHeightMeters = Units.inchesToMeters(VISION.limelight.lensHeightInches);
-        public static final double mountAngleDegrees = VISION.limelight.mountAngleDegrees;
-        public static final double defaultTagHeightMeters = Units.inchesToMeters(VISION.limelight.defaultTagHeightInches);
-
-        private LimelightConstants() {
-        }
-    }
-
-    public static final class VisionConstants {
-        public static final double aimKp = VISION.aim.kp;
-        public static final double aimMaxAngularSpeedRadPerSec = VISION.aim.maxAngularSpeedRadPerSec;
-        public static final double aimToleranceDegrees = VISION.aim.toleranceDegrees;
-
-        private VisionConstants() {
         }
     }
 }

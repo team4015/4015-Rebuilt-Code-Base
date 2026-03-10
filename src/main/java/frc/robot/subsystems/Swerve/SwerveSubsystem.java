@@ -154,6 +154,10 @@ public class SwerveSubsystem extends SubsystemBase {
             headingInitialized = true;
         }
 
+        for (SwerveModule module : modules) {
+            module.syncTurningEncoderToAbsoluteIfStopped();
+        }
+
         updateCalibrationSampling();
         odometer.update(
             getRotation2d(),
