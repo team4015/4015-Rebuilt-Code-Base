@@ -15,6 +15,7 @@
     }
   },
   "settings": {
-    "intakeMotorReversed": true
+    "intakeMotorReversed": true,
+    "fullSpeed": 1.0
   }
 }

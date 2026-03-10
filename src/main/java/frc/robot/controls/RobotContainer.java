@@ -8,14 +8,17 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ExtendableHopperCommand;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.SwerveCommands;
 import frc.robot.subsystems.ExtendableHopperSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Swerve.SwerveSubsystem;
 import frc.robot.subsystems.Vision.LimelightSubsystem;
 
 public class RobotContainer {
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
     private final ExtendableHopperSubsystem extendableHopperSubsystem = new ExtendableHopperSubsystem();
+    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     private final LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
     private final Joystick driverJoystick = new Joystick(Constants.OIConstants.driverControllerPort);
 
@@ -36,6 +39,9 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        new JoystickButton(driverJoystick, OIConstants.intakeToggleButtonIdx)
+            .onTrue(new IntakeCommand(intakeSubsystem));
+
         new Trigger(() -> driverJoystick.getRawAxis(OIConstants.driverRightTriggerAxis) > OIConstants.triggerPressedThreshold)
             .whileTrue(new ExtendableHopperCommand(extendableHopperSubsystem, false));
 
@@ -68,6 +74,10 @@ public class RobotContainer {
 
     public ExtendableHopperSubsystem getExtendableHopperSubsystem() {
         return extendableHopperSubsystem;
+    }
+
+    public IntakeSubsystem getIntakeSubsystem() {
+        return intakeSubsystem;
     }
 
     public Command getAutonomousCommand() {

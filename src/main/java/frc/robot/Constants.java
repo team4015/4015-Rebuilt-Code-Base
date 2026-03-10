@@ -97,6 +97,7 @@ public final class Constants {
         public static final int intakeMotorPort = INTAKE.port.intake.system;
         public static final double intakeGearRatio = 1.0 / INTAKE.gearRatio.intake;
         public static final boolean intakeMotorReversed = INTAKE.settings.intakeMotorReversed;
+        public static final double intakeFullSpeed = INTAKE.settings.fullSpeed;
 
         private IntakeConstants() {
         }
@@ -124,6 +125,7 @@ public final class Constants {
         public static final int driverYAxis = DRIVE.oi.driverYAxis;
         public static final int driverXAxis = DRIVE.oi.driverXAxis;
         public static final int driverRotAxis = DRIVE.oi.driverRotAxis;
+        public static final int intakeToggleButtonIdx = DRIVE.oi.intakeToggleButtonIdx;
         public static final int driverLeftTriggerAxis = DRIVE.oi.driverLeftTriggerAxis;
         public static final int driverRightTriggerAxis = DRIVE.oi.driverRightTriggerAxis;
         public static final int driverFieldOrientedButtonIdx = DRIVE.oi.driverFieldOrientedButtonIdx;

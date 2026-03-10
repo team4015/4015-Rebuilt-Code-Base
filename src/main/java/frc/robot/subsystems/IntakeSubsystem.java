@@ -1,36 +1,38 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.PersistMode;
-import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
-    private SparkMax intakeMotor;
-    private SparkMaxConfig intakeConfig;
+    private final PWMSparkMax intakeMotor;
+    private boolean intakeEnabled = false;
 
     public IntakeSubsystem(){
-        intakeMotor = new SparkMax(IntakeConstants.intakeMotorPort, MotorType.kBrushless);
-
-        intakeConfig = new SparkMaxConfig();
-
-        intakeConfig
-                .inverted(IntakeConstants.intakeMotorReversed)
-                .idleMode(IdleMode.kBrake);
-
-        intakeMotor.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        intakeMotor = new PWMSparkMax(IntakeConstants.intakeMotorPort);
+        intakeMotor.setInverted(IntakeConstants.intakeMotorReversed);
     }
 
     public void startIntakeMotor(double speed){
+        intakeEnabled = true;
         intakeMotor.set(speed);
     }
 
-
     public void stopIntakeMotor(){
+        intakeEnabled = false;
         intakeMotor.stopMotor();
+    }
+
+    public void toggleIntakeMotor() {
+        if (intakeEnabled) {
+            stopIntakeMotor();
+            return;
+        }
+
+        startIntakeMotor(IntakeConstants.intakeFullSpeed);
+    }
+
+    public boolean isIntakeEnabled() {
+        return intakeEnabled;
     }
 }

@@ -65,6 +65,7 @@
     "driverYAxis": 1,
     "driverXAxis": 0,
     "driverRotAxis": 4,
+    "intakeToggleButtonIdx": 6,
     "driverLeftTriggerAxis": 2,
     "driverRightTriggerAxis": 3,
     "driverFieldOrientedButtonIdx": 1,

@@ -37,5 +37,6 @@ public class IntakeConfig {
 
     public static class Settings {
         public boolean intakeMotorReversed;
+        public double fullSpeed;
     }
 }
