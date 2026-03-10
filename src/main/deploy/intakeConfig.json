@@ -1,17 +1,7 @@
 {
-  "gearRatio": {
-    "intake": 0.0
-  },
   "port": {
     "intake": {
       "system": 0
-    }
-  },
-  "pid": {
-    "intake": {
-      "p": 0.0,
-      "i": 0.0,
-      "d": 0.0
     }
   },
   "settings": {

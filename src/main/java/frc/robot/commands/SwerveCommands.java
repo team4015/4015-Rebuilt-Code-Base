@@ -8,6 +8,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.subsystems.Shooter.ShooterSubsystem;
 import frc.robot.subsystems.Swerve.SwerveSubsystem;
 import frc.robot.subsystems.Vision.LimelightSubsystem;
 
@@ -25,6 +26,7 @@ public class SwerveCommands extends Command {
     private final BooleanSupplier fieldOrientedSupplier;
     private final BooleanSupplier autoAimSupplier;
     private final LimelightSubsystem limelightSubsystem;
+    private final ShooterSubsystem shooterSubsystem;
 
     // Rate limiters smooth operator input and reduce jerk.
     private final SlewRateLimiter xLimiter = new SlewRateLimiter(5);
@@ -41,6 +43,7 @@ public class SwerveCommands extends Command {
      * @param fieldOrientdSupplier supplier for field-oriented enable state
      * @param autoAimSupplier supplier for whether Limelight auto-aim is enabled
      * @param limelightSubsystem Limelight interface used for AprilTag aiming and distance
+     * @param shooterSubsystem shooter interface used for motion-compensated aiming while firing
      */
     public SwerveCommands(
         SwerveSubsystem swerveSubsystem,
@@ -49,7 +52,8 @@ public class SwerveCommands extends Command {
         DoubleSupplier turningSpeedSupplier,
         BooleanSupplier fieldOrientdSupplier,
         BooleanSupplier autoAimSupplier,
-        LimelightSubsystem limelightSubsystem
+        LimelightSubsystem limelightSubsystem,
+        ShooterSubsystem shooterSubsystem
     ) {
         this.swerveSubsystem = swerveSubsystem;
         this.xSpeedSupplier = xSpeedSupplier;
@@ -58,6 +62,7 @@ public class SwerveCommands extends Command {
         this.fieldOrientedSupplier = fieldOrientdSupplier;
         this.autoAimSupplier = autoAimSupplier;
         this.limelightSubsystem = limelightSubsystem;
+        this.shooterSubsystem = shooterSubsystem;
         addRequirements(swerveSubsystem);
     }
 
@@ -81,10 +86,12 @@ public class SwerveCommands extends Command {
         turningSpeed = turningLimiter.calculate(turningSpeed)
             * Constants.DriveConstants.teleDriveMaxAngularSpeedRadiansPerSecond;
 
-        boolean autoAimEnabled = autoAimSupplier.getAsBoolean();
+        boolean autoAimEnabled = autoAimSupplier.getAsBoolean() || shooterSubsystem.isShootingActive();
         boolean hasVisionTarget = limelightSubsystem.hasValidTarget();
         if (autoAimEnabled && hasVisionTarget) {
-            turningSpeed = limelightSubsystem.getAimAngularSpeedRadPerSec();
+            turningSpeed = shooterSubsystem.isShootingActive()
+                ? shooterSubsystem.getMotionCompensatedAimAngularSpeedRadPerSec()
+                : limelightSubsystem.getAimAngularSpeedRadPerSec();
         }
 
         swerveSubsystem.drive(xSpeed, ySpeed, turningSpeed, fieldOrientedSupplier.getAsBoolean());

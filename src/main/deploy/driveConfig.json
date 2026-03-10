@@ -66,6 +66,8 @@
     "driverXAxis": 0,
     "driverRotAxis": 4,
     "intakeToggleButtonIdx": 6,
+    "shooterToggleButtonIdx": 5,
+    "hoodResetButtonIdx": 7,
     "driverLeftTriggerAxis": 2,
     "driverRightTriggerAxis": 3,
     "driverFieldOrientedButtonIdx": 1,

@@ -6,7 +6,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.controls.RobotContainer;
-import frc.robot.subsystems.ExtendableHopperSubsystem;
+import frc.robot.subsystems.Hopper.ExtendableHopperSubsystem;
+import frc.robot.subsystems.Shooter.ShooterSubsystem;
 import frc.robot.subsystems.Swerve.SwerveSubsystem;
 import frc.robot.subsystems.Vision.LimelightSubsystem;
 
@@ -22,6 +23,7 @@ public class Robot extends TimedRobot {
     private ShuffleboardTab tab;
     private ShuffleboardTab visionTab;
     private ExtendableHopperSubsystem extendableHopperSubsystem;
+    private ShooterSubsystem shooterSubsystem;
 
     /**
      * Robot-wide initialization hook called once on startup.
@@ -32,6 +34,7 @@ public class Robot extends TimedRobot {
         tab = Shuffleboard.getTab("Encoder Offsets");
         visionTab = Shuffleboard.getTab("Vision");
         extendableHopperSubsystem = robotContainer.getExtendableHopperSubsystem();
+        shooterSubsystem = robotContainer.getShooterSubsystem();
 
         SwerveSubsystem swerveSubsystem = robotContainer.getSwerveSubsystem();
         LimelightSubsystem limelightSubsystem = robotContainer.getLimelightSubsystem();
@@ -84,6 +87,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         extendableHopperSubsystem.stopExtendableHopperMotor();
+        shooterSubsystem.stopShooting();
     }
 
     /**

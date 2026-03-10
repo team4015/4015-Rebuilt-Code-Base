@@ -8,6 +8,8 @@ public class VisionConfig {
     public Limelight limelight;
     /** Auto-aim tuning values. */
     public Aim aim;
+    /** Hub target geometry used by the shot solver. */
+    public Hub hub;
 
     /** Limelight-specific fields. */
     public static class Limelight {
@@ -29,5 +31,14 @@ public class VisionConfig {
         public double maxAngularSpeedRadPerSec;
         /** Considered aligned when |tx| <= toleranceDegrees. */
         public double toleranceDegrees;
+    }
+
+    /** Hub geometry and AprilTag offset values. */
+    public static class Hub {
+        public double centerHeightMeters;
+        public double openingWidthMeters;
+        public double openingHeightMeters;
+        public double frontEdgeToCenterMeters;
+        public double aprilTagLateralOffsetMeters;
     }
 }
