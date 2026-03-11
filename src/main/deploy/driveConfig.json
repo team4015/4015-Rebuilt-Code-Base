@@ -11,9 +11,9 @@
   },
   "motors": {
     "drive": {
-      "backRight": 2,
-      "backLeft": 1,
-      "frontRight": 0,
+      "backRight": 1,
+      "backLeft": 4,
+      "frontRight": 2,
       "frontLeft": 3
     },
     "turning": {

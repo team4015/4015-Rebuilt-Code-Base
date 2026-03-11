@@ -1,11 +1,11 @@
 {
   "motors": {
     "flywheel": {
-      "leader": 0,
+      "leader": 10,
       "leaderInverted": false
     },
     "indexer": {
-      "system": 0,
+      "system": 11,
       "inverted": false
     }
   },
@@ -17,16 +17,16 @@
     "fullSpeed": 1.0
   },
   "hood": {
-    "initialAngleDegrees": 18.0,
-    "maxAngleDegrees": 18.0
+    "initialAngleDegrees": 67.49227962,
+    "maxAngleDegrees": 67.4922796
   },
   "projectile": {
-    "releaseHeightMeters": 0.8,
+    "releaseHeightMeters": 4.08432,
     "ballMassKg": 0.20320938,
-    "ballDiameterMeters": 0.24,
+    "ballDiameterMeters": 0.150114,
     "dragCoefficient": 0.47,
     "airDensityKgPerCubicMeter": 1.225,
-    "flywheelBallFrictionCoefficient": 0.9,
+    "flywheelBallFrictionCoefficient": 0.8,
     "gravityMetersPerSecondSquared": 9.80665,
     "solverTimeStepSeconds": 0.01,
     "solverMaxTimeSeconds": 2.5,

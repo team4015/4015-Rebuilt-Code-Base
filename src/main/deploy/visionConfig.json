@@ -2,7 +2,7 @@
   "limelight": {
     "name": "limelight",
     "lensHeightInches": 20.0,
-    "mountAngleDegrees": 25.0,
+    "mountAngleDegrees": 15.0,
     "defaultTagHeightInches": 57.13
   },
   "aim": {
@@ -11,10 +11,10 @@
     "toleranceDegrees": 1.5
   },
   "hub": {
-    "centerHeightMeters": 2.64,
-    "openingWidthMeters": 1.22,
-    "openingHeightMeters": 0.61,
-    "frontEdgeToCenterMeters": 0.30,
+    "centerHeightMeters": 1.87,
+    "openingWidthMeters": 1.24,
+    "openingHeightMeters": 0.38,
+    "frontEdgeToCenterMeters": 0.54,
     "aprilTagLateralOffsetMeters": 0.0
   }
 }

@@ -12,8 +12,8 @@ public class ExtendableHopperConfig {
 
     /** Limit-switch ports. */
     public static class Port{
-        public IntakeConfig.DigitalInput frontSwitch;
-        public IntakeConfig.DigitalInput backSwitch;
+        public DigitalInput frontSwitch;
+        public DigitalInput backSwitch;
     }
 
     /** Single digital input assignment. */
