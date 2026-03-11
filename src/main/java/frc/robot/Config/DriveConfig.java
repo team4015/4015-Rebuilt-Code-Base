@@ -87,7 +87,6 @@ public class DriveConfig {
         public int driverRotAxis;
         public int intakeToggleButtonIdx;
         public int shooterToggleButtonIdx;
-        public int hoodResetButtonIdx;
         public int driverLeftTriggerAxis;
         public int driverRightTriggerAxis;
         public int driverFieldOrientedButtonIdx;

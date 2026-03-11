@@ -156,10 +156,7 @@ public final class ConfigLoader {
     }
 
     private static void validateIntakeConfig(IntakeConfig config) {
-        if (config == null
-            || config.port == null
-            || config.port.intake == null
-            || config.settings == null) {
+        if (config == null || config.settings == null) {
             throw new IllegalArgumentException("intakeConfig.json is missing one or more required sections");
         }
 
@@ -169,7 +166,6 @@ public final class ConfigLoader {
     private static void validateExtendableHopperConfig(ExtendableHopperConfig config) {
         if (config == null
             || config.port == null
-            || config.port.extendableHopper == null
             || config.port.frontSwitch == null
             || config.port.backSwitch == null
             || config.settings == null) {
@@ -185,12 +181,9 @@ public final class ConfigLoader {
             || config.motors == null
             || config.motors.flywheel == null
             || config.motors.indexer == null
-            || config.motors.hood == null
-            || config.limits == null
             || config.flywheel == null
             || config.indexer == null
             || config.hood == null
-            || config.hood.pid == null
             || config.projectile == null) {
             throw new IllegalArgumentException("shooterConfig.json is missing one or more required sections");
         }
@@ -198,16 +191,17 @@ public final class ConfigLoader {
         requirePositive(config.flywheel.fullSpeed, "flywheel.fullSpeed");
         requirePositive(config.flywheel.launchVelocityMetersPerSecond, "flywheel.launchVelocityMetersPerSecond");
         requirePositive(config.indexer.fullSpeed, "indexer.fullSpeed");
-        requirePositive(config.hood.gearRatio, "hood.gearRatio");
+        requirePositive(config.hood.initialAngleDegrees, "hood.initialAngleDegrees");
         requirePositive(config.hood.maxAngleDegrees, "hood.maxAngleDegrees");
-        requirePositive(config.hood.maxControlOutput, "hood.maxControlOutput");
-        requirePositive(config.hood.toleranceDegrees, "hood.toleranceDegrees");
         requirePositive(config.projectile.releaseHeightMeters, "projectile.releaseHeightMeters");
         requirePositive(config.projectile.ballMassKg, "projectile.ballMassKg");
         requirePositive(config.projectile.ballDiameterMeters, "projectile.ballDiameterMeters");
         requirePositive(config.projectile.dragCoefficient, "projectile.dragCoefficient");
         requirePositive(config.projectile.airDensityKgPerCubicMeter, "projectile.airDensityKgPerCubicMeter");
-        requirePositive(config.projectile.flywheelBallFrictionCoefficient, "projectile.flywheelBallFrictionCoefficient");
+        requirePositive(
+            config.projectile.flywheelBallFrictionCoefficient,
+            "projectile.flywheelBallFrictionCoefficient"
+        );
         requirePositive(config.projectile.gravityMetersPerSecondSquared, "projectile.gravityMetersPerSecondSquared");
         requirePositive(config.projectile.solverTimeStepSeconds, "projectile.solverTimeStepSeconds");
         requirePositive(config.projectile.solverMaxTimeSeconds, "projectile.solverMaxTimeSeconds");

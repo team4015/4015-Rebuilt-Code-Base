@@ -1,8 +1,5 @@
 {
   "port": {
-    "extendableHopper": {
-      "system": 0
-    },
     "frontSwitch": {
       "limitSwitch": 0
     },

@@ -9,7 +9,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ExtendableHopperCommand;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.Shooter.HoodResetCommand;
 import frc.robot.commands.Shooter.ShooterCommand;
 import frc.robot.commands.SwerveCommands;
 import frc.robot.subsystems.Hopper.ExtendableHopperSubsystem;
@@ -55,9 +54,6 @@ public class RobotContainer {
 
         new JoystickButton(driverJoystick, OIConstants.shooterToggleButtonIdx)
             .onTrue(new ShooterCommand(shooterSubsystem));
-
-        new JoystickButton(driverJoystick, OIConstants.hoodResetButtonIdx)
-            .onTrue(new HoodResetCommand(shooterSubsystem));
 
         new Trigger(() -> driverJoystick.getRawAxis(OIConstants.driverRightTriggerAxis) > OIConstants.triggerPressedThreshold)
             .whileTrue(new ExtendableHopperCommand(extendableHopperSubsystem, false));

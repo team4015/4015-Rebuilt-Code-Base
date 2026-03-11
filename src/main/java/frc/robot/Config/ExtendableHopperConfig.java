@@ -10,17 +10,10 @@ public class ExtendableHopperConfig {
     public Port port;
     public Settings settings;
 
-    /** Hopper motor and limit-switch ports. */
+    /** Limit-switch ports. */
     public static class Port{
-        public IntakeConfig.Motors extendableHopper;
-
         public IntakeConfig.DigitalInput frontSwitch;
         public IntakeConfig.DigitalInput backSwitch;
-    }
-
-    /** Single motor assignment. */
-    public static class Motors{
-        public int system;
     }
 
     /** Single digital input assignment. */

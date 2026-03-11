@@ -1,9 +1,4 @@
 {
-  "port": {
-    "intake": {
-      "system": 0
-    }
-  },
   "settings": {
     "intakeMotorReversed": true,
     "fullSpeed": 1.0
