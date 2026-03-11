@@ -25,10 +25,10 @@
   },
   "encoders": {
     "absolutePorts": {
-      "backRight": 2,
-      "backLeft": 1,
-      "frontRight": 0,
-      "frontLeft": 3
+      "backRight": 3,
+      "backLeft": 0,
+      "frontRight": 2,
+      "frontLeft": 1
     },
     "absoluteOffsetsRad": {
       "frontLeft": 5.621990633403318,
