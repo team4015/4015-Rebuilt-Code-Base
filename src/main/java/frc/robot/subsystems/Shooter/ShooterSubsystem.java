@@ -93,12 +93,20 @@ public class ShooterSubsystem extends SubsystemBase {
         );
     }
 
+    /** Updates shot prediction and publishes shooter telemetry each scheduler cycle. */
     @Override
     public void periodic() {
         updateShotSolution();
         publishTelemetry();
     }
 
+    /**
+     * Recomputes the latest motion-compensated shot solution when shooting with a valid target.
+     *
+     * <p>The method estimates current robot acceleration from drivetrain velocity samples, predicts
+     * control-latency-adjusted robot velocity, builds projectile inputs, and stores the newest
+     * valid ballistic solution for aiming and telemetry.
+     */
     private void updateShotSolution() {
         if (!shootingActive || !limelightSubsystem.hasValidTarget()) {
             return;
@@ -127,8 +135,7 @@ public class ShooterSubsystem extends SubsystemBase {
         previousRobotRelativeSpeeds = currentRobotSpeeds;
         previousMotionTimestampSeconds = nowSeconds;
 
-        double effectiveLaunchSpeed = ShooterConstants.shooterLaunchVelocityMetersPerSecond
-            * ShooterConstants.projectileFlywheelBallFrictionCoefficient;
+        double effectiveLaunchSpeed = ShooterConstants.shooterLaunchVelocityMetersPerSecond * ShooterConstants.projectileFlywheelBallFrictionCoefficient;
         double ballRadiusMeters = ShooterConstants.projectileBallDiameterMeters / 2.0;
         double crossSectionAreaMetersSquared = Math.PI * ballRadiusMeters * ballRadiusMeters;
         double fixedHoodAngleRad = ShooterConstants.hoodInitialAngleRadians;
@@ -156,6 +163,11 @@ public class ShooterSubsystem extends SubsystemBase {
         }
     }
 
+    /**
+     * Publishes shooter state and latest ballistic solution values to SmartDashboard.
+     *
+     * <p>Displayed values include active state, fixed hood angle, yaw lead, flight time, and miss distance.
+     */
     private void publishTelemetry() {
         SmartDashboard.putBoolean("Shooter/Active", shootingActive);
         SmartDashboard.putNumber("Shooter/FixedHoodAngleDeg", Math.toDegrees(ShooterConstants.hoodInitialAngleRadians));

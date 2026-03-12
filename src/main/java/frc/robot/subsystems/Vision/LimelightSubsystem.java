@@ -16,9 +16,8 @@ import frc.robot.Constants.VisionConstants;
  * Limelight interface for AprilTag targeting, aiming, and target-geometry calculations.
  */
 public class LimelightSubsystem extends SubsystemBase {
-    private static final int LIMELIGHT_POSE_FIELD_COUNT = 6;
-    private final NetworkTable table =
-        NetworkTableInstance.getDefault().getTable(LimelightConstants.limelightName);
+    private static final int LIMELIGHT_POSE_FIELD_COUNT = 12;
+    private final NetworkTable table = NetworkTableInstance.getDefault().getTable(LimelightConstants.limelightName);
 
     /**
      * @return true when Limelight has a valid target
