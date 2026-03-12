@@ -1,11 +1,11 @@
 {
   "motors": {
     "flywheel": {
-      "leader": 10,
+      "leader": 2,
       "leaderInverted": false
     },
     "indexer": {
-      "system": 11,
+      "system": 0,
       "inverted": false
     }
   },

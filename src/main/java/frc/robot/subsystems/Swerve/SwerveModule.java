@@ -72,7 +72,9 @@ public class SwerveModule {
 
         driveConfig
             .inverted(driveMotorReversed)
-            .idleMode(IdleMode.kBrake);
+            .idleMode(IdleMode.kBrake)
+            // Limit drive current to match 40A breaker and reduce brownout risk.
+            .smartCurrentLimit(40);
 
         driveConfig.encoder
             .positionConversionFactor(ModuleConstants.driveEncoderRot2Meter)
@@ -82,7 +84,9 @@ public class SwerveModule {
 
         turningConfig
             .inverted(turningMotorReversed)
-            .idleMode(IdleMode.kBrake);
+            .idleMode(IdleMode.kBrake)
+            // Limit turning motor current to 40A for hardware protection.
+            .smartCurrentLimit(40);
 
         turningConfig.encoder
             .positionConversionFactor(ModuleConstants.turningEncoderRot2Rad)

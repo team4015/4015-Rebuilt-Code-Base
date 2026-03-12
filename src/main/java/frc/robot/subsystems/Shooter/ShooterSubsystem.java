@@ -1,15 +1,9 @@
 package frc.robot.subsystems.Shooter;
 
-import com.revrobotics.PersistMode;
-import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,10 +16,8 @@ import frc.robot.subsystems.Vision.LimelightSubsystem;
  * Shooter subsystem that manages flywheels, indexer, and motion-compensated aiming at a fixed hood angle.
  */
 public class ShooterSubsystem extends SubsystemBase {
-    private final SparkMax shooterMotor =
-        new SparkMax(ShooterConstants.shooterMotorId, MotorType.kBrushless);
-    private final SparkMax indexerMotor =
-        new SparkMax(ShooterConstants.indexerMotorId, MotorType.kBrushless);
+    private final PWMSparkMax shooterMotor = new PWMSparkMax(ShooterConstants.shooterMotorId);
+    private final PWMSparkMax indexerMotor = new PWMSparkMax(ShooterConstants.indexerMotorId);
 
     private final SwerveSubsystem swerveSubsystem;
     private final LimelightSubsystem limelightSubsystem;
@@ -45,14 +37,8 @@ public class ShooterSubsystem extends SubsystemBase {
         this.swerveSubsystem = swerveSubsystem;
         this.limelightSubsystem = limelightSubsystem;
 
-        configureMotor(shooterMotor, ShooterConstants.shooterMotorInverted, IdleMode.kCoast);
-        configureMotor(indexerMotor, ShooterConstants.indexerMotorInverted, IdleMode.kBrake);
-    }
-
-    private void configureMotor(SparkMax motor, boolean inverted, IdleMode idleMode) {
-        SparkMaxConfig config = new SparkMaxConfig();
-        config.inverted(inverted).idleMode(idleMode);
-        motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        shooterMotor.setInverted(ShooterConstants.shooterMotorInverted);
+        indexerMotor.setInverted(ShooterConstants.indexerMotorInverted);
     }
 
     /** Toggles the shooter and indexer between active and stopped states. */

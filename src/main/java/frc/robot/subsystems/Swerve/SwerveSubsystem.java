@@ -100,6 +100,9 @@ public class SwerveSubsystem extends SubsystemBase {
     private final double[] previousRawAbsoluteRad = new double[4];
     private final boolean[] previousRawInitialized = new boolean[4];
 
+    // Delay heading zeroing until the NavX finishes its startup calibration to avoid
+    // noisy yaw values that make field-oriented driving feel random.
+    private static final double HEADING_INIT_TIMEOUT_SEC = 5.0;
     private final AHRS gyro = new AHRS(AHRS.NavXComType.kMXP_SPI);
     private final Timer startupTimer = new Timer();
     private boolean headingInitialized = false;
@@ -187,10 +190,14 @@ public class SwerveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (!headingInitialized && startupTimer.hasElapsed(1.0)) {
-            zeroHeading();
-            resetOdometry(new Pose2d());
-            headingInitialized = true;
+        if (!headingInitialized) {
+            boolean gyroReady = !gyro.isCalibrating();
+            boolean timeoutReached = startupTimer.hasElapsed(HEADING_INIT_TIMEOUT_SEC);
+            if (gyroReady || timeoutReached) {
+                zeroHeading();
+                resetOdometry(new Pose2d());
+                headingInitialized = true;
+            }
         }
 
         updateCalibrationSampling();

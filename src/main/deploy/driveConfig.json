@@ -75,8 +75,8 @@
     "calibrateAbsoluteEncoderButtonIdx": 3,
     "aprilTagAlignButtonIdx": 4,
     "triggerPressedThreshold": 0.2,
-    "intakePort": 10,
-    "extendableHopperPort": 11,
+    "intakePort": 1,
+    "extendableHopperPort": 3,
     "deadband": 0.05
   }
 }
