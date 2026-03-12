@@ -65,18 +65,15 @@
     "driverYAxis": 1,
     "driverXAxis": 0,
     "driverRotAxis": 4,
-    "intakeToggleButtonIdx": 6,
     "shooterToggleButtonIdx": 5,
     "driverLeftTriggerAxis": 2,
     "driverRightTriggerAxis": 3,
     "driverFieldOrientedButtonIdx": 1,
     "driveUnlockSwerveButtonIdx": 2,
-    "aimAtTagButtonIdx": 3,
-    "calibrateAbsoluteEncoderButtonIdx": 3,
-    "aprilTagAlignButtonIdx": 4,
+    "aimAtTagButtonIdx": 6,
+    "calibrateAbsoluteEncoderButtonIdx": 4,
+    "aprilTagAlignButtonIdx": 1,
     "triggerPressedThreshold": 0.2,
-    "intakePort": 1,
-    "extendableHopperPort": 3,
     "deadband": 0.05
   }
 }

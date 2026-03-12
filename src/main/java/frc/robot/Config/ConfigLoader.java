@@ -52,42 +52,6 @@ public final class ConfigLoader {
     }
 
     /**
-     * Loads the intake configuration.
-     *
-     * @return validated intake configuration
-     */
-    public static IntakeConfig loadIntakeConfig() {
-        try {
-            File file = new File(Filesystem.getDeployDirectory(), "intakeConfig.json");
-            try (Reader reader = new FileReader(file)) {
-                IntakeConfig config = new Gson().fromJson(reader, IntakeConfig.class);
-                validateIntakeConfig(config);
-                return config;
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to load intake config", e);
-        }
-    }
-
-    /**
-     * Loads the hopper configuration.
-     *
-     * @return validated hopper configuration
-     */
-    public static ExtendableHopperConfig loadExtendableHopperConfig() {
-        try {
-            File file = new File(Filesystem.getDeployDirectory(), "extendableHopper.json");
-            try (Reader reader = new FileReader(file)) {
-                ExtendableHopperConfig config = new Gson().fromJson(reader, ExtendableHopperConfig.class);
-                validateExtendableHopperConfig(config);
-                return config;
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to load extendable hopper config", e);
-        }
-    }
-
-    /**
      * Loads the shooter configuration.
      *
      * @return validated shooter configuration
@@ -155,26 +119,6 @@ public final class ConfigLoader {
         requireNonNegative(config.hub.frontEdgeToCenterMeters, "hub.frontEdgeToCenterMeters");
     }
 
-    private static void validateIntakeConfig(IntakeConfig config) {
-        if (config == null || config.settings == null) {
-            throw new IllegalArgumentException("intakeConfig.json is missing one or more required sections");
-        }
-
-        requireNonNegative(config.settings.fullSpeed, "settings.fullSpeed");
-    }
-
-    private static void validateExtendableHopperConfig(ExtendableHopperConfig config) {
-        if (config == null
-            || config.port == null
-            || config.port.frontSwitch == null
-            || config.port.backSwitch == null
-            || config.settings == null) {
-            throw new IllegalArgumentException("extendableHopper.json is missing one or more required sections");
-        }
-
-        requireNonNegative(config.settings.matchStartForwardSpeed, "settings.matchStartForwardSpeed");
-        requireNonNegative(config.settings.manualSpeed, "settings.manualSpeed");
-    }
 
     private static void validateShooterConfig(ShooterConfig config) {
         if (config == null

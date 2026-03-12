@@ -85,7 +85,6 @@ public class DriveConfig {
         public int driverYAxis;
         public int driverXAxis;
         public int driverRotAxis;
-        public int intakeToggleButtonIdx;
         public int shooterToggleButtonIdx;
         public int driverLeftTriggerAxis;
         public int driverRightTriggerAxis;
@@ -95,8 +94,6 @@ public class DriveConfig {
         public int calibrateAbsoluteEncoderButtonIdx;
         public int aprilTagAlignButtonIdx;
         public double triggerPressedThreshold;
-        public int intakePort;
-        public int extendableHopperPort;
         public double deadband;
     }
 }

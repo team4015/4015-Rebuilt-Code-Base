@@ -287,7 +287,7 @@ public class SwerveSubsystem extends SubsystemBase {
             turningMotorReversedEntries[i] = moduleLayout.add("Turning Motor Reversed", false).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
             driveMotorReversedEntries[i] = moduleLayout.add("Drive Motor Reversed", false).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
             rawDeltaDegEntries[i] = moduleLayout.add("Raw Delta/Loop (deg)", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
-            turningAppliedEntries[i] = moduleLayout.add("Turning Applied", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
+            turningAppliedEntries[i] = moduleLayout.add(--"Turning Applied", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
             driveAppliedEntries[i] = moduleLayout.add("Drive Applied", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
             turningVelocityEntries[i] = moduleLayout.add("Turning Vel (rad/s)", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
             driveVelocityEntries[i] = moduleLayout.add("Drive Vel (m/s)", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
