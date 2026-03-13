@@ -5,8 +5,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Config.ConfigLoader;
 import frc.robot.Config.DriveConfig;
-import frc.robot.Config.ExtendableHopperConfig;
-import frc.robot.Config.IntakeConfig;
 import frc.robot.Config.ShooterConfig;
 import frc.robot.Config.VisionConfig;
 
@@ -15,8 +13,6 @@ import frc.robot.Config.VisionConfig;
  */
 public final class Constants {
     public static final DriveConfig DRIVE = ConfigLoader.loadDriveConfig();
-    public static final IntakeConfig INTAKE = ConfigLoader.loadIntakeConfig();
-    public static final ExtendableHopperConfig EXTENDABLE_HOPPER = ConfigLoader.loadExtendableHopperConfig();
     public static final ShooterConfig SHOOTER = ConfigLoader.loadShooterConfig();
     public static final VisionConfig VISION = ConfigLoader.loadVisionConfig();
 
@@ -88,34 +84,10 @@ public final class Constants {
 
         public static final double physicalMaxSpeedMetersPerSecond = DRIVE.limits.maxSpeedMps;
         public static final double physicalMaxAngularSpeedRadiansPerSecond = DRIVE.limits.maxAngularSpeedRadPerSec;
-        public static final double teleDriveMaxSpeedMetersPerSecond =
-            physicalMaxSpeedMetersPerSecond * DRIVE.limits.teleopSpeedScale;
-        public static final double teleDriveMaxAngularSpeedRadiansPerSecond =
-            physicalMaxAngularSpeedRadiansPerSecond * DRIVE.limits.teleopSpeedScale;
+        public static final double teleDriveMaxSpeedMetersPerSecond =physicalMaxSpeedMetersPerSecond * DRIVE.limits.teleopSpeedScale;
+        public static final double teleDriveMaxAngularSpeedRadiansPerSecond = physicalMaxAngularSpeedRadiansPerSecond * DRIVE.limits.teleopSpeedScale;
 
         private DriveConstants() {
-        }
-    }
-
-    /** Constants used by the intake subsystem. */
-    public static final class IntakeConstants {
-        public static final int intakeMotorPort = INTAKE.port.intake.system;
-        public static final boolean intakeMotorReversed = INTAKE.settings.intakeMotorReversed;
-        public static final double intakeFullSpeed = INTAKE.settings.fullSpeed;
-
-        private IntakeConstants() {
-        }
-    }
-
-    /** Constants used by the extendable hopper subsystem. */
-    public static final class ExtendableHopperConstants {
-        public static final int extendableHopperMotorPort = EXTENDABLE_HOPPER.port.extendableHopper.system;
-        public static final int frontLimitSwitch = EXTENDABLE_HOPPER.port.frontSwitch.limitSwitch;
-        public static final int backLimitSwitch = EXTENDABLE_HOPPER.port.backSwitch.limitSwitch;
-        public static final double matchStartForwardSpeed = EXTENDABLE_HOPPER.settings.matchStartForwardSpeed;
-        public static final double manualSpeed = EXTENDABLE_HOPPER.settings.manualSpeed;
-
-        private ExtendableHopperConstants() {
         }
     }
 
@@ -125,9 +97,7 @@ public final class Constants {
         public static final int driverYAxis = DRIVE.oi.driverYAxis;
         public static final int driverXAxis = DRIVE.oi.driverXAxis;
         public static final int driverRotAxis = DRIVE.oi.driverRotAxis;
-        public static final int intakeToggleButtonIdx = DRIVE.oi.intakeToggleButtonIdx;
         public static final int shooterToggleButtonIdx = DRIVE.oi.shooterToggleButtonIdx;
-        public static final int hoodResetButtonIdx = DRIVE.oi.hoodResetButtonIdx;
         public static final int driverLeftTriggerAxis = DRIVE.oi.driverLeftTriggerAxis;
         public static final int driverRightTriggerAxis = DRIVE.oi.driverRightTriggerAxis;
         public static final int driverFieldOrientedButtonIdx = DRIVE.oi.driverFieldOrientedButtonIdx;
@@ -136,8 +106,6 @@ public final class Constants {
         public static final int calibrateAbsoluteEncoderButtonIdx = DRIVE.oi.calibrateAbsoluteEncoderButtonIdx;
         public static final int aprilTagAlignButtonIdx = DRIVE.oi.aprilTagAlignButtonIdx;
         public static final double triggerPressedThreshold = DRIVE.oi.triggerPressedThreshold;
-        public static final int intakePort = DRIVE.oi.intakePort;
-        public static final int extendableHopperPort = DRIVE.oi.extendableHopperPort;
         public static final double deadband = DRIVE.oi.deadband;
 
         private OIConstants() {
@@ -172,37 +140,22 @@ public final class Constants {
 
     /** Constants used by the shooter, hood, indexer, and shot solver. */
     public static final class ShooterConstants {
-        public static final int shooterLeaderMotorId = SHOOTER.motors.flywheel.leader;
-        public static final int shooterFollowerMotorId = SHOOTER.motors.flywheel.follower;
-        public static final boolean shooterLeaderMotorInverted = SHOOTER.motors.flywheel.leaderInverted;
-        public static final boolean shooterFollowerMotorInverted = SHOOTER.motors.flywheel.followerInverted;
+        public static final int shooterMotorId = SHOOTER.motors.flywheel.leader;
+        public static final boolean shooterMotorInverted = SHOOTER.motors.flywheel.leaderInverted;
         public static final int indexerMotorId = SHOOTER.motors.indexer.system;
         public static final boolean indexerMotorInverted = SHOOTER.motors.indexer.inverted;
-        public static final int hoodMotorId = SHOOTER.motors.hood.system;
-        public static final boolean hoodMotorInverted = SHOOTER.motors.hood.inverted;
-        public static final int hoodMinLimitSwitchPort = SHOOTER.limits.hoodMinLimitSwitch;
-        public static final int hoodMaxLimitSwitchPort = SHOOTER.limits.hoodMaxLimitSwitch;
         public static final double shooterFullSpeed = SHOOTER.flywheel.fullSpeed;
         public static final double shooterLaunchVelocityMetersPerSecond = SHOOTER.flywheel.launchVelocityMetersPerSecond;
         public static final double indexerFullSpeed = SHOOTER.indexer.fullSpeed;
-        public static final double hoodGearRatio = SHOOTER.hood.gearRatio;
         public static final double hoodInitialAngleRadians = Math.toRadians(SHOOTER.hood.initialAngleDegrees);
         public static final double hoodMaxAngleRadians = Math.toRadians(SHOOTER.hood.maxAngleDegrees);
-        public static final double hoodHomingOutput = SHOOTER.hood.homingOutput;
-        public static final double hoodMaxControlOutput = SHOOTER.hood.maxControlOutput;
-        public static final double hoodToleranceRadians = Math.toRadians(SHOOTER.hood.toleranceDegrees);
-        public static final double hoodKp = SHOOTER.hood.pid.p;
-        public static final double hoodKi = SHOOTER.hood.pid.i;
-        public static final double hoodKd = SHOOTER.hood.pid.d;
         public static final double projectileReleaseHeightMeters = SHOOTER.projectile.releaseHeightMeters;
         public static final double projectileBallMassKg = SHOOTER.projectile.ballMassKg;
         public static final double projectileBallDiameterMeters = SHOOTER.projectile.ballDiameterMeters;
         public static final double projectileDragCoefficient = SHOOTER.projectile.dragCoefficient;
         public static final double projectileAirDensityKgPerCubicMeter = SHOOTER.projectile.airDensityKgPerCubicMeter;
-        public static final double projectileFlywheelBallFrictionCoefficient =
-            SHOOTER.projectile.flywheelBallFrictionCoefficient;
-        public static final double projectileGravityMetersPerSecondSquared =
-            SHOOTER.projectile.gravityMetersPerSecondSquared;
+        public static final double projectileFlywheelBallFrictionCoefficient = SHOOTER.projectile.flywheelBallFrictionCoefficient;
+        public static final double projectileGravityMetersPerSecondSquared = SHOOTER.projectile.gravityMetersPerSecondSquared;
         public static final double projectileSolverTimeStepSeconds = SHOOTER.projectile.solverTimeStepSeconds;
         public static final double projectileSolverMaxTimeSeconds = SHOOTER.projectile.solverMaxTimeSeconds;
         public static final double projectileControlLatencySeconds = SHOOTER.projectile.controlLatencySeconds;

@@ -11,9 +11,9 @@
   },
   "motors": {
     "drive": {
-      "backRight": 2,
-      "backLeft": 1,
-      "frontRight": 0,
+      "backRight": 1,
+      "backLeft": 4,
+      "frontRight": 2,
       "frontLeft": 3
     },
     "turning": {
@@ -25,16 +25,16 @@
   },
   "encoders": {
     "absolutePorts": {
-      "backRight": 2,
-      "backLeft": 1,
-      "frontRight": 0,
-      "frontLeft": 3
+      "backRight": 3,
+      "backLeft": 0,
+      "frontRight": 2,
+      "frontLeft": 1
     },
     "absoluteOffsetsRad": {
-      "frontLeft": 5.621990633403318,
-      "frontRight": 5.374987724082476,
-      "backLeft": 4.043554387013977,
-      "backRight": 4.834212827346017
+      "frontLeft": 0.0,
+      "frontRight": 0.0,
+      "backLeft": 0.0,
+      "backRight": 0.0
     },
     "driveReversed": {
       "frontLeft": false,
@@ -65,19 +65,15 @@
     "driverYAxis": 1,
     "driverXAxis": 0,
     "driverRotAxis": 4,
-    "intakeToggleButtonIdx": 6,
     "shooterToggleButtonIdx": 5,
-    "hoodResetButtonIdx": 7,
     "driverLeftTriggerAxis": 2,
     "driverRightTriggerAxis": 3,
     "driverFieldOrientedButtonIdx": 1,
     "driveUnlockSwerveButtonIdx": 2,
-    "aimAtTagButtonIdx": 3,
-    "calibrateAbsoluteEncoderButtonIdx": 3,
-    "aprilTagAlignButtonIdx": 4,
+    "aimAtTagButtonIdx": 6,
+    "calibrateAbsoluteEncoderButtonIdx": 4,
+    "aprilTagAlignButtonIdx": 1,
     "triggerPressedThreshold": 0.2,
-    "intakePort": 10,
-    "extendableHopperPort": 11,
     "deadband": 0.05
   }
 }

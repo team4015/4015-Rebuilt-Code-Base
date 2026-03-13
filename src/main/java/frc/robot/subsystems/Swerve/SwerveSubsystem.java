@@ -100,6 +100,9 @@ public class SwerveSubsystem extends SubsystemBase {
     private final double[] previousRawAbsoluteRad = new double[4];
     private final boolean[] previousRawInitialized = new boolean[4];
 
+    // Delay heading zeroing until the NavX finishes its startup calibration to avoid
+    // noisy yaw values that make field-oriented driving feel random.
+    private static final double HEADING_INIT_TIMEOUT_SEC = 5.0;
     private final AHRS gyro = new AHRS(AHRS.NavXComType.kMXP_SPI);
     private final Timer startupTimer = new Timer();
     private boolean headingInitialized = false;
@@ -187,10 +190,14 @@ public class SwerveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (!headingInitialized && startupTimer.hasElapsed(1.0)) {
-            zeroHeading();
-            resetOdometry(new Pose2d());
-            headingInitialized = true;
+        if (!headingInitialized) {
+            boolean gyroReady = !gyro.isCalibrating();
+            boolean timeoutReached = startupTimer.hasElapsed(HEADING_INIT_TIMEOUT_SEC);
+            if (gyroReady || timeoutReached) {
+                zeroHeading();
+                resetOdometry(new Pose2d());
+                headingInitialized = true;
+            }
         }
 
         updateCalibrationSampling();
@@ -217,6 +224,13 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Turning Encoder Back Right", backRight.getTurningPosition());
     }
 
+    /**
+     * Creates and wires the Shuffleboard widgets used for encoder calibration.
+     *
+     * <p>The dashboard contains controls for sample collection and a module-specific
+     * telemetry panel for raw/corrected angles, inversion status, command/velocity sign checks,
+     * and recommended offsets.
+     */
     private void initializeCalibrationDashboard() {
         ShuffleboardTab calibrationTab = Shuffleboard.getTab("Encoder Calibration");
 
@@ -273,7 +287,7 @@ public class SwerveSubsystem extends SubsystemBase {
             turningMotorReversedEntries[i] = moduleLayout.add("Turning Motor Reversed", false).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
             driveMotorReversedEntries[i] = moduleLayout.add("Drive Motor Reversed", false).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
             rawDeltaDegEntries[i] = moduleLayout.add("Raw Delta/Loop (deg)", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
-            turningAppliedEntries[i] = moduleLayout.add("Turning Applied", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
+            turningAppliedEntries[i] = moduleLayout.add(--"Turning Applied", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
             driveAppliedEntries[i] = moduleLayout.add("Drive Applied", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
             turningVelocityEntries[i] = moduleLayout.add("Turning Vel (rad/s)", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
             driveVelocityEntries[i] = moduleLayout.add("Drive Vel (m/s)", 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
@@ -284,6 +298,12 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     }
 
+    /**
+     * Processes calibration control inputs from Shuffleboard.
+     *
+     * <p>If reset is requested, sample buffers are cleared. If collection is enabled,
+     * one sample is captured from each module on this loop iteration.
+     */
     private void updateCalibrationSampling() {
         if (calResetEntry.getBoolean(false)) {
             resetCalibrationSamples();
@@ -294,6 +314,7 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     }
 
+    /** Resets the accumulated calibration sample count and circular angle averages. */
     private void resetCalibrationSamples() {
         calibrationSampleCount = 0;
         for (int i = 0; i < calibrationRawSinSum.length; i++) {
@@ -302,6 +323,7 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     }
 
+    /** Captures one raw absolute-angle sample from each module into circular-average accumulators. */
     private void captureCalibrationSample() {
         for (int i = 0; i < modules.length; i++) {
             double rawRad = modules[i].getRawAbsoluteEncoderRad();
@@ -311,6 +333,12 @@ public class SwerveSubsystem extends SubsystemBase {
         calibrationSampleCount++;
     }
 
+    /**
+     * Publishes calibration and inversion telemetry for each module to Shuffleboard.
+     *
+     * <p>This method computes real-time raw/corrected angles, average sampled raw angle,
+     * offset recommendations, and command-versus-feedback sign checks used during bring-up.
+     */
     private void publishCalibrationTelemetry() {
         calSampleCountEntry.setInteger(calibrationSampleCount);
         double targetDeg = calTargetDegEntry.getDouble(0.0);
@@ -366,6 +394,15 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     }
 
+    /**
+     * Compares signal signs only when both signals exceed configured deadbands.
+     *
+     * @param signalA first signal to compare
+     * @param signalB second signal to compare
+     * @param minAbsA minimum magnitude for {@code signalA} before comparison is enforced
+     * @param minAbsB minimum magnitude for {@code signalB} before comparison is enforced
+     * @return {@code true} when either signal is below threshold or signs match; otherwise {@code false}
+     */
     private boolean signsMatchWithThreshold(double signalA, double signalB, double minAbsA, double minAbsB) {
         if (Math.abs(signalA) < minAbsA || Math.abs(signalB) < minAbsB) {
             return true;
@@ -373,6 +410,14 @@ public class SwerveSubsystem extends SubsystemBase {
         return Math.signum(signalA) == Math.signum(signalB);
     }
 
+    /**
+     * Computes the absolute-encoder offset that maps a measured raw angle to a desired module angle.
+     *
+     * @param measuredRawRad measured raw absolute angle in radians
+     * @param desiredModuleAngleRad desired module angle in radians
+     * @param reversed whether the absolute encoder reading is inverted
+     * @return recommended offset in radians, wrapped to {@code [0, 2pi)}
+     */
     private double calculateRecommendedOffsetRad(
         double measuredRawRad,
         double desiredModuleAngleRad,
@@ -382,6 +427,12 @@ public class SwerveSubsystem extends SubsystemBase {
         return MathUtil.inputModulus(measuredRawRad - (desiredModuleAngleRad * sign), 0.0, TWO_PI);
     }
 
+    /**
+     * Returns the circular mean of sampled raw absolute angles for a module.
+     *
+     * @param moduleIndex module index in standard order (front-left, front-right, back-left, back-right)
+     * @return average raw angle in radians wrapped to {@code [0, 2pi)}
+     */
     private double getAverageRawAngleRad(int moduleIndex) {
         return MathUtil.inputModulus(
             Math.atan2(calibrationRawSinSum[moduleIndex], calibrationRawCosSum[moduleIndex]),
