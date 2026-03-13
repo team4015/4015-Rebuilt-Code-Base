@@ -236,7 +236,7 @@ public class SwerveModule {
      *
      * @return normalized applied output
      */
-    public double getDriveAppliedOutput() {
+    public double getDriveAppliedOutput() { //trash
         return driveMotor.get();
     }
 
@@ -245,7 +245,7 @@ public class SwerveModule {
      *
      * @return normalized applied output
      */
-    public double getTurningAppliedOutput() {
+    public double getTurningAppliedOutput() { //trash
         return turningMotor.get();
     }
 
@@ -256,7 +256,7 @@ public class SwerveModule {
      */
     public boolean isDriveMotorReversed() {
         return driveMotorReversed;
-    }
+    } //trash
 
     /**
      * Returns whether the turning motor is inverted.
@@ -265,7 +265,7 @@ public class SwerveModule {
      */
     public boolean isTurningMotorReversed() {
         return turningMotorReversed;
-    }
+    } //trash
 
     /** Resets the drive encoder and aligns the turning encoder to the absolute encoder. */
     public void resetEncoder() {
