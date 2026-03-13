@@ -81,7 +81,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
-        shooterSubsystem.stopShooting();
+        shooterSubsystem.stopAll();
     }
 
     /**

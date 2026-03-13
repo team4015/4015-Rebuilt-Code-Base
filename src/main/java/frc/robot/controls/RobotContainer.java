@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.Shooter.IndexerCommand;
 import frc.robot.commands.Shooter.ShooterCommand;
 import frc.robot.commands.SwerveCommands;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
@@ -45,6 +46,9 @@ public class RobotContainer {
     private void configureBindings() {
         new JoystickButton(driverJoystick, OIConstants.shooterToggleButtonIdx)
             .onTrue(new ShooterCommand(shooterSubsystem));
+
+        new JoystickButton(driverJoystick, OIConstants.indexerToggleButtonIdx)
+            .onTrue(new IndexerCommand(shooterSubsystem));
 
         new JoystickButton(driverJoystick, OIConstants.driveUnlockSwerveButtonIdx)
             .whileTrue(

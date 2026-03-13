@@ -4,30 +4,30 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
 
 /**
- * Instant command that toggles the shooter flywheel.
+ * Instant command that toggles the indexer state.
  */
-public class ShooterCommand extends Command {
+public class IndexerCommand extends Command {
     private final ShooterSubsystem shooterSubsystem;
 
     /**
-     * Creates the shooter toggle command.
+     * Creates the indexer toggle command.
      *
-     * @param shooterSubsystem shooter subsystem to control
+     * @param shooterSubsystem shooter subsystem that owns the indexer motor
      */
-    public ShooterCommand(ShooterSubsystem shooterSubsystem) {
+    public IndexerCommand(ShooterSubsystem shooterSubsystem) {
         this.shooterSubsystem = shooterSubsystem;
         addRequirements(shooterSubsystem);
     }
 
     @Override
-    /** Toggles the shooter flywheel state. */
+    /** Toggles the indexer state. */
     public void initialize() {
-        shooterSubsystem.toggleShooter();
+        shooterSubsystem.toggleIndexer();
     }
 
     @Override
     /**
-     * Ends immediately after toggling the shooter.
+     * Ends immediately after toggling the indexer.
      *
      * @return always {@code true}
      */

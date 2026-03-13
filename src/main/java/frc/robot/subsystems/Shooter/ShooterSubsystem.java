@@ -22,7 +22,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private final SwerveSubsystem swerveSubsystem;
     private final LimelightSubsystem limelightSubsystem;
 
-    private boolean shootingActive = false;
+    private boolean shooterActive = false;
+    private boolean indexerActive = false;
     private ChassisSpeeds previousRobotRelativeSpeeds = new ChassisSpeeds();
     private double previousMotionTimestampSeconds = Timer.getFPGATimestamp();
     private ShotCalculator.ShotSolution lastShotSolution = ShotCalculator.ShotSolution.noSolution();
@@ -41,28 +42,54 @@ public class ShooterSubsystem extends SubsystemBase {
         indexerMotor.setInverted(ShooterConstants.indexerMotorInverted);
     }
 
-    /** Toggles the shooter and indexer between active and stopped states. */
-    public void toggleShooting() {
-        if (shootingActive) {
-            stopShooting();
+    /** Toggles the flywheel between active and stopped states. */
+    public void toggleShooter() {
+        if (shooterActive) {
+            stopShooter();
             return;
         }
 
-        startShooting();
+        startShooter();
     }
 
-    /** Starts both flywheels and the indexer at their configured full-speed outputs. */
-    public void startShooting() {
-        shootingActive = true;
+    /** Starts the flywheel at its configured full-speed output. */
+    public void startShooter() {
+        shooterActive = true;
         shooterMotor.set(ShooterConstants.shooterFullSpeed);
+    }
+
+    /** Stops the flywheel. */
+    public void stopShooter() {
+        shooterActive = false;
+        shooterMotor.stopMotor();
+    }
+
+    /** Toggles the indexer between active and stopped states. */
+    public void toggleIndexer() {
+        if (indexerActive) {
+            stopIndexer();
+            return;
+        }
+
+        startIndexer();
+    }
+
+    /** Starts the indexer at its configured full-speed output. */
+    public void startIndexer() {
+        indexerActive = true;
         indexerMotor.set(ShooterConstants.indexerFullSpeed);
     }
 
-    /** Stops the flywheels and indexer. */
-    public void stopShooting() {
-        shootingActive = false;
-        shooterMotor.stopMotor();
+    /** Stops the indexer. */
+    public void stopIndexer() {
+        indexerActive = false;
         indexerMotor.stopMotor();
+    }
+
+    /** Stops both shooter and indexer outputs. */
+    public void stopAll() {
+        stopShooter();
+        stopIndexer();
     }
 
     /**
@@ -71,7 +98,16 @@ public class ShooterSubsystem extends SubsystemBase {
      * @return {@code true} when shooting is enabled
      */
     public boolean isShootingActive() {
-        return shootingActive;
+        return shooterActive;
+    }
+
+    /**
+     * Returns whether the indexer is currently active.
+     *
+     * @return {@code true} when the indexer is running
+     */
+    public boolean isIndexerActive() {
+        return indexerActive;
     }
 
     /**
@@ -108,7 +144,7 @@ public class ShooterSubsystem extends SubsystemBase {
      * valid ballistic solution for aiming and telemetry.
      */
     private void updateShotSolution() {
-        if (!shootingActive || !limelightSubsystem.hasValidTarget()) {
+        if (!shooterActive || !limelightSubsystem.hasValidTarget()) {
             return;
         }
 
@@ -169,7 +205,8 @@ public class ShooterSubsystem extends SubsystemBase {
      * <p>Displayed values include active state, fixed hood angle, yaw lead, flight time, and miss distance.
      */
     private void publishTelemetry() {
-        SmartDashboard.putBoolean("Shooter/Active", shootingActive);
+        SmartDashboard.putBoolean("Shooter/Active", shooterActive);
+        SmartDashboard.putBoolean("Shooter/IndexerActive", indexerActive);
         SmartDashboard.putNumber("Shooter/FixedHoodAngleDeg", Math.toDegrees(ShooterConstants.hoodInitialAngleRadians));
         SmartDashboard.putNumber("Shooter/YawLeadDeg", Math.toDegrees(lastShotSolution.yawLeadRad));
         SmartDashboard.putNumber("Shooter/FlightTimeSec", lastShotSolution.flightTimeSeconds);

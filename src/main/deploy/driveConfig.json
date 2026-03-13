@@ -66,12 +66,12 @@
     "driverXAxis": 0,
     "driverRotAxis": 4,
     "shooterToggleButtonIdx": 5,
+    "indexerToggleButtonIdx": 3,
     "driverLeftTriggerAxis": 2,
     "driverRightTriggerAxis": 3,
     "driverFieldOrientedButtonIdx": 1,
     "driveUnlockSwerveButtonIdx": 2,
     "aimAtTagButtonIdx": 6,
-    "calibrateAbsoluteEncoderButtonIdx": 4,
     "aprilTagAlignButtonIdx": 1,
     "triggerPressedThreshold": 0.2,
     "deadband": 0.05
