@@ -31,16 +31,16 @@
       "frontLeft": 3
     },
     "absoluteOffsetsRad": {
-      "frontLeft": 4.60088,
-      "frontRight": 0.17408,
-      "backLeft": 1.795276,
-      "backRight": 4.85657
+      "frontLeft": 4.6100116,
+      "frontRight": 3.31646544,
+      "backLeft": 1.8187571,
+      "backRight": 1.74083266
     },
     "driveReversed": {
       "frontLeft": false,
-      "frontRight": true,
+      "frontRight": false,
       "backLeft": false,
-      "backRight": true
+      "backRight": false
     },
     "turningReversed": {
       "frontLeft": false,

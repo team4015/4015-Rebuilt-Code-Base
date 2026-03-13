@@ -1,6 +1,7 @@
 package frc.robot.subsystems.Swerve;
 
 import com.studica.frc.AHRS;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -100,7 +101,7 @@ public class SwerveSubsystem extends SubsystemBase {
      * @return robot rotation
      */
     public Rotation2d getRotation2d() {
-        return Rotation2d.fromDegrees(-getHeading());
+        return Rotation2d.fromDegrees(getHeading());
     }
 
     /**
