@@ -25,22 +25,22 @@
   },
   "encoders": {
     "absolutePorts": {
-      "backRight": 3,
-      "backLeft": 0,
-      "frontRight": 2,
-      "frontLeft": 1
+      "backRight": 2,
+      "backLeft": 1,
+      "frontRight": 0,
+      "frontLeft": 3
     },
     "absoluteOffsetsRad": {
-      "frontLeft": 0.0,
-      "frontRight": 0.0,
-      "backLeft": 0.0,
-      "backRight": 0.0
+      "frontLeft": 4.60088,
+      "frontRight": 0.17408,
+      "backLeft": 1.795276,
+      "backRight": 4.85657
     },
     "driveReversed": {
       "frontLeft": false,
-      "frontRight": false,
+      "frontRight": true,
       "backLeft": false,
-      "backRight": false
+      "backRight": true
     },
     "turningReversed": {
       "frontLeft": false,

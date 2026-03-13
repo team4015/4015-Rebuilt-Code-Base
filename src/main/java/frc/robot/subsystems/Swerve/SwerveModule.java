@@ -148,52 +148,11 @@ public class SwerveModule {
      * @return corrected absolute angle in radians
      */
     public double getAbsoluteEncoderRad() {
-        double correctedAngle = getRawAbsoluteEncoderRad() - absoluteEncoderOffsetRad;
-        if (absoluteEncoderReversed) {
-            correctedAngle = -correctedAngle;
-        }
-        return normalizeTurningAngle(correctedAngle);
+        double angle = absoluteEncoder.getVoltage() /RobotController.getVoltage5V();
+        angle *=2.0 * Math.PI;
+        angle -= absoluteEncoderOffsetRad;
+        return angle * (absoluteEncoderReversed ? -1.0 : 1.0);
     }
-
-    /**
-     * Returns the raw absolute encoder angle in radians without offset correction.
-     *
-     * @return raw absolute angle in radians
-     */
-    public double getRawAbsoluteEncoderRad() {
-        double ratio = absoluteEncoder.getVoltage() / RobotController.getCurrent5V();
-        ratio = MathUtil.clamp(ratio, 0.0, 1.0);
-        return normalizeAngle0To2Pi(ratio * TWO_PI);
-    }
-
-    /**
-     * Returns the raw absolute encoder angle in degrees.
-     *
-     * @return raw absolute angle in degrees
-     */
-    public double getRawAbsoluteEncoderDeg() {
-        return Math.toDegrees(getRawAbsoluteEncoderRad());
-    }
-
-    /**
-     * Returns corrected absolute encoder angle in degrees.
-     *
-     * @return corrected absolute angle in degrees
-     */
-    public double getAbsoluteEncoderDeg() {
-        return Math.toDegrees(getAbsoluteEncoderRad());
-    }
-
-    /**
-     * Normalizes an angle into the range {@code [0, 2pi)}.
-     *
-     * @param angleRad input angle in radians
-     * @return normalized angle in radians
-     */
-    public double normalizeAngle0To2Pi(double angleRad) {
-        return MathUtil.inputModulus(angleRad, 0.0, TWO_PI);
-    }
-
     /**
      * Normalizes an angle into the continuous turning-controller range {@code [-pi, pi)}.
      *
@@ -222,32 +181,6 @@ public class SwerveModule {
         return absoluteEncoderReversed;
     }
 
-    /**
-     * Returns the analog input channel used by the absolute encoder.
-     *
-     * @return analog input channel
-     */
-    public int getAbsoluteEncoderChannel() {
-        return absoluteEncoder.getChannel();
-    }
-
-    /**
-     * Returns the current drive motor applied output.
-     *
-     * @return normalized applied output
-     */
-    public double getDriveAppliedOutput() {
-        return driveMotor.get();
-    }
-
-    /**
-     * Returns the current turning motor applied output.
-     *
-     * @return normalized applied output
-     */
-    public double getTurningAppliedOutput() {
-        return turningMotor.get();
-    }
 
     /**
      * Returns whether the drive motor is inverted.
