@@ -31,7 +31,8 @@ public class RobotContainer {
                 () -> -driverJoystick.getRawAxis(OIConstants.driverYAxis),
                 () -> driverJoystick.getRawAxis(OIConstants.driverXAxis),
                 () -> driverJoystick.getRawAxis(OIConstants.driverRotAxis),
-                () -> driverJoystick.getRawButton(OIConstants.driverFieldOrientedButtonIdx),
+                // Default to field-oriented driving; hold the button to switch to robot-centric.
+                () -> !driverJoystick.getRawButton(OIConstants.driverFieldOrientedButtonIdx),
                 () -> driverJoystick.getRawButton(OIConstants.aimAtTagButtonIdx),
                 limelightSubsystem,
                 shooterSubsystem

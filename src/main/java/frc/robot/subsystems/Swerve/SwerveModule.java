@@ -163,43 +163,6 @@ public class SwerveModule {
         return MathUtil.angleModulus(angleRad);
     }
 
-    /**
-     * Returns the configured absolute encoder offset.
-     *
-     * @return offset in radians
-     */
-    public double getAbsoluteEncoderOffsetRad() {
-        return absoluteEncoderOffsetRad;
-    }
-
-    /**
-     * Returns whether the absolute encoder direction is inverted.
-     *
-     * @return {@code true} when the encoder is inverted
-     */
-    public boolean isAbsoluteEncoderReversed() {
-        return absoluteEncoderReversed;
-    }
-
-
-    /**
-     * Returns whether the drive motor is inverted.
-     *
-     * @return {@code true} when the drive motor is inverted
-     */
-    public boolean isDriveMotorReversed() {
-        return driveMotorReversed;
-    }
-
-    /**
-     * Returns whether the turning motor is inverted.
-     *
-     * @return {@code true} when the turning motor is inverted
-     */
-    public boolean isTurningMotorReversed() {
-        return turningMotorReversed;
-    }
-
     /** Resets the drive encoder and aligns the turning encoder to the absolute encoder. */
     public void resetEncoder() {
         driveEncoder.setPosition(0);
