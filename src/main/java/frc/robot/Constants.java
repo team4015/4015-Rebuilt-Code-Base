@@ -98,6 +98,7 @@ public final class Constants {
         public static final int driverXAxis = DRIVE.oi.driverXAxis;
         public static final int driverRotAxis = DRIVE.oi.driverRotAxis;
         public static final int shooterToggleButtonIdx = DRIVE.oi.shooterToggleButtonIdx;
+        public static final int indexerToggleButtonIdx = DRIVE.oi.indexerToggleButtonIdx;
         public static final int driverLeftTriggerAxis = DRIVE.oi.driverLeftTriggerAxis;
         public static final int driverRightTriggerAxis = DRIVE.oi.driverRightTriggerAxis;
         public static final int driverFieldOrientedButtonIdx = DRIVE.oi.driverFieldOrientedButtonIdx;

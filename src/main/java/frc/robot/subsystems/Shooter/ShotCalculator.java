@@ -54,13 +54,10 @@ final class ShotCalculator {
             return ShotSolution.noSolution();
         }
 
-        Translation2d targetDirection =
-            inputs.targetTranslationMeters.times(1.0 / inputs.targetTranslationMeters.getNorm());
+        Translation2d targetDirection = inputs.targetTranslationMeters.times(1.0 / inputs.targetTranslationMeters.getNorm());
         Translation2d perpendicular = new Translation2d(-targetDirection.getY(), targetDirection.getX());
         double lateralRobotSpeed = dot(inputs.predictedRobotVelocityMetersPerSecond, perpendicular);
-        double yawLeadRad = Math.asin(
-            MathUtil.clamp(-lateralRobotSpeed / horizontalLaunchSpeed, -0.95, 0.95)
-        );
+        double yawLeadRad = Math.asin(MathUtil.clamp(-lateralRobotSpeed / horizontalLaunchSpeed, -0.95, 0.95));
         Translation2d shotDirection = targetDirection.rotateBy(Rotation2d.fromRadians(yawLeadRad));
 
         double vx = inputs.predictedRobotVelocityMetersPerSecond.getX() + shotDirection.getX() * horizontalLaunchSpeed;
