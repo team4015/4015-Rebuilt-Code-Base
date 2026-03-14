@@ -99,6 +99,21 @@ public class RobotContainer {
      * @return autonomous command, or {@code null} if none is configured
      */
     public Command getAutonomousCommand() {
-        return null;
+        // Auto routine:
+        // 1) Spin up shooter for 5 seconds.
+        // 2) Start indexer and keep feeding for the rest of auto.
+        // 3) Stop everything at the end for safety.
+        double autoDurationSec = 15.0;
+        double shooterSpinupSec = 5.0;
+        double indexerFeedSec = Math.max(autoDurationSec - shooterSpinupSec, 0.0);
+
+        return Commands.sequence(
+            Commands.runOnce(shooterSubsystem::startShooter, shooterSubsystem),
+            Commands.waitSeconds(shooterSpinupSec),
+            Commands.runOnce(shooterSubsystem::startIndexer, shooterSubsystem),
+            Commands.waitSeconds(indexerFeedSec)
+        ).andThen(
+            Commands.runOnce(shooterSubsystem::stopAll, shooterSubsystem)
+        );
     }
 }
