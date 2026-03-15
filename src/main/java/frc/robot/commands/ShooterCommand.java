@@ -43,7 +43,6 @@ public class ShooterCommand extends Command {
       shooter.runShooter();
       shooter.runIndexer();
     } 
-    if(buttonYPressed){shooter.runHood();}
   }
 
   // Called once the command ends or is interrupted.

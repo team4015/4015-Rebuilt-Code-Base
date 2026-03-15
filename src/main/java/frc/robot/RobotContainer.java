@@ -31,7 +31,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
   private final Intake intake = new Intake(0.7, 0.1);
-  private final Shooter shooter = new Shooter(0.8, 0.1,0.7);
+  private final Shooter shooter = new Shooter(0.8,0.7);
 
   private final IntakeCommand intakeCMD = new IntakeCommand(intake, ctrl);
   private final ShooterCommand shooterCMD = new ShooterCommand(shooter, ctrl);

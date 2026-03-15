@@ -11,11 +11,9 @@ public class Shooter extends SubsystemBase{
     //Declare motors, speeds, default hood direction, and limit switches
     
     private final SparkMax shooterMotor;
-    private final SparkMax hoodMotor;
     private final SparkMax indexerMotor;
 
     private final double shooterSpeed;
-    private final double hoodSpeed;
     private final double indexerSpeed;
 
     private boolean hoodGoDown = true;
@@ -23,13 +21,12 @@ public class Shooter extends SubsystemBase{
   
     //Initialize the shooter
 
-    public Shooter(double shooterSpeed, double hoodSpeed, double indexerSpeed){
-        this.shooterMotor = new SparkMax(12, MotorType.kBrushless);
-        this.hoodMotor = new SparkMax(13, MotorType.kBrushless);
-        this.indexerMotor = new SparkMax(14, MotorType.kBrushless);
+    public Shooter(double shooterSpeed, double indexerSpeed){
+        this.shooterMotor = new SparkMax(2, MotorType.kBrushless);
+        this.indexerMotor = new SparkMax(0, MotorType.kBrushless);
+    
 
         this.shooterSpeed = shooterSpeed;
-        this.hoodSpeed = hoodSpeed;
         this.indexerSpeed = indexerSpeed;
     }
 
@@ -41,12 +38,6 @@ public class Shooter extends SubsystemBase{
 
     // Extend or retract the shooter hood
 
-    public void runHood(){
-        
-        hoodMotor.set((hoodGoDown) ? hoodSpeed : -hoodSpeed);
-        
-
-    }
 
     //Run the indexer
 
@@ -58,7 +49,6 @@ public class Shooter extends SubsystemBase{
 
     public void stop(){
         shooterMotor.set(0);
-        hoodMotor.set(0);
         indexerMotor.set(0);
     }
 

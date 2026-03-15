@@ -4,14 +4,13 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase{
 
     //Declare motors, speeds, default intake extension direction, and limit switches
-    private final SparkMax intakeMotor;
-    private final SparkMax extendMotor;
+    private  SparkMax intakeMotor;
+    private  SparkMax extendMotor;
 
     private final double intakeSpeed;
     private final double extendSpeed;
@@ -23,8 +22,7 @@ public class Intake extends SubsystemBase{
     //Initialize the intake
 
     public Intake(double intakeSpeed, double extendSpeed){
-        this.intakeMotor = new SparkMax(10,MotorType.kBrushless);
-        this.extendMotor = new SparkMax(11, MotorType.kBrushless);
+        
 
         this.intakeSpeed = intakeSpeed;
         this.extendSpeed = extendSpeed;
