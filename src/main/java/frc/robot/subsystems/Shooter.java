@@ -20,9 +20,7 @@ public class Shooter extends SubsystemBase{
 
     private boolean hoodGoDown = true;
     
-    DigitalInput m_toplimitSwitch = new DigitalInput(0);
-    DigitalInput m_bottomlimitSwitch = new DigitalInput(1);
-
+  
     //Initialize the shooter
 
     public Shooter(double shooterSpeed, double hoodSpeed, double indexerSpeed){
@@ -44,19 +42,9 @@ public class Shooter extends SubsystemBase{
     // Extend or retract the shooter hood
 
     public void runHood(){
-        if(m_bottomlimitSwitch.get()){
-            hoodGoDown = false;
-            hoodMotor.set(0);    
-            return;
-
-        } else if(m_toplimitSwitch.get()){
-            hoodGoDown = true;
-            hoodMotor.set(0);
-            return; 
-            
-        } else {
-            hoodMotor.set((hoodGoDown) ? hoodSpeed : -hoodSpeed);
-        }
+        
+        hoodMotor.set((hoodGoDown) ? hoodSpeed : -hoodSpeed);
+        
 
     }
 
