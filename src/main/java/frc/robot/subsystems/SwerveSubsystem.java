@@ -21,7 +21,7 @@ import com.studica.frc.AHRS.NavXComType;
 
 public class SwerveSubsystem extends SubsystemBase {
 
-    double maximumSpeed = 4.75;
+    double maximumSpeed = 5;
 
 
     SwerveDrive swerveDrive;
@@ -52,27 +52,6 @@ public class SwerveSubsystem extends SubsystemBase {
      * @param headingY     Heading Y to calculate angle of the joystick.
      * @return Drive command. NOT BEING USED */
      
-    /*public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX,
-            DoubleSupplier headingY) {
-
-        return run(() -> {
-
-            Translation2d rawInputs = new Translation2d(translationX.getAsDouble(), translationY.getAsDouble());
-            Translation2d scaledInputs = SwerveMath.scaleTranslation(rawInputs, 0.8);
-
-            // Make the robot move
-
-            ChassisSpeeds chassisSpeeds = swerveDrive.swerveController.getTargetSpeeds(
-                    scaledInputs.getX(),
-                    scaledInputs.getY(),
-                    headingX.getAsDouble(),
-                    headingY.getAsDouble(),
-                    swerveDrive.getOdometryHeading().getRadians(),
-                    swerveDrive.getMaximumChassisVelocity());
-
-            swerveDrive.driveFieldOriented(chassisSpeeds);
-        });
-    } 
 
     /**
      * Command to drive the robot using translative values and heading as angular
@@ -105,7 +84,7 @@ public class SwerveSubsystem extends SubsystemBase {
             //Getting the doublee from the double suppliers and multiplying them by their max velocity
             double vxMetersPerSecond = MathUtil.applyDeadband(translationX.getAsDouble(), deadband);
             double vyMetersPerSecond = MathUtil.applyDeadband(translationY.getAsDouble(), deadband);
-            double angularRotation = MathUtil.applyDeadband(angularRotationX.getAsDouble(), deadband + 0.075);
+            double angularRotation = MathUtil.applyDeadband(angularRotationX.getAsDouble(), deadband);
             
             //Limit the slew rate of the speeds to prevent sporadic motion and apply a deadband
             
