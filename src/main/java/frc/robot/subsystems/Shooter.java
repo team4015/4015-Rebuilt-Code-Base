@@ -4,14 +4,16 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 
 public class Shooter extends SubsystemBase{
 
     //Declare motors, speeds, default hood direction, and limit switches
     
-    private final SparkMax shooterMotor;
-    private final SparkMax indexerMotor;
+    private final PWMSparkMax shooterMotor;
+    private final PWMSparkMax indexerMotor;
 
     private final double shooterSpeed;
     private final double indexerSpeed;
@@ -22,8 +24,8 @@ public class Shooter extends SubsystemBase{
     //Initialize the shooter
 
     public Shooter(double shooterSpeed, double indexerSpeed){
-        this.shooterMotor = new SparkMax(2, MotorType.kBrushless);
-        this.indexerMotor = new SparkMax(0, MotorType.kBrushless);
+        this.shooterMotor = new PWMSparkMax(2);
+        this.indexerMotor = new PWMSparkMax(0);
     
 
         this.shooterSpeed = shooterSpeed;

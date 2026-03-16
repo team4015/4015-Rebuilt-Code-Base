@@ -91,15 +91,6 @@ public class SwerveSubsystem extends SubsystemBase {
             vxMetersPerSecond = xLimiter.calculate(vxMetersPerSecond * maxVelocity) ;
             vyMetersPerSecond = yLimiter.calculate(vyMetersPerSecond * maxVelocity) ;
             angularRotation = turningLimiter.calculate(angularRotation * swerveDrive.getMaximumChassisAngularVelocity());
-            
-            if (Math.abs(angularRotation) < 0.1){
-                angularRotation = 0;
-            }
-            // Make the robot move
-            
-            //Rotation2d angularHeading = swerveDrive.getOdometryHeading();
-            //ChassisSpeeds chassisSpeeds = new ChassisSpeeds(vxMetersPerSecond,vyMetersPerSecond,angularRotation);
-            //ChassisSpeeds fieldRelativeSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, angularHeading);
 
             Translation2d translation = new Translation2d(vxMetersPerSecond,vyMetersPerSecond);
             
@@ -110,7 +101,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
             System.out.println("In Run Method" + "vxMetersPerSecond:" + vxMetersPerSecond + "vyMetersPerSecond: " + vyMetersPerSecond);
             //swerveDrive.drive(translation, angularRotation, true, false);
-            //ChassisSpeeds.fromFieldRelativeSpeeds(null, null);
+            //ChassisSpeeds.fromFieldRelativeSpeeds(null, null)
         });
 
 

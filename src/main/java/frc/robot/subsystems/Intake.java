@@ -23,7 +23,6 @@ public class Intake extends SubsystemBase{
 
     public Intake(double intakeSpeed, double extendSpeed){
         
-
         this.intakeSpeed = intakeSpeed;
         this.extendSpeed = extendSpeed;
     }
