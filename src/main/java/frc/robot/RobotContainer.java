@@ -60,7 +60,10 @@ public class RobotContainer {
     intake.setDefaultCommand(intakeCMD);
     shooter.setDefaultCommand(shooterCMD);
 
-    ctrl.rightBumper().onTrue(drivebase.runOnce(() -> drivebase.toggleFieldOriented()));
+    ctrl.a().onTrue(drivebase.runOnce(() -> drivebase.toggleFieldOriented()));
+    ctrl.leftBumper().toggleOnTrue(shooterCMD);
+    
+    
     
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.

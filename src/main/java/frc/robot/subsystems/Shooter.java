@@ -29,19 +29,21 @@ public class Shooter extends SubsystemBase{
         this.indexerSpeed = indexerSpeed;
     }
 
-    //Run the shooter
 
     public void runShooter(){
         shooterMotor.set(shooterSpeed);
     }
 
-    // Extend or retract the shooter hood
-
-
-    //Run the indexer
-
     public void runIndexer(){
         indexerMotor.set(indexerSpeed);
+    }
+
+    public void stopShooter(){
+        shooterMotor.set(0);
+    }
+
+    public void stopIndexer(){
+        indexerMotor.set(0);
     }
     
     //Stop everything

@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /** An example command that uses an example subsystem. */
-public class ShooterCommand extends Command {
+public class IndexerCommand extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Shooter shooter;
   private CommandXboxController ctrl;
@@ -20,7 +20,7 @@ public class ShooterCommand extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ShooterCommand(Shooter shooter, CommandXboxController ctrl) {
+  public IndexerCommand(Shooter shooter, CommandXboxController ctrl) {
     this.shooter = shooter;
     this.ctrl = ctrl;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -30,19 +30,19 @@ public class ShooterCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooter.runShooter(); 
+    shooter.runIndexer(); 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
 
-
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.stopShooter();
+    shooter.stop();
   }
 
   // Returns true when the command should end.
