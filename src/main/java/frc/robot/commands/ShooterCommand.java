@@ -35,14 +35,17 @@ public class ShooterCommand extends Command {
   @Override
   public void execute() {
 
-    boolean buttonXPressed = ctrl.getHID().getXButton();
-    boolean buttonYPressed = ctrl.getHID().getYButton();
+    boolean shooterActivate = ctrl.getHID().getLeftBumperButton();
+    boolean intakeActivate = ctrl.getHID().getRightBumperButton();
     
 
-    if(buttonXPressed){
+    if(shooterActivate){
       shooter.runShooter();
-      shooter.runIndexer();
     } 
+
+    if(intakeActivate){
+      shooter.runIndexer();
+    }
   }
 
   // Called once the command ends or is interrupted.
