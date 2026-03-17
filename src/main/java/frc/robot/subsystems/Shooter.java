@@ -17,8 +17,6 @@ public class Shooter extends SubsystemBase{
 
     private final double shooterSpeed;
     private final double indexerSpeed;
-
-    private boolean hoodGoDown = true;
     
   
     //Initialize the shooter
@@ -27,7 +25,6 @@ public class Shooter extends SubsystemBase{
         this.shooterMotor = new PWMSparkMax(2);
         this.indexerMotor = new PWMSparkMax(0);
     
-
         this.shooterSpeed = shooterSpeed;
         this.indexerSpeed = indexerSpeed;
     }

@@ -88,9 +88,9 @@ public class SwerveSubsystem extends SubsystemBase {
             
             //Limit the slew rate of the speeds to prevent sporadic motion and apply a deadband
             
-            vxMetersPerSecond = xLimiter.calculate(vxMetersPerSecond * maxVelocity) ;
-            vyMetersPerSecond = yLimiter.calculate(vyMetersPerSecond * maxVelocity) ;
-            angularRotation = turningLimiter.calculate(angularRotation * swerveDrive.getMaximumChassisAngularVelocity());
+            vxMetersPerSecond = vxMetersPerSecond * maxVelocity;
+            vyMetersPerSecond = vyMetersPerSecond * maxVelocity;
+            angularRotation = angularRotation * swerveDrive.getMaximumChassisAngularVelocity();
 
             Translation2d translation = new Translation2d(vxMetersPerSecond,vyMetersPerSecond);
             
