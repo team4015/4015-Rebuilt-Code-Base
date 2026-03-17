@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -45,6 +46,8 @@ public class Robot extends TimedRobot {
         visionTab.addNumber("TX (deg)", limelightSubsystem::getTxDegrees);
         visionTab.addNumber("Distance (m)", limelightSubsystem::getDistanceToTagMeters);
         visionTab.addBoolean("Aimed", limelightSubsystem::isAimedAtTag);
+
+        DriverStation.silenceJoystickConnectionWarning(true);
     }
 
     /**
