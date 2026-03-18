@@ -11,7 +11,6 @@ public class Intake extends SubsystemBase{
 
     //Declare motors, speeds, default intake extension direction, and limit switches
     private final SparkMax intakeMotor;
-    private final VictorSP extendMotor;
 
     private final double intakeSpeed;
     private final double extendSpeed;
@@ -25,7 +24,6 @@ public class Intake extends SubsystemBase{
 
     public Intake(double intakeSpeed, double extendSpeed){
         this.intakeMotor = new SparkMax(8,MotorType.kBrushless);
-        this.extendMotor = new VictorSP(1);
 
         this.intakeSpeed = intakeSpeed;
         this.extendSpeed = extendSpeed;
@@ -55,7 +53,6 @@ public class Intake extends SubsystemBase{
             extendMotor.set((extend) ? extendSpeed : -extendSpeed);
         }*/
 
-        extendMotor.set((extend) ? extendSpeed : -extendSpeed);
         
     }
 
@@ -66,7 +63,6 @@ public class Intake extends SubsystemBase{
     }
 
     public void stopExtend(){
-        extendMotor.set(0);
     }
 
 

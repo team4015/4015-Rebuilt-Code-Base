@@ -11,7 +11,6 @@ import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.extendIntakeCommand;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -34,7 +33,6 @@ public class RobotContainer {
   
 
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
   private final Intake intake = new Intake(0.7, 0.1);
   private final Shooter shooter = new Shooter(0.8,0.7);
 
@@ -49,19 +47,7 @@ public class RobotContainer {
 
 
   private void configureBindings() {
-    SwerveInputStream driveAngularVelocityKeyboard = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                                                                        () -> -driverCtrl.getLeftY(),
-                                                                        () -> -driverCtrl.getLeftX())
-                                                                    .withControllerRotationAxis(() -> driverCtrl.getRawAxis(
-                                                                        2))
-                                                                    .deadband(OperatorConstants.DEADBAND)
-                                                                    .scaleTranslation(0.8)
-                                                                    .allianceRelativeControl(true);
 
-
-    //Configure drivebase command
-    Command driveCmd = drivebase.driveCommand(() -> driverCtrl.getLeftX(), () -> -driverCtrl.getLeftY(), () -> driverCtrl.getRightX());  
-    drivebase.setDefaultCommand(driveCmd);
 
     //Configure subsystem commands
     operatorCtrl.leftBumper().toggleOnTrue(new ShooterCommand(shooter));
