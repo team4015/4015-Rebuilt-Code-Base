@@ -6,13 +6,11 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /** An example command that uses an example subsystem. */
 public class IntakeCommand extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Intake intake;
-  private CommandXboxController ctrl;
   
     /**
      * The commands are what make the subsystems actually run. 
@@ -20,9 +18,8 @@ public class IntakeCommand extends Command {
      *
      * @param subsystem The subsystem used by this command.
      */
-    public IntakeCommand(Intake intake, CommandXboxController ctrl) {
+    public IntakeCommand(Intake intake) {
       this.intake = intake;
-      this.ctrl = ctrl;
       
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
@@ -30,23 +27,20 @@ public class IntakeCommand extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    intake.runIntake();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    boolean buttonAPressed = ctrl.getHID().getAButton();
-    boolean buttonBPressed = ctrl.getHID().getBButton();
-    if(buttonAPressed){intake.runIntake();}
-    if(buttonBPressed){intake.extendIntake();}
-    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.stop();
+    intake.stopIntake();
   }
 
   // Returns true when the command should end.

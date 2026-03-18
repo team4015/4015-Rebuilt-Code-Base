@@ -19,7 +19,8 @@ public class Intake extends SubsystemBase{
 
     private boolean extend = true;
 
-    
+    DigitalInput m_toplimitSwitch = new DigitalInput(0);
+    DigitalInput m_bottomlimitSwitch = new DigitalInput(1);
 
     //Initialize the intake
 
@@ -41,16 +42,38 @@ public class Intake extends SubsystemBase{
 
     public void extendIntake(){
          
+        /*if(m_bottomlimitSwitch.get()){
+            extend = false;
+            extendMotor.set(0);    
+            return;
+
+        } else if(m_toplimitSwitch.get()){
+            extend = true;
+            extendMotor.set(0);
+            return;
+
+        } else {
+            extendMotor.set((extend) ? extendSpeed : -extendSpeed);
+        }*/
+
         extendMotor.set((extend) ? extendSpeed : -extendSpeed);
         
     }
 
     //Stop everything
 
-    public void stop(){
+    public void stopIntake(){
         intakeMotor.set(0);
+    }
+
+    public void stopExtend(){
         extendMotor.set(0);
     }
+
+
+
+
+
 
 
 }

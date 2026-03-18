@@ -20,9 +20,8 @@ public class IndexerCommand extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public IndexerCommand(Shooter shooter, CommandXboxController ctrl) {
+  public IndexerCommand(Shooter shooter) {
     this.shooter = shooter;
-    this.ctrl = ctrl;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
   }

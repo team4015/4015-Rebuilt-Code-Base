@@ -3,21 +3,14 @@ package frc.robot.subsystems;
 import java.io.File;
 import java.io.IOException;
 import java.util.function.DoubleSupplier;
-
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
-import swervelib.math.SwerveMath;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import com.studica.frc.AHRS;
-import com.studica.frc.AHRS.NavXComType;
+
 
 public class SwerveSubsystem extends SubsystemBase {
 
@@ -26,9 +19,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     SwerveDrive swerveDrive;
     double deadband = Constants.OperatorConstants.DEADBAND;
-    private final SlewRateLimiter xLimiter = new SlewRateLimiter(3);
-    private final SlewRateLimiter yLimiter = new SlewRateLimiter(3);
-    private final SlewRateLimiter turningLimiter = new SlewRateLimiter(3);        
+
 
     public SwerveSubsystem(File directory) {
         try {
@@ -81,12 +72,10 @@ public class SwerveSubsystem extends SubsystemBase {
         return run(() -> {
             double maxVelocity = swerveDrive.getMaximumChassisVelocity();
             
-            //Getting the doublee from the double suppliers and multiplying them by their max velocity
+            //Getting the double from the double suppliers and multiplying them by their max velocity
             double vxMetersPerSecond = MathUtil.applyDeadband(translationX.getAsDouble(), deadband);
             double vyMetersPerSecond = MathUtil.applyDeadband(translationY.getAsDouble(), deadband);
             double angularRotation = MathUtil.applyDeadband(angularRotationX.getAsDouble(), deadband);
-            
-            //Limit the slew rate of the speeds to prevent sporadic motion and apply a deadband
             
             vxMetersPerSecond = vxMetersPerSecond * maxVelocity;
             vyMetersPerSecond = vyMetersPerSecond * maxVelocity;
@@ -94,14 +83,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
             Translation2d translation = new Translation2d(vxMetersPerSecond,vyMetersPerSecond);
             
-            
             swerveDrive.drive(translation, angularRotation, fieldOriented, false);
-            
-            //swerveDrive.driveFieldOriented(fieldRelativeSpeeds);
-
+    
             System.out.println("In Run Method" + "vxMetersPerSecond:" + vxMetersPerSecond + "vyMetersPerSecond: " + vyMetersPerSecond);
-            //swerveDrive.drive(translation, angularRotation, true, false);
-            //ChassisSpeeds.fromFieldRelativeSpeeds(null, null)
+
         });
 
 

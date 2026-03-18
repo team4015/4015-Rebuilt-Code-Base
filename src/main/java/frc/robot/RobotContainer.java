@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.subsystems.Intake;
@@ -33,8 +34,7 @@ public class RobotContainer {
   private final Intake intake = new Intake(0.7, 0.1);
   private final Shooter shooter = new Shooter(0.8,0.7);
 
-  private final IntakeCommand intakeCMD = new IntakeCommand(intake, ctrl);
-  private final ShooterCommand shooterCMD = new ShooterCommand(shooter, ctrl);
+  
   
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -43,30 +43,18 @@ public class RobotContainer {
     configureBindings();
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
+
   private void configureBindings() {
     
-    Command driveCmd = drivebase.driveCommand(() -> ctrl.getLeftX(), () -> -ctrl.getLeftY(), () -> ctrl.getRightX());
-  
+    //Configure drivebase command
+    Command driveCmd = drivebase.driveCommand(() -> ctrl.getLeftX(), () -> -ctrl.getLeftY(), () -> ctrl.getRightX());  
     drivebase.setDefaultCommand(driveCmd);
-    intake.setDefaultCommand(intakeCMD);
 
-    //ctrl.a().onTrue(drivebase.runOnce(() -> drivebase.toggleFieldOriented()));
-    ctrl.leftBumper().toggleOnTrue(shooterCMD);
+    //Configure subsystem commands
+    ctrl.leftBumper().toggleOnTrue(new ShooterCommand(shooter));
+    ctrl.rightBumper().toggleOnTrue(new IndexerCommand(shooter));
+    ctrl.a().whileTrue(new IntakeCommand(intake));
     
-    
-    
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    //cmdXboxCtrl.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 
   /**
