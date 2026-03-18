@@ -9,7 +9,10 @@ import frc.robot.Constants;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 
 public class SwerveSubsystem extends SubsystemBase {
@@ -30,6 +33,7 @@ public class SwerveSubsystem extends SubsystemBase {
         }
 
         swerveDrive.zeroGyro();
+        swerveDrive.getPose();
         
     }
 
@@ -53,7 +57,7 @@ public class SwerveSubsystem extends SubsystemBase {
      * @param angularRotationX Rotation of the robot to set
      * @return Drive command.
      */
-    private boolean fieldOriented = false;
+    private boolean fieldOriented = true;
 
     public void toggleFieldOriented(){
         fieldOriented = !fieldOriented;
@@ -83,9 +87,13 @@ public class SwerveSubsystem extends SubsystemBase {
 
             Translation2d translation = new Translation2d(vxMetersPerSecond,vyMetersPerSecond);
             
-            swerveDrive.drive(translation, angularRotation, fieldOriented, false);
+            swerveDrive.drive(translation, angularRotation, true, true);
     
-            System.out.println("In Run Method" + "vxMetersPerSecond:" + vxMetersPerSecond + "vyMetersPerSecond: " + vyMetersPerSecond);
+            System.out.println("In Run Method" + "\nvxMetersPerSecond:" + vxMetersPerSecond + " \nvyMetersPerSecond: " + vyMetersPerSecond);
+            System.out.println(" ");
+
+
+
 
         });
 
@@ -95,5 +103,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public SwerveDrive getSwerveDrive(){
         return swerveDrive;
     }
+
+    
 
 }
