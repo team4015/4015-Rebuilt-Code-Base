@@ -68,6 +68,7 @@ public class RobotContainer {
     operatorCtrl.rightBumper().toggleOnTrue(new IndexerCommand(shooter));
     operatorCtrl.a().toggleOnTrue(new IntakeCommand(intake));
     operatorCtrl.b().whileTrue(new extendIntakeCommand(intake));
+
     
   }
 
