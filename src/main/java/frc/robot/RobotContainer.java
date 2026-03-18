@@ -58,9 +58,8 @@ public class RobotContainer {
   
     drivebase.setDefaultCommand(driveCmd);
     intake.setDefaultCommand(intakeCMD);
-    shooter.setDefaultCommand(shooterCMD);
 
-    ctrl.a().onTrue(drivebase.runOnce(() -> drivebase.toggleFieldOriented()));
+    //ctrl.a().onTrue(drivebase.runOnce(() -> drivebase.toggleFieldOriented()));
     ctrl.leftBumper().toggleOnTrue(shooterCMD);
     
     
