@@ -14,7 +14,6 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.io.File;
 
@@ -28,7 +27,10 @@ import edu.wpi.first.wpilibj.Filesystem;
  */
 public class RobotContainer {
 
-  private final CommandXboxController ctrl = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController driverCtrl = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+    private final CommandXboxController operatorCtrl = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
+
+  
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
@@ -48,14 +50,14 @@ public class RobotContainer {
   private void configureBindings() {
     
     //Configure drivebase command
-    Command driveCmd = drivebase.driveCommand(() -> ctrl.getLeftX(), () -> -ctrl.getLeftY(), () -> ctrl.getRightX());  
+    Command driveCmd = drivebase.driveCommand(() -> driverCtrl.getLeftX(), () -> -driverCtrl.getLeftY(), () -> driverCtrl.getRightX());  
     drivebase.setDefaultCommand(driveCmd);
 
     //Configure subsystem commands
-    ctrl.leftBumper().toggleOnTrue(new ShooterCommand(shooter));
-    ctrl.rightBumper().toggleOnTrue(new IndexerCommand(shooter));
-    ctrl.a().toggleOnTrue(new IntakeCommand(intake));
-    ctrl.b().whileTrue(new extendIntakeCommand(intake));
+    operatorCtrl.leftBumper().toggleOnTrue(new ShooterCommand(shooter));
+    operatorCtrl.rightBumper().toggleOnTrue(new IndexerCommand(shooter));
+    operatorCtrl.a().toggleOnTrue(new IntakeCommand(intake));
+    operatorCtrl.b().whileTrue(new extendIntakeCommand(intake));
     
   }
 
