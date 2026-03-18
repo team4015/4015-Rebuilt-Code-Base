@@ -6,13 +6,11 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /** An example command that uses an example subsystem. */
 public class IndexerCommand extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Shooter shooter;
-  private CommandXboxController ctrl;
 
   /**
    * The commands are what make the subsystems actually run. 
@@ -30,12 +28,6 @@ public class IndexerCommand extends Command {
   @Override
   public void initialize() {
     shooter.runIndexer(); 
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-
   }
 
   // Called once the command ends or is interrupted.

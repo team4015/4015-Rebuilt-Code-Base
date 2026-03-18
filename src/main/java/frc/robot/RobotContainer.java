@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShooterCommand;
+import frc.robot.commands.extendIntakeCommand;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -53,7 +54,8 @@ public class RobotContainer {
     //Configure subsystem commands
     ctrl.leftBumper().toggleOnTrue(new ShooterCommand(shooter));
     ctrl.rightBumper().toggleOnTrue(new IndexerCommand(shooter));
-    ctrl.a().whileTrue(new IntakeCommand(intake));
+    ctrl.a().toggleOnTrue(new IntakeCommand(intake));
+    ctrl.b().whileTrue(new extendIntakeCommand(intake));
     
   }
 
