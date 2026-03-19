@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
+import frc.robot.Constants.OperatorConstants;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import edu.wpi.first.math.MathUtil;
@@ -13,6 +15,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class SwerveSubsystem extends SubsystemBase {
@@ -22,6 +25,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
     SwerveDrive swerveDrive;
     double deadband = Constants.OperatorConstants.DEADBAND;
+    private final CommandXboxController driverCtrl = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+
 
 
     public SwerveSubsystem(File directory) {
@@ -92,6 +97,24 @@ public class SwerveSubsystem extends SubsystemBase {
             System.out.println("In Run Method" + "\nvxMetersPerSecond:" + vxMetersPerSecond + " \nvyMetersPerSecond: " + vyMetersPerSecond);
             System.out.println(" ");
 
+            SmartDashboard.putNumber("horizontalMovement", vxMetersPerSecond);
+            SmartDashboard.putNumber("verticalMovement", vyMetersPerSecond);
+            SmartDashboard.putNumber("angularRotation", angularRotation);
+
+            SmartDashboard.putBoolean("button1Pressed", driverCtrl.getHID().getRawButton(1));
+            SmartDashboard.putBoolean("button2Pressed", driverCtrl.getHID().getRawButton(2));
+            SmartDashboard.putBoolean("button3Pressed", driverCtrl.getHID().getRawButton(3));
+            SmartDashboard.putBoolean("button4Pressed", driverCtrl.getHID().getRawButton(4));
+
+            SmartDashboard.putNumber("leftXJoystick", driverCtrl.getLeftX());
+            SmartDashboard.putNumber("leftYJoystick", driverCtrl.getLeftY());
+            SmartDashboard.putNumber("rightXJoystick", driverCtrl.getRightX());
+
+            
+            
+            
+            
+
 
 
 
@@ -99,6 +122,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
 
     }
+
+
 
     public SwerveDrive getSwerveDrive(){
         return swerveDrive;
