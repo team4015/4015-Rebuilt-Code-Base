@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import frc.robot.Constants;
 import frc.robot.Constants.OperatorConstants;
 import swervelib.parser.SwerveParser;
@@ -35,7 +35,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     SwerveDrive swerveDrive;
     double deadband = Constants.OperatorConstants.DEADBAND;
-    private final CommandXboxController driverCtrl = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+    private final CommandPS4Controller driverCtrl = new CommandPS4Controller(OperatorConstants.kDriverControllerPort);
 
     
     public SwerveSubsystem(File directory) {
@@ -172,19 +172,24 @@ public class SwerveSubsystem extends SubsystemBase {
         return run(
             () -> {
               swerveDrive.driveFieldOriented(velocity.get());
-              SmartDashboard.putBoolean("button1Pressed", driverCtrl.getHID().getRawButton(1));
-                SmartDashboard.putBoolean("button2Pressed", driverCtrl.getHID().getRawButton(2));
-                SmartDashboard.putBoolean("button3Pressed", driverCtrl.getHID().getRawButton(3));
-                SmartDashboard.putBoolean("button4Pressed", driverCtrl.getHID().getRawButton(4));
+              SmartDashboard.putBoolean("button1Pressed", driverCtrl.getHID().getSquareButton());
+                SmartDashboard.putBoolean("button2Pressed", driverCtrl.getHID().getCrossButton());
+                SmartDashboard.putBoolean("button3Pressed", driverCtrl.getHID().getCircleButton());
+                SmartDashboard.putBoolean("button4Pressed", driverCtrl.getHID().getTriangleButton());
     
                 SmartDashboard.putString("leftXJoystick", String.format("%.2f", driverCtrl.getLeftX()));
                 SmartDashboard.putString("leftYJoystick", String.format("%.2f", driverCtrl.getLeftY()));
-                SmartDashboard.putString("rightXJoystick", String.format("%.2f", driverCtrl.getRawAxis(2)));
+                SmartDashboard.putString("rightXJoystick", String.format("%.2f", driverCtrl.getRightX()));
     
                 double[] measuredChassisSpeeds = measuredChassisSpeedsSub.get();
 
                 for(int i = 0; i < measuredChassisSpeeds.length; i++){
                     measuredChassisSpeeds[i] = Math.round(measuredChassisSpeeds[i] * 100.0) / 100.0;
+                    if(i == 0){SmartDashboard.putNumber("HorizontalSpeedX", measuredChassisSpeeds[i]);} 
+                    else if(i == 1){SmartDashboard.putNumber("VerticalSpeedY", measuredChassisSpeeds[i]);}
+                    else {SmartDashboard.putNumber("rotSpeedTheta", measuredChassisSpeeds[i]);}
+
+                    
                 }
 
 

@@ -14,7 +14,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 
 import java.io.File;
 
@@ -30,8 +30,8 @@ import edu.wpi.first.wpilibj.RobotBase;
  */
 public class RobotContainer {
 
-  private final CommandXboxController driverCtrl = new CommandXboxController(OperatorConstants.kDriverControllerPort);
-    private final CommandXboxController operatorCtrl = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
+  private final CommandPS4Controller driverCtrl = new CommandPS4Controller(OperatorConstants.kDriverControllerPort);
+    private final CommandPS4Controller operatorCtrl = new CommandPS4Controller(OperatorConstants.kOperatorControllerPort);
 
   
 
@@ -101,10 +101,10 @@ public class RobotContainer {
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
 
     //Configure subsystem commands
-    operatorCtrl.leftBumper().toggleOnTrue(new ShooterCommand(shooter));
-    operatorCtrl.rightBumper().toggleOnTrue(new IndexerCommand(shooter));
-    operatorCtrl.a().toggleOnTrue(new IntakeCommand(intake));
-    operatorCtrl.b().whileTrue(new extendIntakeCommand(intake));
+    driverCtrl.L1().toggleOnTrue(new ShooterCommand(shooter));
+    driverCtrl.R1().toggleOnTrue(new IndexerCommand(shooter));
+    driverCtrl.square().toggleOnTrue(new IntakeCommand(intake));
+    driverCtrl.cross().whileTrue(new extendIntakeCommand(intake));
     
   }
 

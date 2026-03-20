@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Intake;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
@@ -30,6 +31,10 @@ public class extendIntakeCommand extends Command {
   public void execute() {
 
     intake.extendIntake();
+    System.out.println("Intake Extending");
+    SmartDashboard.putBoolean("intakeExtending?", true);
+
+
     
   }
 
@@ -37,6 +42,10 @@ public class extendIntakeCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     intake.stopExtend();
+    System.out.println("Extending Stopped");
+    SmartDashboard.putBoolean("intakeExtending?", false);
+
+
   }
 
   // Returns true when the command should end.
