@@ -1,0 +1,7 @@
+{
+  "motor": {
+    "system": 1,
+    "inverted": false
+  },
+  "fullSpeed": 1.0
+}

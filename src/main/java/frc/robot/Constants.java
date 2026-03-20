@@ -5,6 +5,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Config.ConfigLoader;
 import frc.robot.Config.DriveConfig;
+import frc.robot.Config.IntakeConfig;
 import frc.robot.Config.ShooterConfig;
 import frc.robot.Config.VisionConfig;
 
@@ -13,6 +14,7 @@ import frc.robot.Config.VisionConfig;
  */
 public final class Constants {
     public static final DriveConfig DRIVE = ConfigLoader.loadDriveConfig();
+    public static final IntakeConfig INTAKE = ConfigLoader.loadIntakeConfig();
     public static final ShooterConfig SHOOTER = ConfigLoader.loadShooterConfig();
     public static final VisionConfig VISION = ConfigLoader.loadVisionConfig();
 
@@ -148,6 +150,7 @@ public final class Constants {
         public static final double shooterFullSpeed = SHOOTER.flywheel.fullSpeed;
         public static final double shooterLaunchVelocityMetersPerSecond = SHOOTER.flywheel.launchVelocityMetersPerSecond;
         public static final double indexerFullSpeed = SHOOTER.indexer.fullSpeed;
+        public static final double indexerStartDelaySeconds = SHOOTER.indexer.startDelaySeconds;
         public static final double hoodInitialAngleRadians = Math.toRadians(SHOOTER.hood.initialAngleDegrees);
         public static final double hoodMaxAngleRadians = Math.toRadians(SHOOTER.hood.maxAngleDegrees);
         public static final double projectileReleaseHeightMeters = SHOOTER.projectile.releaseHeightMeters;
@@ -162,6 +165,16 @@ public final class Constants {
         public static final double projectileControlLatencySeconds = SHOOTER.projectile.controlLatencySeconds;
 
         private ShooterConstants() {
+        }
+    }
+
+    /** Constants used by the intake. */
+    public static final class IntakeConstants {
+        public static final int intakeMotorPort = INTAKE.motor.system;
+        public static final boolean intakeMotorReversed = INTAKE.motor.inverted;
+        public static final double intakeFullSpeed = INTAKE.fullSpeed;
+
+        private IntakeConstants() {
         }
     }
 }

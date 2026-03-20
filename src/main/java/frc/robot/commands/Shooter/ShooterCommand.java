@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
 
 /**
- * Instant command that toggles the shooter flywheel.
+ * Instant command that toggles the coordinated shooter + indexer sequence.
  */
 public class ShooterCommand extends Command {
     private final ShooterSubsystem shooterSubsystem;
@@ -20,7 +20,7 @@ public class ShooterCommand extends Command {
     }
 
     @Override
-    /** Toggles the shooter flywheel state. */
+    /** Toggles the shooter/indexer state with the configured delay. */
     public void initialize() {
         shooterSubsystem.toggleShooter();
     }

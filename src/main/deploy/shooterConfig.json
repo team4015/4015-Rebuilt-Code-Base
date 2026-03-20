@@ -14,7 +14,8 @@
     "launchVelocityMetersPerSecond": 18.0
   },
   "indexer": {
-    "fullSpeed": 1.0
+    "fullSpeed": 1.0,
+    "startDelaySeconds": 0.05
   },
   "hood": {
     "initialAngleDegrees": 67.49227962,

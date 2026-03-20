@@ -69,6 +69,24 @@ public final class ConfigLoader {
         }
     }
 
+    /**
+     * Loads the intake configuration.
+     *
+     * @return validated intake configuration
+     */
+    public static IntakeConfig loadIntakeConfig() {
+        try {
+            File file = new File(Filesystem.getDeployDirectory(), "intakeConfig.json");
+            try (Reader reader = new FileReader(file)) {
+                IntakeConfig config = new Gson().fromJson(reader, IntakeConfig.class);
+                validateIntakeConfig(config);
+                return config;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load intake config", e);
+        }
+    }
+
     private static void validateDriveConfig(DriveConfig config) {
         if (config == null
             || config.module == null
@@ -135,6 +153,7 @@ public final class ConfigLoader {
         requirePositive(config.flywheel.fullSpeed, "flywheel.fullSpeed");
         requirePositive(config.flywheel.launchVelocityMetersPerSecond, "flywheel.launchVelocityMetersPerSecond");
         requirePositive(config.indexer.fullSpeed, "indexer.fullSpeed");
+        requireNonNegative(config.indexer.startDelaySeconds, "indexer.startDelaySeconds");
         requirePositive(config.hood.initialAngleDegrees, "hood.initialAngleDegrees");
         requirePositive(config.hood.maxAngleDegrees, "hood.maxAngleDegrees");
         requirePositive(config.projectile.releaseHeightMeters, "projectile.releaseHeightMeters");
@@ -150,6 +169,15 @@ public final class ConfigLoader {
         requirePositive(config.projectile.solverTimeStepSeconds, "projectile.solverTimeStepSeconds");
         requirePositive(config.projectile.solverMaxTimeSeconds, "projectile.solverMaxTimeSeconds");
         requireNonNegative(config.projectile.controlLatencySeconds, "projectile.controlLatencySeconds");
+    }
+
+    private static void validateIntakeConfig(IntakeConfig config) {
+        if (config == null || config.motor == null) {
+            throw new IllegalArgumentException("intakeConfig.json is missing one or more required sections");
+        }
+
+        requireNonNegative(config.motor.system, "motor.system");
+        requirePositive(config.fullSpeed, "fullSpeed");
     }
 
     private static void requirePositive(double value, String fieldName) {

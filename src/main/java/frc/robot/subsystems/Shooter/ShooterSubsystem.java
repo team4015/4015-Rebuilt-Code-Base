@@ -24,6 +24,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private boolean shooterActive = false;
     private boolean indexerActive = false;
+    private Double pendingIndexerStartTimeSeconds = null;
     private ChassisSpeeds previousRobotRelativeSpeeds = new ChassisSpeeds();
     private double previousMotionTimestampSeconds = Timer.getFPGATimestamp();
     private ShotCalculator.ShotSolution lastShotSolution = ShotCalculator.ShotSolution.noSolution();
@@ -44,12 +45,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     /** Toggles the flywheel between active and stopped states. */
     public void toggleShooter() {
-        if (shooterActive) {
-            stopShooter();
+        if (shooterActive || indexerActive || pendingIndexerStartTimeSeconds != null) {
+            stopAll();
             return;
         }
 
-        startShooter();
+        startShooterWithFollowerDelay();
     }
 
     /** Starts the flywheel at its configured full-speed output. */
@@ -58,8 +59,26 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterMotor.set(ShooterConstants.shooterFullSpeed);
     }
 
+    /** Starts the flywheel and schedules the indexer to follow after the configured delay. */
+    public void startShooterWithFollowerDelay() {
+        startShooter();
+        scheduleIndexerFollower();
+    }
+
+    /** Schedules the indexer to start after the configured delay, or immediately when set to zero. */
+    private void scheduleIndexerFollower() {
+        double delaySeconds = Math.max(0.0, ShooterConstants.indexerStartDelaySeconds);
+        if (delaySeconds <= 1e-4) {
+            startIndexer();
+            return;
+        }
+
+        pendingIndexerStartTimeSeconds = Timer.getFPGATimestamp() + delaySeconds;
+    }
+
     /** Stops the flywheel. */
     public void stopShooter() {
+        pendingIndexerStartTimeSeconds = null;
         shooterActive = false;
         shooterMotor.stopMotor();
     }
@@ -76,6 +95,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     /** Starts the indexer at its configured full-speed output. */
     public void startIndexer() {
+        pendingIndexerStartTimeSeconds = null;
         indexerActive = true;
         indexerMotor.set(ShooterConstants.indexerFullSpeed);
     }
@@ -88,6 +108,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     /** Stops both shooter and indexer outputs. */
     public void stopAll() {
+        pendingIndexerStartTimeSeconds = null;
         stopShooter();
         stopIndexer();
     }
@@ -132,8 +153,25 @@ public class ShooterSubsystem extends SubsystemBase {
     /** Updates shot prediction and publishes shooter telemetry each scheduler cycle. */
     @Override
     public void periodic() {
+        startIndexerAfterDelayIfReady();
         updateShotSolution();
         publishTelemetry();
+    }
+
+    /** Starts the indexer after the configured delay once the shooter is running. */
+    private void startIndexerAfterDelayIfReady() {
+        if (pendingIndexerStartTimeSeconds == null) {
+            return;
+        }
+
+        if (!shooterActive) {
+            pendingIndexerStartTimeSeconds = null;
+            return;
+        }
+
+        if (Timer.getFPGATimestamp() >= pendingIndexerStartTimeSeconds) {
+            startIndexer();
+        }
     }
 
     /**
