@@ -18,9 +18,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 
 import java.io.File;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -40,46 +39,6 @@ public class RobotContainer {
   private final Intake intake = new Intake(0.7, 0.1);
   private final Shooter shooter = new Shooter(0.8,0.7);
 
-  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                        () -> driverCtrl.getLeftX() * -1,
-                        () -> -driverCtrl.getLeftY() * -1)
-                        .withControllerRotationAxis(() -> driverCtrl.getRawAxis(2) * -1.25)
-                        .deadband(Constants.OperatorConstants.DEADBAND)
-                        .scaleTranslation(1.0)
-                        .allianceRelativeControl(true);
-
-  SwerveInputStream driveAngularVelocityKeyboard = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                                                                        () -> -driverCtrl.getLeftX(),
-                                                                        () -> driverCtrl.getLeftY())
-                                                                    .withControllerRotationAxis(() -> driverCtrl.getRawAxis(
-                                                                        2))
-                                                                    .deadband(OperatorConstants.DEADBAND)
-                                                                    .scaleTranslation(1)
-                                                                    .allianceRelativeControl(false);
-                                                                    
-  
-  SwerveInputStream driveDirectAngleKeyboard     = driveAngularVelocityKeyboard.copy()
-                                                                               .withControllerHeadingAxis(() ->
-                                                                                                              Math.sin(
-                                                                                                                  driverCtrl.getRawAxis(
-                                                                                                                      2) *
-                                                                                                                  Math.PI) *
-                                                                                                              (Math.PI *
-                                                                                                               2),
-                                                                                                          () ->
-                                                                                                              Math.cos(
-                                                                                                                  driverCtrl.getRawAxis(
-                                                                                                                      2) *
-                                                                                                                  Math.PI) *
-                                                                                                              (Math.PI *
-                                                                                                               2))
-                                                                               .headingWhile(true)
-                                                                               .translationHeadingOffset(true)
-                                                                               .translationHeadingOffset(Rotation2d.fromDegrees(
-                                                                                   0));
-  
-  
-  
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -87,16 +46,23 @@ public class RobotContainer {
     configureBindings();
   }
 
+  public SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
+                        () -> driverCtrl.getLeftX() * -1,
+                        () -> -driverCtrl.getLeftY() * -1)
+                        .withControllerRotationAxis(() -> driverCtrl.getRawAxis(2) * -1)
+                        .deadband(Constants.OperatorConstants.DEADBAND)
+                        .scaleTranslation(1)
+                        .allianceRelativeControl(true);
+                        
+  public SwerveInputStream driveRobotOriented = driveAngularVelocity.copy()
+                                                    .robotRelative(true)
+                                                    .allianceRelativeControl(false);
+
 
   private void configureBindings() {
-    
-
-
     //Configure drivebase command
-    Command driveCmd = drivebase.driveCommand(() -> driverCtrl.getLeftX(), () -> -driverCtrl.getLeftY(), () -> driverCtrl.getRightX());  
     Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
-    Command driveFieldOrientedAngularVelocityKeyboard = drivebase.driveFieldOriented(driveAngularVelocityKeyboard);
-    Command driveFieldOrientedDirectAngleSim = drivebase.driveFieldOriented(driveDirectAngleKeyboard);
+    Command driveRobotOrientedAngularVelocity = drivebase.drive(driveRobotOriented);
 
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
 
@@ -105,6 +71,10 @@ public class RobotContainer {
     driverCtrl.R1().toggleOnTrue(new IndexerCommand(shooter));
     driverCtrl.square().toggleOnTrue(new IntakeCommand(intake));
     driverCtrl.cross().whileTrue(new extendIntakeCommand(intake));
+
+    driverCtrl.circle().toggleOnTrue(driveRobotOrientedAngularVelocity
+                                    .beforeStarting(() -> SmartDashboard.putBoolean("isRobotOriented", true))
+                                    .finallyDo(() -> SmartDashboard.putBoolean("isRobotOriented", false)));
     
   }
 
