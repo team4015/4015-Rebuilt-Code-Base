@@ -13,7 +13,8 @@ import frc.robot.subsystems.Swerve.SwerveSubsystem;
 import frc.robot.subsystems.Vision.LimelightSubsystem;
 
 /**
- * Shooter subsystem that manages flywheels, indexer, and motion-compensated aiming at a fixed hood angle.
+ * Shooter subsystem that manages flywheel/indexer coordination (with configurable delay) and motion-compensated aiming
+ * at a fixed hood angle.
  */
 public class ShooterSubsystem extends SubsystemBase {
     private final PWMSparkMax shooterMotor = new PWMSparkMax(ShooterConstants.shooterMotorId);
@@ -55,8 +56,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     /** Starts the flywheel at its configured full-speed output. */
     public void startShooter() {
-        shooterActive = true;
-        shooterMotor.set(ShooterConstants.shooterFullSpeed);
+        setShooterActive(true);
     }
 
     /** Starts the flywheel and schedules the indexer to follow after the configured delay. */
@@ -79,8 +79,7 @@ public class ShooterSubsystem extends SubsystemBase {
     /** Stops the flywheel. */
     public void stopShooter() {
         pendingIndexerStartTimeSeconds = null;
-        shooterActive = false;
-        shooterMotor.stopMotor();
+        setShooterActive(false);
     }
 
     /** Toggles the indexer between active and stopped states. */
@@ -96,14 +95,12 @@ public class ShooterSubsystem extends SubsystemBase {
     /** Starts the indexer at its configured full-speed output. */
     public void startIndexer() {
         pendingIndexerStartTimeSeconds = null;
-        indexerActive = true;
-        indexerMotor.set(ShooterConstants.indexerFullSpeed);
+        setIndexerActive(true);
     }
 
     /** Stops the indexer. */
     public void stopIndexer() {
-        indexerActive = false;
-        indexerMotor.stopMotor();
+        setIndexerActive(false);
     }
 
     /** Stops both shooter and indexer outputs. */
@@ -172,6 +169,26 @@ public class ShooterSubsystem extends SubsystemBase {
         if (Timer.getFPGATimestamp() >= pendingIndexerStartTimeSeconds) {
             startIndexer();
         }
+    }
+
+    private void setShooterActive(boolean active) {
+        shooterActive = active;
+        if (active) {
+            shooterMotor.set(ShooterConstants.shooterFullSpeed);
+            return;
+        }
+
+        shooterMotor.stopMotor();
+    }
+
+    private void setIndexerActive(boolean active) {
+        indexerActive = active;
+        if (active) {
+            indexerMotor.set(ShooterConstants.indexerFullSpeed);
+            return;
+        }
+
+        indexerMotor.stopMotor();
     }
 
     /**

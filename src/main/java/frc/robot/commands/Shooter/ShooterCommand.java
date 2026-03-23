@@ -1,12 +1,12 @@
 package frc.robot.commands.Shooter;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
 
 /**
  * Instant command that toggles the coordinated shooter + indexer sequence.
  */
-public class ShooterCommand extends Command {
+public class ShooterCommand extends InstantCommand {
     private final ShooterSubsystem shooterSubsystem;
 
     /**
@@ -15,6 +15,7 @@ public class ShooterCommand extends Command {
      * @param shooterSubsystem shooter subsystem to control
      */
     public ShooterCommand(ShooterSubsystem shooterSubsystem) {
+        super();
         this.shooterSubsystem = shooterSubsystem;
         addRequirements(shooterSubsystem);
     }
@@ -23,15 +24,5 @@ public class ShooterCommand extends Command {
     /** Toggles the shooter/indexer state with the configured delay. */
     public void initialize() {
         shooterSubsystem.toggleShooter();
-    }
-
-    @Override
-    /**
-     * Ends immediately after toggling the shooter.
-     *
-     * @return always {@code true}
-     */
-    public boolean isFinished() {
-        return true;
     }
 }

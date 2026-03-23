@@ -179,6 +179,14 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Turning Encoder Back Right", backRight.getTurningPosition());
     }
 
+    /** Re-synchronizes all module encoders to their absolute angles and zeroes drive distances. */
+    public void resetModuleEncoders() {
+        frontLeft.resetEncoder();
+        frontRight.resetEncoder();
+        backLeft.resetEncoder();
+        backRight.resetEncoder();
+    }
+
     /** Stops all four swerve modules. */
     public void stopModules() {
         frontLeft.stop();

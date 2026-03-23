@@ -21,6 +21,7 @@ public class Robot extends TimedRobot {
     private Command autonomousCommand;
     private ShuffleboardTab tab;
     private ShuffleboardTab visionTab;
+    private SwerveSubsystem swerveSubsystem;
     private ShooterSubsystem shooterSubsystem;
 
     /**
@@ -32,13 +33,15 @@ public class Robot extends TimedRobot {
         tab = Shuffleboard.getTab("Encoder Offsets");
         visionTab = Shuffleboard.getTab("Vision");
         shooterSubsystem = robotContainer.getShooterSubsystem();
-
-        SwerveSubsystem swerveSubsystem = robotContainer.getSwerveSubsystem();
+        swerveSubsystem = robotContainer.getSwerveSubsystem();
         LimelightSubsystem limelightSubsystem = robotContainer.getLimelightSubsystem();
         tab.addNumber("Front Left Absolute Encoder", swerveSubsystem::getFrontLeftAbsoluteEncoderRad);
         tab.addNumber("Front Right Absolute Encoder", swerveSubsystem::getFrontRightAbsoluteEncoderRad);
         tab.addNumber("Back Left Absolute Encoder", swerveSubsystem::getBackLeftAbsoluteEncoderRad);
         tab.addNumber("Back Right Absolute Encoder", swerveSubsystem::getBackRightAbsoluteEncoderRad);
+
+        // Ensure turning encoders start aligned to absolute sensors.
+        swerveSubsystem.resetModuleEncoders();
 
         visionTab.addBoolean("Has Target", limelightSubsystem::hasValidTarget);
         visionTab.addNumber("Tag ID", limelightSubsystem::getTargetTagId);
@@ -60,6 +63,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
+        swerveSubsystem.resetModuleEncoders();
         autonomousCommand = robotContainer.getAutonomousCommand();
         if (autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(autonomousCommand);
@@ -71,6 +75,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
+        swerveSubsystem.resetModuleEncoders();
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
         }

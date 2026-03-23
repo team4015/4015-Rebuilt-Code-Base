@@ -100,14 +100,8 @@ public final class Constants {
         public static final int driverXAxis = DRIVE.oi.driverXAxis;
         public static final int driverRotAxis = DRIVE.oi.driverRotAxis;
         public static final int shooterToggleButtonIdx = DRIVE.oi.shooterToggleButtonIdx;
-        public static final int indexerToggleButtonIdx = DRIVE.oi.indexerToggleButtonIdx;
-        public static final int driverLeftTriggerAxis = DRIVE.oi.driverLeftTriggerAxis;
-        public static final int driverRightTriggerAxis = DRIVE.oi.driverRightTriggerAxis;
         public static final int driverFieldOrientedButtonIdx = DRIVE.oi.driverFieldOrientedButtonIdx;
-        public static final int driveUnlockSwerveButtonIdx = DRIVE.oi.driveUnlockSwerveButtonIdx;
         public static final int aimAtTagButtonIdx = DRIVE.oi.aimAtTagButtonIdx;
-        public static final int calibrateAbsoluteEncoderButtonIdx = DRIVE.oi.calibrateAbsoluteEncoderButtonIdx;
-        public static final int aprilTagAlignButtonIdx = DRIVE.oi.aprilTagAlignButtonIdx;
         public static final double triggerPressedThreshold = DRIVE.oi.triggerPressedThreshold;
         public static final double deadband = DRIVE.oi.deadband;
 
