@@ -19,8 +19,8 @@ public class Shooter extends SubsystemBase{
     //Initialize the shooter
 
     public Shooter(double shooterSpeed, double indexerSpeed){
-        this.shooterMotor = new PWMSparkMax(2);
-        this.indexerMotor = new PWMSparkMax(0);
+        this.shooterMotor = new PWMSparkMax(1);
+        this.indexerMotor = new PWMSparkMax(9);
     
         this.shooterSpeed = shooterSpeed;
         this.indexerSpeed = indexerSpeed;

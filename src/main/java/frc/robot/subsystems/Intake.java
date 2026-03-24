@@ -22,7 +22,7 @@ public class Intake extends SubsystemBase{
 
     public Intake(double intakeSpeed, double extendSpeed){
         this.intakeMotor = new VictorSP(3);
-        this.extendMotor = new VictorSP(1);
+        this.extendMotor = new VictorSP(0);
 
         this.intakeSpeed = intakeSpeed;
         this.extendSpeed = extendSpeed;

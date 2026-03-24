@@ -68,11 +68,11 @@ public class RobotContainer {
 
 
   public SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                        () -> driverCtrl.getLeftX() * -1,
-                        () -> -driverCtrl.getLeftY() * -1)
-                        .withControllerRotationAxis(() -> driverCtrl.getRawAxis(2) * -1)
+                        () -> driverCtrl.getLeftY() * -1,
+                        () -> driverCtrl.getLeftX() * -1)
+                        .withControllerRotationAxis(() -> driverCtrl.getRightX())
                         .deadband(Constants.OperatorConstants.DEADBAND)
-                        .scaleTranslation(1)
+                        .scaleTranslation(0.8)
                         .allianceRelativeControl(true);
                         
   public SwerveInputStream driveRobotOriented = driveAngularVelocity.copy()
