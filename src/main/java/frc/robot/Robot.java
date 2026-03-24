@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -17,6 +19,11 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer robotContainer;
+  
+  private Timer matchTimer = new Timer();
+
+  private boolean autoStarted = false;
+  private boolean teleOpStarted = false;
 
 
   /**
@@ -28,7 +35,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     System.out.println("RobotContainer Constructor");
     robotContainer = new RobotContainer();
-
+    m_autonomousCommand = robotContainer.getAutonomousCommand();
   }
 
   /**
@@ -61,23 +68,21 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-
-    // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);
+
     }
   }
+  
 
-  /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    
+  }
 
   @Override
   public void teleopInit() {
-    // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
+    // This makes sure that the autonomous stops running when teleop starts running.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -91,11 +96,26 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    matchTimer.reset();
+    matchTimer.start();
+    
+    autoStarted = false;
+    teleOpStarted = false;
+
   }
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    SmartDashboard.putNumber("Match Time", matchTimer.get());
+    if(!autoStarted){
+      autonomousInit();
+    }
+    if(matchTimer.get() > 20 && !teleOpStarted){
+      teleopInit();
+      teleOpStarted = true;
+    }
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override

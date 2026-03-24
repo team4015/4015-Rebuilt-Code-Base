@@ -5,6 +5,11 @@ import java.io.IOException;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
@@ -30,9 +35,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
     double maximumSpeed = 5;
 
-
     SwerveDrive swerveDrive;
     double deadband = Constants.OperatorConstants.DEADBAND;
+    RobotConfig config;
     private final CommandPS4Controller driverCtrl = new CommandPS4Controller(OperatorConstants.kDriverControllerPort);
 
     public SwerveSubsystem(File directory) {
@@ -45,11 +50,42 @@ public class SwerveSubsystem extends SubsystemBase {
             throw new RuntimeException("Swerve Drive directory not found. Finish those config files!");
         }
 
+        //for pathplanner reference
         swerveDrive.zeroGyro();
         swerveDrive.getPose();
-        
-    }
+        swerveDrive.getRobotVelocity();
 
+        try{
+            config = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        AutoBuilder.configure(
+            swerveDrive::getPose, // Robot pose supplier
+            swerveDrive::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+            swerveDrive::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+            (speeds, feedforwards) -> drive(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+            ),
+            config, // The robot configuration
+            () -> {
+              // Boolean supplier that controls when the path will be mirrored for the red alliance
+              // This will flip the path being followed to the red side of the field.
+              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+              var alliance = DriverStation.getAlliance();
+              if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+              }
+              return false;
+            },
+            this // Reference to this subsystem to set requirements
+        );
+
+    }
 
     /**
      * Command to drive the robot using translative values and heading as angular
@@ -84,17 +120,29 @@ public class SwerveSubsystem extends SubsystemBase {
     private NetworkTableInstance inst = NetworkTableInstance.getDefault();
     private NetworkTable table = inst.getTable("SmartDashboard/swerve");
     DoubleArraySubscriber measuredChassisSpeedsSub = table.getDoubleArrayTopic("measuredChassisSpeeds").subscribe(new double[] {});
+    double[] measuredChassisSpeeds = measuredChassisSpeedsSub.get();
+
+    /*public Command drive(ChassisSpeeds velocity){
+        return run(() -> {swerveDrive.drive(velocity);});
+    }*/
+
+    public void drive(ChassisSpeeds velocity){
+        swerveDrive.drive(velocity);
+        System.out.println("DRIVING: " + velocity);
+
+    }
 
     public Command drive(Supplier<ChassisSpeeds> velocity){
         return run(
             () -> {
                 swerveDrive.drive(velocity.get());
-                
+                System.out.println("DRIVING: " + velocity.get());
+
+                SmartDashboard.putString("Pose2D", swerveDrive.getPose().toString());
                 SmartDashboard.putString("leftXJoystick", String.format("%.2f", driverCtrl.getLeftX()));
                 SmartDashboard.putString("leftYJoystick", String.format("%.2f", driverCtrl.getLeftY()));
                 SmartDashboard.putString("rightXJoystick", String.format("%.2f", driverCtrl.getRightX()));
 
-                double[] measuredChassisSpeeds = measuredChassisSpeedsSub.get();
 
                 for(int i = 0; i < measuredChassisSpeeds.length; i++){
                     measuredChassisSpeeds[i] = Math.round(measuredChassisSpeeds[i] * 100.0) / 100.0;
@@ -108,7 +156,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
             }
         );
-    
     }
     
     public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity){
@@ -131,11 +178,6 @@ public class SwerveSubsystem extends SubsystemBase {
                 }
 
                 SmartDashboard.putNumberArray("RoundedMeasuredChassisSpeeds", measuredChassisSpeeds);
-
-
         });    
     }
-
-    
-
 }

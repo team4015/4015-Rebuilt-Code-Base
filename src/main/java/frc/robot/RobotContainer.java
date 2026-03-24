@@ -18,7 +18,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 
 import java.io.File;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -29,22 +34,38 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class RobotContainer {
 
-  private final CommandPS4Controller driverCtrl = new CommandPS4Controller(OperatorConstants.kDriverControllerPort);
-    private final CommandPS4Controller operatorCtrl = new CommandPS4Controller(OperatorConstants.kOperatorControllerPort);
+  private final SendableChooser<Command> autoChooser;
 
-  
+  private final CommandPS4Controller driverCtrl = new CommandPS4Controller(OperatorConstants.kDriverControllerPort);
+  private final CommandPS4Controller operatorCtrl = new CommandPS4Controller(OperatorConstants.kOperatorControllerPort);
 
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
   private final Intake intake = new Intake(0.7, 0.1);
   private final Shooter shooter = new Shooter(0.8,0.7);
+  
+  private final PathPlannerAuto auto;
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+
+    NamedCommands.registerCommand("intake", new IntakeCommand(intake));
+    NamedCommands.registerCommand("extendIntake", new extendIntakeCommand(intake));
+    NamedCommands.registerCommand("shoot", new ShooterCommand(shooter));
+    NamedCommands.registerCommand("index", new IndexerCommand(shooter));
+
+    auto = new PathPlannerAuto("rebuiltAuto");
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+
     configureBindings();
   }
+
+  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+
+
+
 
   public SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
                         () -> driverCtrl.getLeftX() * -1,
@@ -82,12 +103,13 @@ public class RobotContainer {
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
-   
+   */
+
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    System.out.println("Autonomous Command Called!!!");
+    return auto;
   }
-*/
   
 
   
