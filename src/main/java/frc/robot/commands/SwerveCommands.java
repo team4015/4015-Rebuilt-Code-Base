@@ -5,7 +5,6 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
@@ -30,9 +29,9 @@ public class SwerveCommands extends Command {
     private final ShooterSubsystem shooterSubsystem;
 
     // Rate limiters smooth operator input and reduce jerk.
-    private final SlewRateLimiter xLimiter = new SlewRateLimiter(5);
-    private final SlewRateLimiter yLimiter = new SlewRateLimiter(5);
-    private final SlewRateLimiter turningLimiter = new SlewRateLimiter(5);
+    private final SlewRateLimiter xLimiter = new SlewRateLimiter(3);
+    private final SlewRateLimiter yLimiter = new SlewRateLimiter(3);
+    private final SlewRateLimiter turningLimiter = new SlewRateLimiter(3);
 
     /**
      * Creates the swerve teleop command.
@@ -84,8 +83,7 @@ public class SwerveCommands extends Command {
         // Smooth and scale inputs into physical command units.
         xSpeed = xLimiter.calculate(xSpeed) * Constants.DriveConstants.teleDriveMaxSpeedMetersPerSecond;
         ySpeed = yLimiter.calculate(ySpeed) * Constants.DriveConstants.teleDriveMaxSpeedMetersPerSecond;
-        turningSpeed = turningLimiter.calculate(turningSpeed)
-            * Constants.DriveConstants.teleDriveMaxAngularSpeedRadiansPerSecond;
+        turningSpeed = turningLimiter.calculate(turningSpeed) * Constants.DriveConstants.teleDriveMaxAngularSpeedRadiansPerSecond;
 
         boolean autoAimEnabled = autoAimSupplier.getAsBoolean() || shooterSubsystem.isShootingActive();
         boolean hasVisionTarget = limelightSubsystem.hasValidTarget();
@@ -96,14 +94,6 @@ public class SwerveCommands extends Command {
         }
 
         swerveSubsystem.drive(xSpeed, ySpeed, turningSpeed, fieldOrientedSupplier.getAsBoolean());
-
-        SmartDashboard.putNumber("OI Raw X", rawXSpeed);
-        SmartDashboard.putNumber("OI Raw Y", rawYSpeed);
-        SmartDashboard.putNumber("OI Raw Rot", rawTurningSpeed);
-        SmartDashboard.putBoolean("OI Field Oriented", fieldOrientedSupplier.getAsBoolean());
-        SmartDashboard.putBoolean("OI Auto Aim Enabled", autoAimEnabled);
-        SmartDashboard.putBoolean("OI Auto Aim Active", autoAimEnabled && hasVisionTarget);
-        SmartDashboard.putNumber("OI Auto Aim Omega", turningSpeed);
     }
 
     /**

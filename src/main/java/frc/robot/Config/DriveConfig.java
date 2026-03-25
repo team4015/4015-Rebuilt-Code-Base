@@ -86,14 +86,8 @@ public class DriveConfig {
         public int driverXAxis;
         public int driverRotAxis;
         public int shooterToggleButtonIdx;
-        public int indexerToggleButtonIdx;
-        public int driverLeftTriggerAxis;
-        public int driverRightTriggerAxis;
         public int driverFieldOrientedButtonIdx;
-        public int driveUnlockSwerveButtonIdx;
         public int aimAtTagButtonIdx;
-        public int calibrateAbsoluteEncoderButtonIdx;
-        public int aprilTagAlignButtonIdx;
         public double triggerPressedThreshold;
         public double deadband;
     }

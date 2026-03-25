@@ -37,6 +37,7 @@ public class ShooterConfig {
     /** Indexer operating values. */
     public static class Indexer {
         public double fullSpeed;
+        public double startDelaySeconds;
     }
 
     /** Hood mechanical values (fixed-angle shooter). */
