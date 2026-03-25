@@ -66,6 +66,7 @@
     "driverXAxis": 0,
     "driverRotAxis": 3,
     "shooterToggleButtonIdx": 5,
+    "presetShootButtonIdx": 7,
     "driverFieldOrientedButtonIdx": 1,
     "aimAtTagButtonIdx": 6,
     "triggerPressedThreshold": 0.2,

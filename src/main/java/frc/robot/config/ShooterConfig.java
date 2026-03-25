@@ -1,4 +1,4 @@
-package frc.robot.Config;
+package frc.robot.config;
 
 /**
  * Typed representation of {@code shooterConfig.json}.
@@ -7,8 +7,8 @@ public class ShooterConfig {
     public Motors motors;
     public Flywheel flywheel;
     public Indexer indexer;
-    public Hood hood;
-    public Projectile projectile;
+    public ShotPresets presets;
+    public TagMapping hubTags;
 
     /** Shooter-related motor assignments. */
     public static class Motors {
@@ -40,23 +40,26 @@ public class ShooterConfig {
         public double startDelaySeconds;
     }
 
-    /** Hood mechanical values (fixed-angle shooter). */
-    public static class Hood {
-        public double initialAngleDegrees;
-        public double maxAngleDegrees;
+    /** Optional table of preset shots keyed by hub face. */
+    public static class ShotPresets {
+        public Preset[] shots;
     }
 
-    /** Projectile-model values used by the shot solver. */
-    public static class Projectile {
-        public double releaseHeightMeters;
-        public double ballMassKg;
-        public double ballDiameterMeters;
-        public double dragCoefficient;
-        public double airDensityKgPerCubicMeter;
-        public double flywheelBallFrictionCoefficient;
-        public double gravityMetersPerSecondSquared;
-        public double solverTimeStepSeconds;
-        public double solverMaxTimeSeconds;
-        public double controlLatencySeconds;
+    /** One preset entry. */
+    public static class Preset {
+        public String face;          // "front", "left", "right"
+        public double rangeMeters;   // distance from hub center
+        public double flywheel;      // motor output [-1,1] (or use RPM if you change control mode)
+        public double indexer;       // motor output [-1,1]
+    }
+
+    /** Mapping from AprilTag IDs to hub faces (supports both alliances). */
+    public static class TagMapping {
+        public int[] front;
+        public int[] left;
+        public int[] right;
+        public int[] frontBlue;
+        public int[] leftBlue;
+        public int[] rightBlue;
     }
 }

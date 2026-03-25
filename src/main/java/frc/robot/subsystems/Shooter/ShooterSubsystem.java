@@ -1,12 +1,10 @@
 package frc.robot.subsystems.Shooter;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Swerve.SwerveSubsystem;
@@ -26,9 +24,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private boolean shooterActive = false;
     private boolean indexerActive = false;
     private Double pendingIndexerStartTimeSeconds = null;
-    private ChassisSpeeds previousRobotRelativeSpeeds = new ChassisSpeeds();
-    private double previousMotionTimestampSeconds = Timer.getFPGATimestamp();
-    private ShotCalculator.ShotSolution lastShotSolution = ShotCalculator.ShotSolution.noSolution();
+    private double currentFlywheelOutput = ShooterConstants.shooterFullSpeed;
+    private double currentIndexerOutput = ShooterConstants.indexerFullSpeed;
 
     /**
      * Creates the shooter subsystem.
@@ -128,30 +125,10 @@ public class ShooterSubsystem extends SubsystemBase {
         return indexerActive;
     }
 
-    /**
-     * Returns the yaw command needed to face the compensated shot solution while shooting.
-     *
-     * @return angular speed command in radians per second
-     */
-    public double getMotionCompensatedAimAngularSpeedRadPerSec() {
-        if (!limelightSubsystem.hasValidTarget()) {
-            return 0.0;
-        }
-
-        double correctedTxDegrees = limelightSubsystem.getTxDegrees() - Math.toDegrees(lastShotSolution.yawLeadRad);
-        double omega = -correctedTxDegrees * frc.robot.Constants.VisionConstants.aimKp;
-        return MathUtil.clamp(
-            omega,
-            -frc.robot.Constants.VisionConstants.aimMaxAngularSpeedRadPerSec,
-            frc.robot.Constants.VisionConstants.aimMaxAngularSpeedRadPerSec
-        );
-    }
-
     /** Updates shot prediction and publishes shooter telemetry each scheduler cycle. */
     @Override
     public void periodic() {
         startIndexerAfterDelayIfReady();
-        updateShotSolution();
         publishTelemetry();
     }
 
@@ -174,7 +151,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private void setShooterActive(boolean active) {
         shooterActive = active;
         if (active) {
-            shooterMotor.set(ShooterConstants.shooterFullSpeed);
+            shooterMotor.set(currentFlywheelOutput);
             return;
         }
 
@@ -184,74 +161,11 @@ public class ShooterSubsystem extends SubsystemBase {
     private void setIndexerActive(boolean active) {
         indexerActive = active;
         if (active) {
-            indexerMotor.set(ShooterConstants.indexerFullSpeed);
+            indexerMotor.set(currentIndexerOutput);
             return;
         }
 
         indexerMotor.stopMotor();
-    }
-
-    /**
-     * Recomputes the latest motion-compensated shot solution when shooting with a valid target.
-     *
-     * <p>The method estimates current robot acceleration from drivetrain velocity samples, predicts
-     * control-latency-adjusted robot velocity, builds projectile inputs, and stores the newest
-     * valid ballistic solution for aiming and telemetry.
-     */
-    private void updateShotSolution() {
-        if (!shooterActive || !limelightSubsystem.hasValidTarget()) {
-            return;
-        }
-
-        Translation2d hubCenterRobotSpace = limelightSubsystem.getHubCenterTranslationRobotSpace();
-        if (!Double.isFinite(hubCenterRobotSpace.getX()) || !Double.isFinite(hubCenterRobotSpace.getY())) {
-            return;
-        }
-
-        double nowSeconds = Timer.getFPGATimestamp();
-        ChassisSpeeds currentRobotSpeeds = swerveSubsystem.getRobotRelativeSpeeds();
-        double dt = Math.max(nowSeconds - previousMotionTimestampSeconds, 1e-3);
-        Translation2d currentRobotVelocity = new Translation2d(
-            currentRobotSpeeds.vxMetersPerSecond,
-            currentRobotSpeeds.vyMetersPerSecond
-        );
-        Translation2d robotAcceleration = new Translation2d(
-            (currentRobotSpeeds.vxMetersPerSecond - previousRobotRelativeSpeeds.vxMetersPerSecond) / dt,
-            (currentRobotSpeeds.vyMetersPerSecond - previousRobotRelativeSpeeds.vyMetersPerSecond) / dt
-        );
-        Translation2d predictedRobotVelocity = currentRobotVelocity.plus(
-            robotAcceleration.times(ShooterConstants.projectileControlLatencySeconds)
-        );
-
-        previousRobotRelativeSpeeds = currentRobotSpeeds;
-        previousMotionTimestampSeconds = nowSeconds;
-
-        double effectiveLaunchSpeed = ShooterConstants.shooterLaunchVelocityMetersPerSecond * ShooterConstants.projectileFlywheelBallFrictionCoefficient;
-        double ballRadiusMeters = ShooterConstants.projectileBallDiameterMeters / 2.0;
-        double crossSectionAreaMetersSquared = Math.PI * ballRadiusMeters * ballRadiusMeters;
-        double fixedHoodAngleRad = ShooterConstants.hoodInitialAngleRadians;
-
-        ShotCalculator.ShotInputs inputs = new ShotCalculator.ShotInputs(
-            hubCenterRobotSpace,
-            predictedRobotVelocity,
-            ShooterConstants.projectileReleaseHeightMeters,
-            VisionConstants.hubCenterHeightMeters,
-            effectiveLaunchSpeed,
-            ShooterConstants.projectileBallMassKg,
-            crossSectionAreaMetersSquared,
-            ShooterConstants.projectileDragCoefficient,
-            ShooterConstants.projectileAirDensityKgPerCubicMeter,
-            ShooterConstants.projectileGravityMetersPerSecondSquared,
-            fixedHoodAngleRad,
-            fixedHoodAngleRad,
-            ShooterConstants.projectileSolverTimeStepSeconds,
-            ShooterConstants.projectileSolverMaxTimeSeconds
-        );
-
-        ShotCalculator.ShotSolution solution = ShotCalculator.solve(inputs);
-        if (solution.valid) {
-            lastShotSolution = solution;
-        }
     }
 
     /**
@@ -263,8 +177,39 @@ public class ShooterSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("Shooter/Active", shooterActive);
         SmartDashboard.putBoolean("Shooter/IndexerActive", indexerActive);
         SmartDashboard.putNumber("Shooter/FixedHoodAngleDeg", Math.toDegrees(ShooterConstants.hoodInitialAngleRadians));
-        SmartDashboard.putNumber("Shooter/YawLeadDeg", Math.toDegrees(lastShotSolution.yawLeadRad));
-        SmartDashboard.putNumber("Shooter/FlightTimeSec", lastShotSolution.flightTimeSeconds);
-        SmartDashboard.putNumber("Shooter/MissDistanceM", lastShotSolution.missDistanceMeters);
+        SmartDashboard.putNumber("Shooter/FlywheelSetpoint", currentFlywheelOutput);
+        SmartDashboard.putNumber("Shooter/IndexerSetpoint", currentIndexerOutput);
+    }
+
+    /** Applies the nearest configured shot preset given distance and observed tag. */
+    public void applyNearestPreset(double distanceMeters, int tagId) {
+        Constants.ShooterConstants.HubFace face = faceForTag(tagId);
+        double range = Double.isFinite(distanceMeters) ? distanceMeters : Double.POSITIVE_INFINITY;
+        Constants.ShotPreset best = Constants.ShooterConstants.shotPresets.stream()
+            .filter(p -> p.face == face)
+            .min((a, b) -> Double.compare(
+                Math.abs(a.rangeMeters - range),
+                Math.abs(b.rangeMeters - range)))
+            .orElseGet(() -> Constants.ShooterConstants.shotPresets.stream().findFirst().orElse(null));
+
+        if (best == null) {
+            // Fallback to defaults if no presets configured.
+            currentFlywheelOutput = ShooterConstants.shooterFullSpeed;
+            currentIndexerOutput = ShooterConstants.indexerFullSpeed;
+            return;
+        }
+
+        currentFlywheelOutput = best.flywheel;
+        currentIndexerOutput = best.indexer;
+    }
+
+    private Constants.ShooterConstants.HubFace faceForTag(int tagId) {
+        if (Constants.ShooterConstants.leftTags.contains(tagId)) {
+            return Constants.ShooterConstants.HubFace.LEFT;
+        }
+        if (Constants.ShooterConstants.rightTags.contains(tagId)) {
+            return Constants.ShooterConstants.HubFace.RIGHT;
+        }
+        return Constants.ShooterConstants.HubFace.FRONT;
     }
 }

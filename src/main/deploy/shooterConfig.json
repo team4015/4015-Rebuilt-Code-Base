@@ -17,20 +17,25 @@
     "fullSpeed": 1.0,
     "startDelaySeconds": 0.05
   },
-  "hood": {
-    "initialAngleDegrees": 67.49227962,
-    "maxAngleDegrees": 67.4922796
+  "presets": {
+    "shots": [
+      { "face": "front", "rangeMeters": 2.0, "flywheel": 0.70, "indexer": 0.55 },
+      { "face": "front", "rangeMeters": 3.0, "flywheel": 0.78, "indexer": 0.58 },
+      { "face": "front", "rangeMeters": 4.0, "flywheel": 0.86, "indexer": 0.62 },
+      { "face": "left",  "rangeMeters": 2.0, "flywheel": 0.70, "indexer": 0.55 },
+      { "face": "left",  "rangeMeters": 3.0, "flywheel": 0.78, "indexer": 0.58 },
+      { "face": "left",  "rangeMeters": 4.0, "flywheel": 0.86, "indexer": 0.62 },
+      { "face": "right", "rangeMeters": 2.0, "flywheel": 0.70, "indexer": 0.55 },
+      { "face": "right", "rangeMeters": 3.0, "flywheel": 0.78, "indexer": 0.58 },
+      { "face": "right", "rangeMeters": 4.0, "flywheel": 0.86, "indexer": 0.62 }
+    ]
   },
-  "projectile": {
-    "releaseHeightMeters": 4.08432,
-    "ballMassKg": 0.20320938,
-    "ballDiameterMeters": 0.150114,
-    "dragCoefficient": 0.47,
-    "airDensityKgPerCubicMeter": 1.225,
-    "flywheelBallFrictionCoefficient": 0.8,
-    "gravityMetersPerSecondSquared": 9.80665,
-    "solverTimeStepSeconds": 0.01,
-    "solverMaxTimeSeconds": 2.5,
-    "controlLatencySeconds": 0.05
+  "hubTags": {
+    "front":     [ 0, 1 ],
+    "left":      [ 2, 3 ],
+    "right":     [ 4, 5 ],
+    "frontBlue": [ 6, 7 ],
+    "leftBlue":  [ 8, 9 ],
+    "rightBlue": [ 10, 11 ]
   }
 }

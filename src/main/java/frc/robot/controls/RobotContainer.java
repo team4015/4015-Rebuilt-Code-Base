@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.Shooter.ShooterCommand;
+import frc.robot.commands.Shooter.PresetShootCommand;
 import frc.robot.commands.SwerveCommands;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
 import frc.robot.subsystems.Swerve.SwerveSubsystem;
@@ -43,6 +44,7 @@ public class RobotContainer {
 
     private void configureBindings() {
         bindOnTrue(OIConstants.shooterToggleButtonIdx, new ShooterCommand(shooterSubsystem));
+        bindOnTrue(OIConstants.presetShootButtonIdx, new PresetShootCommand(shooterSubsystem, limelightSubsystem));
     }
 
     private void bindOnTrue(int buttonIdx, Command command) {
