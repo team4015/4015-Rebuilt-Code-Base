@@ -3,11 +3,11 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import frc.robot.Config.ConfigLoader;
-import frc.robot.Config.DriveConfig;
-import frc.robot.Config.IntakeConfig;
-import frc.robot.Config.ShooterConfig;
-import frc.robot.Config.VisionConfig;
+import frc.robot.config.ConfigLoader;
+import frc.robot.config.DriveConfig;
+import frc.robot.config.IntakeConfig;
+import frc.robot.config.ShooterConfig;
+import frc.robot.config.VisionConfig;
 
 /**
  * Central access point for typed, JSON-backed robot constants.
@@ -100,6 +100,7 @@ public final class Constants {
         public static final int driverXAxis = DRIVE.oi.driverXAxis;
         public static final int driverRotAxis = DRIVE.oi.driverRotAxis;
         public static final int shooterToggleButtonIdx = DRIVE.oi.shooterToggleButtonIdx;
+        public static final int presetShootButtonIdx = DRIVE.oi.presetShootButtonIdx;
         public static final int driverFieldOrientedButtonIdx = DRIVE.oi.driverFieldOrientedButtonIdx;
         public static final int aimAtTagButtonIdx = DRIVE.oi.aimAtTagButtonIdx;
         public static final double triggerPressedThreshold = DRIVE.oi.triggerPressedThreshold;
@@ -145,20 +146,60 @@ public final class Constants {
         public static final double shooterLaunchVelocityMetersPerSecond = SHOOTER.flywheel.launchVelocityMetersPerSecond;
         public static final double indexerFullSpeed = SHOOTER.indexer.fullSpeed;
         public static final double indexerStartDelaySeconds = SHOOTER.indexer.startDelaySeconds;
-        public static final double hoodInitialAngleRadians = Math.toRadians(SHOOTER.hood.initialAngleDegrees);
-        public static final double hoodMaxAngleRadians = Math.toRadians(SHOOTER.hood.maxAngleDegrees);
-        public static final double projectileReleaseHeightMeters = SHOOTER.projectile.releaseHeightMeters;
-        public static final double projectileBallMassKg = SHOOTER.projectile.ballMassKg;
-        public static final double projectileBallDiameterMeters = SHOOTER.projectile.ballDiameterMeters;
-        public static final double projectileDragCoefficient = SHOOTER.projectile.dragCoefficient;
-        public static final double projectileAirDensityKgPerCubicMeter = SHOOTER.projectile.airDensityKgPerCubicMeter;
-        public static final double projectileFlywheelBallFrictionCoefficient = SHOOTER.projectile.flywheelBallFrictionCoefficient;
-        public static final double projectileGravityMetersPerSecondSquared = SHOOTER.projectile.gravityMetersPerSecondSquared;
-        public static final double projectileSolverTimeStepSeconds = SHOOTER.projectile.solverTimeStepSeconds;
-        public static final double projectileSolverMaxTimeSeconds = SHOOTER.projectile.solverMaxTimeSeconds;
-        public static final double projectileControlLatencySeconds = SHOOTER.projectile.controlLatencySeconds;
+
+        public enum HubFace { FRONT, LEFT, RIGHT }
+
+        public static final java.util.List<ShotPreset> shotPresets =
+            java.util.Collections.unmodifiableList(
+                java.util.Arrays.stream(SHOOTER.presets.shots)
+                    .map(ShotPreset::fromConfig)
+                    .filter(java.util.Objects::nonNull)
+                    .toList()
+            );
+
+        public static final java.util.Set<Integer> frontTags = toSet(SHOOTER.hubTags.front, SHOOTER.hubTags.frontBlue);
+        public static final java.util.Set<Integer> leftTags = toSet(SHOOTER.hubTags.left, SHOOTER.hubTags.leftBlue);
+        public static final java.util.Set<Integer> rightTags = toSet(SHOOTER.hubTags.right, SHOOTER.hubTags.rightBlue);
+
+        private static java.util.Set<Integer> toSet(int[] primary, int[] secondary) {
+            java.util.Set<Integer> set = new java.util.HashSet<>();
+            if (primary != null) {
+                for (int v : primary) { set.add(v); }
+            }
+            if (secondary != null) {
+                for (int v : secondary) { set.add(v); }
+            }
+            return java.util.Collections.unmodifiableSet(set);
+        }
 
         private ShooterConstants() {
+        }
+    }
+
+    /** Immutable shot preset. */
+    public static final class ShotPreset {
+        public final ShooterConstants.HubFace face;
+        public final double rangeMeters;
+        public final double flywheel;
+        public final double indexer;
+
+        private ShotPreset(ShooterConstants.HubFace face, double rangeMeters, double flywheel, double indexer) {
+            this.face = face;
+            this.rangeMeters = rangeMeters;
+            this.flywheel = flywheel;
+            this.indexer = indexer;
+        }
+
+        public static ShotPreset fromConfig(ShooterConfig.Preset cfg) {
+            if (cfg == null || cfg.face == null) {
+                return null;
+            }
+            ShooterConstants.HubFace face = switch (cfg.face.toLowerCase()) {
+                case "left" -> ShooterConstants.HubFace.LEFT;
+                case "right" -> ShooterConstants.HubFace.RIGHT;
+                default -> ShooterConstants.HubFace.FRONT;
+            };
+            return new ShotPreset(face, cfg.rangeMeters, cfg.flywheel, cfg.indexer);
         }
     }
 

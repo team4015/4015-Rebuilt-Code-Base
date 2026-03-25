@@ -88,9 +88,7 @@ public class SwerveCommands extends Command {
         boolean autoAimEnabled = autoAimSupplier.getAsBoolean() || shooterSubsystem.isShootingActive();
         boolean hasVisionTarget = limelightSubsystem.hasValidTarget();
         if (autoAimEnabled && hasVisionTarget) {
-            turningSpeed = shooterSubsystem.isShootingActive()
-                ? shooterSubsystem.getMotionCompensatedAimAngularSpeedRadPerSec()
-                : limelightSubsystem.getAimAngularSpeedRadPerSec();
+            turningSpeed = limelightSubsystem.getAimAngularSpeedRadPerSec();
         }
 
         swerveSubsystem.drive(xSpeed, ySpeed, turningSpeed, fieldOrientedSupplier.getAsBoolean());

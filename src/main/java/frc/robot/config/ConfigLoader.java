@@ -1,4 +1,4 @@
-package frc.robot.Config;
+package frc.robot.config;
 
 import java.io.File;
 import java.io.FileReader;
@@ -120,6 +120,7 @@ public final class ConfigLoader {
 
         requireNonNegative(config.oi.triggerPressedThreshold, "oi.triggerPressedThreshold");
         requireNonNegative(config.oi.deadband, "oi.deadband");
+        requireNonNegative(config.oi.presetShootButtonIdx, "oi.presetShootButtonIdx");
     }
 
     private static void validateVisionConfig(VisionConfig config) {
@@ -144,31 +145,20 @@ public final class ConfigLoader {
             || config.motors.flywheel == null
             || config.motors.indexer == null
             || config.flywheel == null
-            || config.indexer == null
-            || config.hood == null
-            || config.projectile == null) {
+            || config.indexer == null) {
             throw new IllegalArgumentException("shooterConfig.json is missing one or more required sections");
         }
 
-        requirePositive(config.flywheel.fullSpeed, "flywheel.fullSpeed");
-        requirePositive(config.flywheel.launchVelocityMetersPerSecond, "flywheel.launchVelocityMetersPerSecond");
-        requirePositive(config.indexer.fullSpeed, "indexer.fullSpeed");
-        requireNonNegative(config.indexer.startDelaySeconds, "indexer.startDelaySeconds");
-        requirePositive(config.hood.initialAngleDegrees, "hood.initialAngleDegrees");
-        requirePositive(config.hood.maxAngleDegrees, "hood.maxAngleDegrees");
-        requirePositive(config.projectile.releaseHeightMeters, "projectile.releaseHeightMeters");
-        requirePositive(config.projectile.ballMassKg, "projectile.ballMassKg");
-        requirePositive(config.projectile.ballDiameterMeters, "projectile.ballDiameterMeters");
-        requirePositive(config.projectile.dragCoefficient, "projectile.dragCoefficient");
-        requirePositive(config.projectile.airDensityKgPerCubicMeter, "projectile.airDensityKgPerCubicMeter");
-        requirePositive(
-            config.projectile.flywheelBallFrictionCoefficient,
-            "projectile.flywheelBallFrictionCoefficient"
-        );
-        requirePositive(config.projectile.gravityMetersPerSecondSquared, "projectile.gravityMetersPerSecondSquared");
-        requirePositive(config.projectile.solverTimeStepSeconds, "projectile.solverTimeStepSeconds");
-        requirePositive(config.projectile.solverMaxTimeSeconds, "projectile.solverMaxTimeSeconds");
-        requireNonNegative(config.projectile.controlLatencySeconds, "projectile.controlLatencySeconds");
+
+        if (config.presets == null) {
+            config.presets = new ShooterConfig.ShotPresets();
+        }
+        if (config.presets.shots == null) {
+            config.presets.shots = new ShooterConfig.Preset[0];
+        }
+        if (config.hubTags == null) {
+            config.hubTags = new ShooterConfig.TagMapping();
+        }
     }
 
     private static void validateIntakeConfig(IntakeConfig config) {
