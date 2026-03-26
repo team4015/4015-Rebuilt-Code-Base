@@ -88,6 +88,8 @@ public final class Constants {
         public static final double physicalMaxAngularSpeedRadiansPerSecond = DRIVE.limits.maxAngularSpeedRadPerSec;
         public static final double teleDriveMaxSpeedMetersPerSecond =physicalMaxSpeedMetersPerSecond * DRIVE.limits.teleopSpeedScale;
         public static final double teleDriveMaxAngularSpeedRadiansPerSecond = physicalMaxAngularSpeedRadiansPerSecond * DRIVE.limits.teleopSpeedScale;
+        public static final double teleDriveMaxAccelerationUnitsPerSecond = 3;
+        public static final double teleDriveAngularAccelerationUnitsPerSecond = 3;
 
         private DriveConstants() {
         }

@@ -1,12 +1,11 @@
 package frc.robot.subsystems.Shooter;
 
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Swerve.SwerveSubsystem;
 import frc.robot.subsystems.Vision.LimelightSubsystem;
 
@@ -176,7 +175,6 @@ public class ShooterSubsystem extends SubsystemBase {
     private void publishTelemetry() {
         SmartDashboard.putBoolean("Shooter/Active", shooterActive);
         SmartDashboard.putBoolean("Shooter/IndexerActive", indexerActive);
-        SmartDashboard.putNumber("Shooter/FixedHoodAngleDeg", Math.toDegrees(ShooterConstants.hoodInitialAngleRadians));
         SmartDashboard.putNumber("Shooter/FlywheelSetpoint", currentFlywheelOutput);
         SmartDashboard.putNumber("Shooter/IndexerSetpoint", currentIndexerOutput);
     }

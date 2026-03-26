@@ -118,7 +118,7 @@ public class SwerveModule {
      */
     public double getTurningPosition() {
         return normalizeTurningAngle(turningEncoder.getPosition());
-    }
+    } //check what happens when we remove the normalizeTurningAngle
 
     /**
      * Returns drive velocity in meters per second.
@@ -182,9 +182,8 @@ public class SwerveModule {
     public void setDesiredState(SwerveModuleState state) {
         state.optimize(getState().angle);
         double speed = state.speedMetersPerSecond;
-        if (Math.abs(speed) < 0.05) {
-            driveMotor.set(0);
-            turningMotor.set(turningPIDcontroller.calculate(getTurningPosition(), state.angle.getRadians()));
+        if (Math.abs(speed) < 0.001) {
+            stop();
             return;
         }
 

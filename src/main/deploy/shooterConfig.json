@@ -1,11 +1,11 @@
 {
   "motors": {
     "flywheel": {
-      "leader": 2,
+      "leader": 10,
       "leaderInverted": false
     },
     "indexer": {
-      "system": 0,
+      "system": 11,
       "inverted": false
     }
   },
@@ -31,11 +31,11 @@
     ]
   },
   "hubTags": {
-    "front":     [ 0, 1 ],
-    "left":      [ 2, 3 ],
-    "right":     [ 4, 5 ],
-    "frontBlue": [ 6, 7 ],
-    "leftBlue":  [ 8, 9 ],
-    "rightBlue": [ 10, 11 ]
+    "front":     [ 9, 10 ],
+    "left":      [ 8, 5 ],
+    "right":     [ 11, 2 ],
+    "frontBlue": [ 26, 25 ],
+    "leftBlue":  [ 21, 24 ],
+    "rightBlue": [ 18, 27 ]
   }
 }

@@ -29,9 +29,9 @@ public class SwerveCommands extends Command {
     private final ShooterSubsystem shooterSubsystem;
 
     // Rate limiters smooth operator input and reduce jerk.
-    private final SlewRateLimiter xLimiter = new SlewRateLimiter(3);
-    private final SlewRateLimiter yLimiter = new SlewRateLimiter(3);
-    private final SlewRateLimiter turningLimiter = new SlewRateLimiter(3);
+    private final SlewRateLimiter xLimiter = new SlewRateLimiter(Constants.DriveConstants.teleDriveAngularAccelerationUnitsPerSecond);
+    private final SlewRateLimiter yLimiter = new SlewRateLimiter(Constants.DriveConstants.teleDriveMaxAccelerationUnitsPerSecond);
+    private final SlewRateLimiter turningLimiter = new SlewRateLimiter(Constants.DriveConstants.teleDriveAngularAccelerationUnitsPerSecond);
 
     /**
      * Creates the swerve teleop command.
@@ -102,5 +102,10 @@ public class SwerveCommands extends Command {
     @Override
     public void end(boolean interrupted) {
         swerveSubsystem.stopModules();
+    }
+
+    @Override
+    public boolean isFinished(){
+        return false;
     }
 }

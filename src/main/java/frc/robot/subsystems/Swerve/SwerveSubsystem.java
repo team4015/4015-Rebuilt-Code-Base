@@ -58,12 +58,7 @@ public class SwerveSubsystem extends SubsystemBase {
         DriveConstants.backRightDriveAbsoluteEncoderReversed
     );
 
-    // Delay heading zeroing until the NavX finishes its startup calibration to avoid
-    // noisy yaw values that make field-oriented driving feel random.
-    private static final double HEADING_INIT_TIMEOUT_SEC = 5.0;
     private final AHRS gyro = new AHRS(AHRS.NavXComType.kMXP_SPI);
-    private final Timer startupTimer = new Timer();
-    private boolean headingInitialized = false;
 
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(
         DriveConstants.driveKinematics,
@@ -78,7 +73,14 @@ public class SwerveSubsystem extends SubsystemBase {
 
     /** Creates the swerve subsystem */
     public SwerveSubsystem() {
-        startupTimer.start();
+        new Thread(() -> {
+            try{
+                Thread.sleep(1000);
+                zeroHeading();
+            } catch (Exception e){
+
+            }
+        }).start();
     }
 
     /** Resets the NavX heading to zero. */
@@ -147,16 +149,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (!headingInitialized) {
-            boolean gyroReady = !gyro.isCalibrating();
-            boolean timeoutReached = startupTimer.hasElapsed(HEADING_INIT_TIMEOUT_SEC);
-            if (gyroReady || timeoutReached) {
-                zeroHeading();
-                resetOdometry(new Pose2d());
-                headingInitialized = true;
-            }
-        }
-
         odometer.update(
             getRotation2d(),
             new SwerveModulePosition[]{
