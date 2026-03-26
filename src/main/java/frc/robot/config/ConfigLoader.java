@@ -87,6 +87,24 @@ public final class ConfigLoader {
         }
     }
 
+    /**
+     * Loads the flop-over intake configuration.
+     *
+     * @return validated flop-over configuration
+     */
+    public static FlopOverConfig loadFlopOverConfig() {
+        try {
+            File file = new File(Filesystem.getDeployDirectory(), "flopOverConfig.json");
+            try (Reader reader = new FileReader(file)) {
+                FlopOverConfig config = new Gson().fromJson(reader, FlopOverConfig.class);
+                validateFlopOverConfig(config);
+                return config;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load flop-over config", e);
+        }
+    }
+
     private static void validateDriveConfig(DriveConfig config) {
         if (config == null
             || config.module == null
@@ -121,6 +139,8 @@ public final class ConfigLoader {
         requireNonNegative(config.oi.triggerPressedThreshold, "oi.triggerPressedThreshold");
         requireNonNegative(config.oi.deadband, "oi.deadband");
         requireNonNegative(config.oi.presetShootButtonIdx, "oi.presetShootButtonIdx");
+        requireNonNegative(config.oi.intakeToggleButtonIdx, "oi.intakeToggleButtonIdx");
+        requireNonNegative(config.oi.flopToggleButtonIdx, "oi.flopToggleButtonIdx");
     }
 
     private static void validateVisionConfig(VisionConfig config) {
@@ -168,6 +188,18 @@ public final class ConfigLoader {
 
         requireNonNegative(config.motor.system, "motor.system");
         requirePositive(config.fullSpeed, "fullSpeed");
+    }
+
+    private static void validateFlopOverConfig(FlopOverConfig config) {
+        if (config == null || config.motor == null || config.limits == null) {
+            throw new IllegalArgumentException("flopOverConfig.json is missing one or more required sections");
+        }
+
+        requireNonNegative(config.motor.pwmPort, "motor.pwmPort");
+        requireNonNegative(config.limits.forwardDio, "limits.forwardDio");
+        requireNonNegative(config.limits.backwardDio, "limits.backwardDio");
+        requireNonNegative(config.clockwiseOutput, "clockwiseOutput");
+        requireNonNegative(config.counterClockwiseOutput, "counterClockwiseOutput");
     }
 
     private static void requirePositive(double value, String fieldName) {

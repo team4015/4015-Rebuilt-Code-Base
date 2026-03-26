@@ -89,6 +89,8 @@ public class DriveConfig {
         public int presetShootButtonIdx;
         public int driverFieldOrientedButtonIdx;
         public int aimAtTagButtonIdx;
+        public int intakeToggleButtonIdx;
+        public int flopToggleButtonIdx;
         public double triggerPressedThreshold;
         public double deadband;
     }

@@ -1,0 +1,14 @@
+{
+  "motor": {
+    "pwmPort": 9,
+    "inverted": false
+  },
+  "limits": {
+    "forwardDio": 0,
+    "backwardDio": 1,
+    "normallyClosed": true
+  },
+  "clockwiseOutput": 0.65,
+  "counterClockwiseOutput": 0.65,
+  "startClockwise": true
+}

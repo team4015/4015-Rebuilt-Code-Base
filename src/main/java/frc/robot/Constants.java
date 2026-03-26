@@ -8,6 +8,7 @@ import frc.robot.config.DriveConfig;
 import frc.robot.config.IntakeConfig;
 import frc.robot.config.ShooterConfig;
 import frc.robot.config.VisionConfig;
+import frc.robot.config.FlopOverConfig;
 
 /**
  * Central access point for typed, JSON-backed robot constants.
@@ -17,6 +18,7 @@ public final class Constants {
     public static final IntakeConfig INTAKE = ConfigLoader.loadIntakeConfig();
     public static final ShooterConfig SHOOTER = ConfigLoader.loadShooterConfig();
     public static final VisionConfig VISION = ConfigLoader.loadVisionConfig();
+    public static final FlopOverConfig FLOPOVER = ConfigLoader.loadFlopOverConfig();
 
     private Constants() {
     }
@@ -105,6 +107,8 @@ public final class Constants {
         public static final int presetShootButtonIdx = DRIVE.oi.presetShootButtonIdx;
         public static final int driverFieldOrientedButtonIdx = DRIVE.oi.driverFieldOrientedButtonIdx;
         public static final int aimAtTagButtonIdx = DRIVE.oi.aimAtTagButtonIdx;
+        public static final int intakeToggleButtonIdx = DRIVE.oi.intakeToggleButtonIdx;
+        public static final int flopToggleButtonIdx = DRIVE.oi.flopToggleButtonIdx;
         public static final double triggerPressedThreshold = DRIVE.oi.triggerPressedThreshold;
         public static final double deadband = DRIVE.oi.deadband;
 
@@ -212,6 +216,21 @@ public final class Constants {
         public static final double intakeFullSpeed = INTAKE.fullSpeed;
 
         private IntakeConstants() {
+        }
+    }
+
+    /** Constants used by the flop-over intake subsystem. */
+    public static final class FlopOverConstants {
+        public static final int motorPwmPort = FLOPOVER.motor.pwmPort;
+        public static final boolean motorInverted = FLOPOVER.motor.inverted;
+        public static final int forwardLimitDio = FLOPOVER.limits.forwardDio;
+        public static final int backwardLimitDio = FLOPOVER.limits.backwardDio;
+        public static final boolean limitsNormallyClosed = FLOPOVER.limits.normallyClosed;
+        public static final double clockwiseOutput = FLOPOVER.clockwiseOutput;
+        public static final double counterClockwiseOutput = FLOPOVER.counterClockwiseOutput;
+        public static final boolean startClockwise = FLOPOVER.startClockwise;
+
+        private FlopOverConstants() {
         }
     }
 }

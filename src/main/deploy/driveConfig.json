@@ -67,8 +67,10 @@
     "driverRotAxis": 4,
     "shooterToggleButtonIdx": 5,
     "presetShootButtonIdx": 7,
-    "driverFieldOrientedButtonIdx": 1,
+    "driverFieldOrientedButtonIdx": 8,
     "aimAtTagButtonIdx": 6,
+    "intakeToggleButtonIdx": 2,
+    "flopToggleButtonIdx": 1,
     "triggerPressedThreshold": 0.2,
     "deadband": 0.05
   }
