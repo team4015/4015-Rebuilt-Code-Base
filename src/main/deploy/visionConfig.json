@@ -2,7 +2,7 @@
   "limelight": {
     "name": "limelight",
     "lensHeightInches": 20.0,
-    "mountAngleDegrees": 15.0,
+    "mountAngleDegrees": 45.0,
     "defaultTagHeightInches": 57.13
   },
   "aim": {

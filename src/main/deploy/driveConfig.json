@@ -11,16 +11,16 @@
   },
   "motors": {
     "drive": {
-      "backRight": 3,
+      "backRight": 1,
       "backLeft": 4,
       "frontRight": 2,
-      "frontLeft": 7
+      "frontLeft": 3
     },
     "turning": {
       "backRight": 5,
       "backLeft": 8,
       "frontRight": 6,
-      "frontLeft": 1
+      "frontLeft": 7
     }
   },
   "encoders": {
@@ -31,10 +31,10 @@
       "frontLeft": 2
     },
     "absoluteOffsetsRad": {
-      "frontLeft": 0.0,
-      "frontRight": 0.0,
-      "backLeft": 0.0,
-      "backRight": 0.0
+      "frontLeft": 1.425175,
+      "frontRight": 0.183739,
+      "backLeft": 4.897104,
+      "backRight": 4.957831
     },
     "driveReversed": {
       "frontLeft": false,
@@ -64,8 +64,9 @@
     "driverControllerPort": 0,
     "driverYAxis": 1,
     "driverXAxis": 0,
-    "driverRotAxis": 4,
-    "shooterToggleButtonIdx": 5,
+    "driverRotAxis": 3,
+    "intakeToggleButtonIdx": 5,
+    "shooterToggleButtonIdx": 6,
     "presetShootButtonIdx": 7,
     "driverFieldOrientedButtonIdx": 1,
     "aimAtTagButtonIdx": 6,

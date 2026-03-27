@@ -1,4 +1,4 @@
-package frc.robot.config;
+package frc.robot.Config;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -86,6 +86,7 @@ public class DriveConfig {
         public int driverXAxis;
         public int driverRotAxis;
         public int shooterToggleButtonIdx;
+        public int intakeToggleButtonIdx;
         public int presetShootButtonIdx;
         public int driverFieldOrientedButtonIdx;
         public int aimAtTagButtonIdx;

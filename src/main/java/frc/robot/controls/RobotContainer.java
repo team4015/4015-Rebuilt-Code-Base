@@ -4,14 +4,19 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.Intake.IntakeCommand;
 import frc.robot.commands.Shooter.ShooterCommand;
 import frc.robot.commands.Shooter.PresetShootCommand;
 import frc.robot.commands.Swerve.SwerveCommands;
+import frc.robot.commands.Swerve.SnapHeadingCommand;
+import frc.robot.subsystems.Intake.IntakeSubsystem;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
 import frc.robot.subsystems.Swerve.SwerveSubsystem;
 import frc.robot.subsystems.Vision.LimelightSubsystem;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 /**
  * Builds the robot's subsystems, commands, and controller bindings.
@@ -20,6 +25,7 @@ public class RobotContainer {
     private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
     private final LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
     private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(swerveSubsystem, limelightSubsystem);
+    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     private final Joystick driverJoystick = new Joystick(Constants.OIConstants.driverControllerPort);
 
     /**
@@ -47,10 +53,21 @@ public class RobotContainer {
     private void configureBindings() {
         bindOnTrue(OIConstants.shooterToggleButtonIdx, new ShooterCommand(shooterSubsystem));
         bindOnTrue(OIConstants.presetShootButtonIdx, new PresetShootCommand(shooterSubsystem, limelightSubsystem));
+        bindOnTrue(OIConstants.intakeToggleButtonIdx, new IntakeCommand(intakeSubsystem));
     }
 
     private void configureButtonBindings() {
         new JoystickButton(driverJoystick, 2).onTrue(new InstantCommand(swerveSubsystem::zeroHeading, swerveSubsystem));
+        // D-pad snap to field-relative cardinals (0/90/180/270 deg).
+        new POVButton(driverJoystick, 0).onTrue(new SnapHeadingCommand(swerveSubsystem, Rotation2d.fromDegrees(0)));
+        new POVButton(driverJoystick, 90).onTrue(new SnapHeadingCommand(swerveSubsystem, Rotation2d.fromDegrees(90)));
+        new POVButton(driverJoystick, 180).onTrue(new SnapHeadingCommand(swerveSubsystem, Rotation2d.fromDegrees(180)));
+        new POVButton(driverJoystick, 270).onTrue(new SnapHeadingCommand(swerveSubsystem, Rotation2d.fromDegrees(270)));
+
+        // Auto-align button also spins up shooter, then indexer; releases stop both.
+        new JoystickButton(driverJoystick, OIConstants.aimAtTagButtonIdx)
+            .onTrue(new PresetShootCommand(shooterSubsystem, limelightSubsystem))
+            .onFalse(new InstantCommand(shooterSubsystem::stopAll, shooterSubsystem));
     }
 
     private void bindOnTrue(int buttonIdx, Command command) {

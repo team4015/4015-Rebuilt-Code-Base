@@ -180,15 +180,15 @@ public class SwerveModule {
      * @param state desired module state
      */
     public void setDesiredState(SwerveModuleState state) {
-        state.optimize(getState().angle);
-        double speed = state.speedMetersPerSecond;
+        SwerveModuleState optimized = SwerveModuleState.optimize(state, getTurningRotation());
+        double speed = optimized.speedMetersPerSecond;
         if (Math.abs(speed) < 0.001) {
             stop();
             return;
         }
 
         driveMotor.set(speed / Constants.DriveConstants.physicalMaxSpeedMetersPerSecond);
-        turningMotor.set(turningPIDcontroller.calculate(getTurningPosition(), state.angle.getRadians()));
+        turningMotor.set(turningPIDcontroller.calculate(getTurningPosition(), optimized.angle.getRadians()));
         SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString());
     }
 

@@ -3,11 +3,11 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import frc.robot.config.ConfigLoader;
-import frc.robot.config.DriveConfig;
-import frc.robot.config.IntakeConfig;
-import frc.robot.config.ShooterConfig;
-import frc.robot.config.VisionConfig;
+import frc.robot.Config.ConfigLoader;
+import frc.robot.Config.DriveConfig;
+import frc.robot.Config.IntakeConfig;
+import frc.robot.Config.ShooterConfig;
+import frc.robot.Config.VisionConfig;
 
 /**
  * Central access point for typed, JSON-backed robot constants.
@@ -101,6 +101,7 @@ public final class Constants {
         public static final int driverYAxis = DRIVE.oi.driverYAxis;
         public static final int driverXAxis = DRIVE.oi.driverXAxis;
         public static final int driverRotAxis = DRIVE.oi.driverRotAxis;
+        public static final int intakeToggleButtonIdx = DRIVE.oi.intakeToggleButtonIdx;
         public static final int shooterToggleButtonIdx = DRIVE.oi.shooterToggleButtonIdx;
         public static final int presetShootButtonIdx = DRIVE.oi.presetShootButtonIdx;
         public static final int driverFieldOrientedButtonIdx = DRIVE.oi.driverFieldOrientedButtonIdx;

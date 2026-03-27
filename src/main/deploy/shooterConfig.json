@@ -1,21 +1,21 @@
 {
   "motors": {
     "flywheel": {
-      "leader": 10,
+      "leader": 8,
       "leaderInverted": false
     },
     "indexer": {
-      "system": 11,
+      "system": 9,
       "inverted": false
     }
   },
   "flywheel": {
-    "fullSpeed": 1.0,
+    "fullSpeed": 0.8,
     "launchVelocityMetersPerSecond": 18.0
   },
   "indexer": {
-    "fullSpeed": 1.0,
-    "startDelaySeconds": 0.05
+    "fullSpeed": 0.8,
+    "startDelaySeconds": 1.00
   },
   "presets": {
     "shots": [

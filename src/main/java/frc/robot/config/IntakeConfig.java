@@ -1,4 +1,4 @@
-package frc.robot.config;
+package frc.robot.Config;
 
 /**
  * Typed representation of {@code intakeConfig.json}.
