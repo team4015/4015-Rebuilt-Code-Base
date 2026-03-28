@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
-public class extendIntakeCommand extends Command {
+public class retractIntakeCommand extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final IntakeSubsystem intake;
   
@@ -19,7 +19,7 @@ public class extendIntakeCommand extends Command {
      *
      * @param subsystem The subsystem used by this command.
      */
-    public extendIntakeCommand(IntakeSubsystem intake) {
+    public retractIntakeCommand(IntakeSubsystem intake) {
       this.intake = intake;
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -29,9 +29,10 @@ public class extendIntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.extendIntake();
-    System.out.println("Intake Extending");
-    SmartDashboard.putBoolean("intakeExtending?", true);
+    intake.retractIntake();
+    System.out.println("Intake Retracting");
+    SmartDashboard.putBoolean("intakeRetracting", true);
+    SmartDashboard.putBoolean("intakeExtending?", false);
   }
 
   // Called once the command ends or is interrupted.
@@ -39,7 +40,7 @@ public class extendIntakeCommand extends Command {
   public void end(boolean interrupted) {
     intake.stopExtend();
     System.out.println("Extending Stopped");
-    SmartDashboard.putBoolean("intakeExtending?", false);
+    SmartDashboard.putBoolean("intakeRetracting", false);
 
 
   }

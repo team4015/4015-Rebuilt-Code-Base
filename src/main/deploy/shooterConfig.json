@@ -10,12 +10,12 @@
     }
   },
   "flywheel": {
-    "fullSpeed": 0.8,
+    "fullSpeed": 0.80,
     "launchVelocityMetersPerSecond": 18.0
   },
   "indexer": {
-    "fullSpeed": 0.8,
-    "startDelaySeconds": 1.00
+    "fullSpeed": 0.80,
+    "startDelaySeconds": 1.50
   },
   "presets": {
     "shots": [

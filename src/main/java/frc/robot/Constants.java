@@ -98,11 +98,14 @@ public final class Constants {
     /** Operator-interface constants such as ports and button mappings. */
     public static final class OIConstants {
         public static final int driverControllerPort = DRIVE.oi.driverControllerPort;
+        public static final int operatorControllerPort = DRIVE.oi.operatorControllerPort;
         public static final int driverYAxis = DRIVE.oi.driverYAxis;
         public static final int driverXAxis = DRIVE.oi.driverXAxis;
         public static final int driverRotAxis = DRIVE.oi.driverRotAxis;
         public static final int intakeToggleButtonIdx = DRIVE.oi.intakeToggleButtonIdx;
         public static final int shooterToggleButtonIdx = DRIVE.oi.shooterToggleButtonIdx;
+        public static final int extendIntakeToggleButtonIdx = DRIVE.oi.extendIntakeToggleButtonIdx;
+        public static final int retractIntakeToggleButtonIdx = DRIVE.oi.retractIntakeToggleButtonIdx;
         public static final int presetShootButtonIdx = DRIVE.oi.presetShootButtonIdx;
         public static final int driverFieldOrientedButtonIdx = DRIVE.oi.driverFieldOrientedButtonIdx;
         public static final int aimAtTagButtonIdx = DRIVE.oi.aimAtTagButtonIdx;

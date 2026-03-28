@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Intake;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -11,16 +12,18 @@ import frc.robot.Constants.IntakeConstants;
  */
 public class IntakeSubsystem extends SubsystemBase {
     private final PWMSparkMax intakeMotor;
-    private final VictorSP extendMotor;
+    private final PWMSparkMax extendMotor;
+    
     private boolean intakeEnabled = false;
-
-    private boolean extend = true;
+    private boolean extendRunning = false;
+    private DigitalInput frontLimitSwitch = new DigitalInput(0);
 
 
     /** Creates the intake subsystem and applies configured inversion. */
     public IntakeSubsystem(){
-        intakeMotor = new PWMSparkMax(IntakeConstants.intakeMotorPort);
-        extendMotor = new VictorSP(0);
+        intakeMotor = new PWMSparkMax(1);
+        extendMotor = new PWMSparkMax(0);
+        extendMotor.setInverted(false);
         intakeMotor.setInverted(IntakeConstants.intakeMotorReversed);
     }
 
@@ -33,8 +36,19 @@ public class IntakeSubsystem extends SubsystemBase {
         setIntakeActive(true, speed);
     }
 
+    public void startIntakeMotorReversed(double speed){
+        setIntakeActive(true, -speed);
+    }
+
     public void extendIntake(){
-        extendMotor.set(extend ? 0.1 : -0.1);
+        extendRunning = true;
+        extendMotor.set(0.1);
+        
+    }
+
+    public void retractIntake(){
+        extendRunning = true;
+        extendMotor.set(-0.1);
     }
 
     /** Stops the intake motor and clears the enabled flag. */
@@ -43,6 +57,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void stopExtend(){
+        extendRunning = false;
         extendMotor.set(0);
     }
 
@@ -85,5 +100,8 @@ public class IntakeSubsystem extends SubsystemBase {
     private void publishTelemetry() {
         SmartDashboard.putBoolean("Intake/Active", intakeEnabled);
         SmartDashboard.putNumber("Intake/Output", intakeMotor.get());
+        SmartDashboard.putBoolean("Extend/Active", extendRunning);
+
+
     }
 }

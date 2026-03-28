@@ -82,11 +82,14 @@ public class DriveConfig {
     /** Controller bindings used by drive-related features. */
     public static class OI {
         public int driverControllerPort;
+        public int operatorControllerPort;
         public int driverYAxis;
         public int driverXAxis;
         public int driverRotAxis;
         public int shooterToggleButtonIdx;
         public int intakeToggleButtonIdx;
+        public int extendIntakeToggleButtonIdx;
+        public int retractIntakeToggleButtonIdx;
         public int presetShootButtonIdx;
         public int driverFieldOrientedButtonIdx;
         public int aimAtTagButtonIdx;

@@ -58,16 +58,19 @@
   "limits": {
     "maxSpeedMps": 5.0,
     "maxAngularSpeedRadPerSec": 12.566,
-    "teleopSpeedScale": 0.25
+    "teleopSpeedScale": 0.8
   },
   "oi": {
     "driverControllerPort": 0,
+    "operatorControllerPort": 1,
     "driverYAxis": 1,
     "driverXAxis": 0,
-    "driverRotAxis": 3,
+    "driverRotAxis": 2,
     "intakeToggleButtonIdx": 5,
     "shooterToggleButtonIdx": 6,
-    "presetShootButtonIdx": 7,
+    "extendIntakeToggleButtonIdx": 7,
+    "retractIntakeToggleButtonIdx": 8,
+    "presetShootButtonIdx": 3,
     "driverFieldOrientedButtonIdx": 1,
     "aimAtTagButtonIdx": 6,
     "triggerPressedThreshold": 0.2,

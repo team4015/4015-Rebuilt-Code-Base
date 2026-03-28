@@ -11,6 +11,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.Intake.IntakeCommand;
 import frc.robot.commands.Intake.extendIntakeCommand;
+import frc.robot.commands.Intake.retractIntakeCommand;
 import frc.robot.commands.Shooter.ShooterCommand;
 import frc.robot.commands.Shooter.IndexerCommand;
 import frc.robot.commands.Shooter.PresetShootCommand;
@@ -35,11 +36,12 @@ public class RobotContainer {
     private final LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
     private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(swerveSubsystem, limelightSubsystem);
     private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+
     private final Joystick driverJoystick = new Joystick(Constants.OIConstants.driverControllerPort);
+    private final Joystick operatorJoystick = new Joystick(Constants.OIConstants.operatorControllerPort);
 
     private final PathPlannerAuto auto;
     private final SendableChooser<Command> autoChooser;
-
 
     /**
      * Creates the robot container and installs default commands and button bindings.
@@ -76,6 +78,8 @@ public class RobotContainer {
         bindOnTrue(OIConstants.shooterToggleButtonIdx, new ShooterCommand(shooterSubsystem));
         bindOnTrue(OIConstants.presetShootButtonIdx, new PresetShootCommand(shooterSubsystem, limelightSubsystem));
         bindOnTrue(OIConstants.intakeToggleButtonIdx, new IntakeCommand(intakeSubsystem));
+        bindToggleOnTrue(OIConstants.extendIntakeToggleButtonIdx, new extendIntakeCommand(intakeSubsystem));
+        bindToggleOnTrue(OIConstants.retractIntakeToggleButtonIdx, new retractIntakeCommand(intakeSubsystem));
     }
 
     private void configureButtonBindings() {
@@ -87,13 +91,17 @@ public class RobotContainer {
         new POVButton(driverJoystick, 270).onTrue(new SnapHeadingCommand(swerveSubsystem, Rotation2d.fromDegrees(270)));
 
         // Auto-align button also spins up shooter, then indexer; releases stop both.
-        new JoystickButton(driverJoystick, OIConstants.aimAtTagButtonIdx)
+        /*new JoystickButton(operatorJoystick, OIConstants.aimAtTagButtonIdx)
             .onTrue(new PresetShootCommand(shooterSubsystem, limelightSubsystem))
-            .onFalse(new InstantCommand(shooterSubsystem::stopAll, shooterSubsystem));
+            .onFalse(new InstantCommand(shooterSubsystem::stopAll, shooterSubsystem));*/
     }
 
     private void bindOnTrue(int buttonIdx, Command command) {
-        new JoystickButton(driverJoystick, buttonIdx).onTrue(command);
+        new JoystickButton(operatorJoystick, buttonIdx).onTrue(command);
+    }
+
+    private void bindToggleOnTrue(int buttonIdx, Command command){
+        new JoystickButton(operatorJoystick, buttonIdx).toggleOnTrue(command);
     }
 
     /**

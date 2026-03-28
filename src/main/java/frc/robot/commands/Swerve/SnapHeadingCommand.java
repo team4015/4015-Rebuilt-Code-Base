@@ -11,7 +11,7 @@ import frc.robot.subsystems.Swerve.SwerveSubsystem;
  * Rotates the robot to a specified field-relative heading using the gyro.
  */
 public class SnapHeadingCommand extends Command {
-    private static final double kP = 3.5; // tuned to be responsive; capped below
+    private static final double kP = 0.5; // tuned to be responsive; capped below
     private static final double ANGLE_TOLERANCE_RAD = Math.toRadians(2.0);
 
     private final SwerveSubsystem swerveSubsystem;
