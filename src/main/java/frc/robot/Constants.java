@@ -3,11 +3,11 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import frc.robot.config.ConfigLoader;
-import frc.robot.config.DriveConfig;
-import frc.robot.config.IntakeConfig;
-import frc.robot.config.ShooterConfig;
-import frc.robot.config.VisionConfig;
+import frc.robot.Config.ConfigLoader;
+import frc.robot.Config.DriveConfig;
+import frc.robot.Config.IntakeConfig;
+import frc.robot.Config.ShooterConfig;
+import frc.robot.Config.VisionConfig;
 
 /**
  * Central access point for typed, JSON-backed robot constants.
@@ -88,8 +88,16 @@ public final class Constants {
         public static final double physicalMaxAngularSpeedRadiansPerSecond = DRIVE.limits.maxAngularSpeedRadPerSec;
         public static final double teleDriveMaxSpeedMetersPerSecond =physicalMaxSpeedMetersPerSecond * DRIVE.limits.teleopSpeedScale;
         public static final double teleDriveMaxAngularSpeedRadiansPerSecond = physicalMaxAngularSpeedRadiansPerSecond * DRIVE.limits.teleopSpeedScale;
-        public static final double teleDriveMaxAccelerationUnitsPerSecond = 3;
-        public static final double teleDriveAngularAccelerationUnitsPerSecond = 3;
+        public static final double teleDriveMaxAccelerationUnitsPerSecond = DRIVE.limits.teleopMaxAccelUnitsPerSec;
+        public static final double teleDriveAngularAccelerationUnitsPerSecond = DRIVE.limits.teleopMaxAngularAccelUnitsPerSec;
+        public static final double snapHeadingKp = DRIVE.snapHeading.kP;
+        public static final double snapHeadingToleranceRad = Units.degreesToRadians(DRIVE.snapHeading.toleranceDegrees);
+        public static final double autoTranslationKp = DRIVE.auto.translationPid.kP;
+        public static final double autoTranslationKi = DRIVE.auto.translationPid.kI;
+        public static final double autoTranslationKd = DRIVE.auto.translationPid.kD;
+        public static final double autoRotationKp = DRIVE.auto.rotationPid.kP;
+        public static final double autoRotationKi = DRIVE.auto.rotationPid.kI;
+        public static final double autoRotationKd = DRIVE.auto.rotationPid.kD;
 
         private DriveConstants() {
         }
@@ -109,6 +117,7 @@ public final class Constants {
         public static final int presetShootButtonIdx = DRIVE.oi.presetShootButtonIdx;
         public static final int driverFieldOrientedButtonIdx = DRIVE.oi.driverFieldOrientedButtonIdx;
         public static final int aimAtTagButtonIdx = DRIVE.oi.aimAtTagButtonIdx;
+        public static final int flopOverButtonIdx = DRIVE.oi.flopOverButtonIdx;
         public static final double triggerPressedThreshold = DRIVE.oi.triggerPressedThreshold;
         public static final double deadband = DRIVE.oi.deadband;
 
@@ -214,6 +223,10 @@ public final class Constants {
         public static final int intakeMotorPort = INTAKE.motor.system;
         public static final boolean intakeMotorReversed = INTAKE.motor.inverted;
         public static final double intakeFullSpeed = INTAKE.fullSpeed;
+        public static final int extendMotorPort = INTAKE.extendMotor.system;
+        public static final boolean extendMotorReversed = INTAKE.extendMotor.inverted;
+        public static final double extendOutSpeed = INTAKE.extendOutSpeed;
+        public static final double retractSpeed = INTAKE.retractSpeed;
 
         private IntakeConstants() {
         }

@@ -3,5 +3,11 @@
     "system": 1,
     "inverted": false
   },
-  "fullSpeed": 1.00
+  "extendMotor": {
+    "system": 0,
+    "inverted": false
+  },
+  "fullSpeed": 1.00,
+  "extendOutSpeed": 0.25,
+  "retractSpeed": -0.4
 }

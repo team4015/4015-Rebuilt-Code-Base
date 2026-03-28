@@ -58,7 +58,17 @@
   "limits": {
     "maxSpeedMps": 5.0,
     "maxAngularSpeedRadPerSec": 12.566,
-    "teleopSpeedScale": 1.00
+    "teleopSpeedScale": 1.0,
+    "teleopMaxAccelUnitsPerSec": 3.0,
+    "teleopMaxAngularAccelUnitsPerSec": 20.0
+  },
+  "snapHeading": {
+    "kP": 0.5,
+    "toleranceDegrees": 2.0
+  },
+  "auto": {
+    "translationPid": { "kP": 5.0, "kI": 0.0, "kD": 0.0 },
+    "rotationPid": { "kP": 5.0, "kI": 0.0, "kD": 0.0 }
   },
   "oi": {
     "driverControllerPort": 0,
@@ -66,13 +76,14 @@
     "driverYAxis": 1,
     "driverXAxis": 0,
     "driverRotAxis": 2,
-    "intakeToggleButtonIdx": 5,
-    "shooterToggleButtonIdx": 6,
-    "extendIntakeToggleButtonIdx": 7,
-    "retractIntakeToggleButtonIdx": 8,
-    "presetShootButtonIdx": 3,
-    "driverFieldOrientedButtonIdx": 1,
-    "aimAtTagButtonIdx": 6,
+    "intakeToggleButtonIdx": 6,
+    "shooterToggleButtonIdx": 5,
+    "extendIntakeToggleButtonIdx": 2,
+    "retractIntakeToggleButtonIdx": 4,
+    "flopOverButtonIdx": 3,
+    "presetShootButtonIdx": 7,
+    "driverFieldOrientedButtonIdx": 0,
+    "aimAtTagButtonIdx": 1,
     "triggerPressedThreshold": 0.2,
     "deadband": 0.05
   }

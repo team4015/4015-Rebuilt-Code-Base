@@ -74,7 +74,7 @@ public class SwerveSubsystem extends SubsystemBase {
             backRight.getPosition()
         }
     );
-    RobotConfig config;
+
     /** Creates the swerve subsystem */
     public SwerveSubsystem() {
         new Thread(() -> {
@@ -85,37 +85,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
             }
         }).start();
-        
-        try{
-            config = RobotConfig.fromGUISettings();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        AutoBuilder.configure(
-            this::getPose, // Robot pose supplier
-            this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-            this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-            ),
-            config, // The robot configuration
-            () -> {
-              // Boolean supplier that controls when the path will be mirrored for the red alliance
-              // This will flip the path being followed to the red side of the field.
-              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-              var alliance = DriverStation.getAlliance();
-              if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
-            },
-            this // Reference to this subsystem to set requirements
-        );
-
     }
 
     /** Resets the NavX heading to zero. */
@@ -129,7 +98,7 @@ public class SwerveSubsystem extends SubsystemBase {
      * @return wrapped heading in degrees
      */
     public double getHeading() {
-        return Math.IEEEremainder(gyro.getAngle(), 360.0);
+        return Math.IEEEremainder(gyro.getAngle(), 360);
     }
 
     /**
@@ -148,20 +117,6 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public Pose2d getPose() {
         return odometer.getPoseMeters();
-    }
-
-    /**
-     * Returns measured robot-relative chassis speeds derived from the modules.
-     *
-     * @return robot-relative chassis speeds
-     */
-    public ChassisSpeeds getRobotRelativeSpeeds() {
-        return DriveConstants.driveKinematics.toChassisSpeeds(
-            frontLeft.getState(),
-            frontRight.getState(),
-            backLeft.getState(),
-            backRight.getState()
-        );
     }
 
     /**
@@ -206,32 +161,12 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Turning Encoder Back Right", backRight.getTurningPosition());
     }
 
-    /** Re-synchronizes all module encoders to their absolute angles and zeroes drive distances. */
-    public void resetModuleEncoders() {
-        frontLeft.resetEncoder();
-        frontRight.resetEncoder();
-        backLeft.resetEncoder();
-        backRight.resetEncoder();
-    }
-
     /** Stops all four swerve modules. */
     public void stopModules() {
         frontLeft.stop();
         frontRight.stop();
         backLeft.stop();
         backRight.stop();
-    }
-
-    /**
-     * Sets brake or coast mode on all modules.
-     *
-     * @param enabled {@code true} for brake mode, {@code false} for coast mode
-     */
-    public void setBrakeMode(boolean enabled) {
-        frontLeft.setBrakeMode(enabled);
-        frontRight.setBrakeMode(enabled);
-        backLeft.setBrakeMode(enabled);
-        backRight.setBrakeMode(enabled);
     }
 
     /**
@@ -245,36 +180,6 @@ public class SwerveSubsystem extends SubsystemBase {
         frontRight.setDesiredState(desiredStates[1]);
         backLeft.setDesiredState(desiredStates[2]);
         backRight.setDesiredState(desiredStates[3]);
-    }
-
-    /**
-     * Drives the robot using chassis-speed commands.
-     *
-     * @param xSpeedMetersPerSecond forward speed
-     * @param ySpeedMetersPerSecond sideways speed
-     * @param omegaRadiansPerSecond angular speed
-     * @param fieldRelative whether the translation commands are field-relative
-     */
-    public void drive(
-        double xSpeedMetersPerSecond,
-        double ySpeedMetersPerSecond,
-        double omegaRadiansPerSecond,
-        boolean fieldRelative
-    ) {
-        ChassisSpeeds chassisSpeeds = fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                xSpeedMetersPerSecond,
-                ySpeedMetersPerSecond,
-                omegaRadiansPerSecond,
-                getRotation2d()
-            )
-            : new ChassisSpeeds(xSpeedMetersPerSecond, ySpeedMetersPerSecond, omegaRadiansPerSecond);
-
-        setModulesStates(DriveConstants.driveKinematics.toSwerveModuleStates(chassisSpeeds));
-    }
-
-    public void driveRobotRelative(ChassisSpeeds speeds){
-        setModulesStates(DriveConstants.driveKinematics.toSwerveModuleStates(speeds));
     }
 
     /**

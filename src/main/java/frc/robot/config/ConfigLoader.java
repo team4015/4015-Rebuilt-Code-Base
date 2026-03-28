@@ -1,4 +1,4 @@
-package frc.robot.config;
+package frc.robot.Config;
 
 import java.io.File;
 import java.io.FileReader;
@@ -101,6 +101,8 @@ public final class ConfigLoader {
             || config.encoders.turningReversed == null
             || config.encoders.absoluteReversed == null
             || config.limits == null
+            || config.snapHeading == null
+            || config.auto == null
             || config.oi == null) {
             throw new IllegalArgumentException("driveConfig.json is missing one or more required sections");
         }
@@ -117,10 +119,28 @@ public final class ConfigLoader {
         if (config.limits.teleopSpeedScale < 0.0 || config.limits.teleopSpeedScale > 1.0) {
             throw new IllegalArgumentException("limits.teleopSpeedScale must be in the range [0, 1]");
         }
+        requirePositive(config.limits.teleopMaxAccelUnitsPerSec, "limits.teleopMaxAccelUnitsPerSec");
+        requirePositive(config.limits.teleopMaxAngularAccelUnitsPerSec, "limits.teleopMaxAngularAccelUnitsPerSec");
+
+        requireNonNegative(config.snapHeading.kP, "snapHeading.kP");
+        requirePositive(config.snapHeading.toleranceDegrees, "snapHeading.toleranceDegrees");
+
+        if (config.auto.translationPid == null || config.auto.rotationPid == null) {
+            throw new IllegalArgumentException("auto translationPid/rotationPid are required");
+        }
+        requireNonNegative(config.auto.translationPid.kP, "auto.translationPid.kP");
+        requireNonNegative(config.auto.translationPid.kI, "auto.translationPid.kI");
+        requireNonNegative(config.auto.translationPid.kD, "auto.translationPid.kD");
+        requireNonNegative(config.auto.rotationPid.kP, "auto.rotationPid.kP");
+        requireNonNegative(config.auto.rotationPid.kI, "auto.rotationPid.kI");
+        requireNonNegative(config.auto.rotationPid.kD, "auto.rotationPid.kD");
 
         requireNonNegative(config.oi.triggerPressedThreshold, "oi.triggerPressedThreshold");
         requireNonNegative(config.oi.deadband, "oi.deadband");
         requireNonNegative(config.oi.presetShootButtonIdx, "oi.presetShootButtonIdx");
+        requireNonNegative(config.oi.flopOverButtonIdx, "oi.flopOverButtonIdx");
+        requireNonNegative(config.oi.extendIntakeToggleButtonIdx, "oi.extendIntakeToggleButtonIdx");
+        requireNonNegative(config.oi.retractIntakeToggleButtonIdx, "oi.retractIntakeToggleButtonIdx");
     }
 
     private static void validateVisionConfig(VisionConfig config) {
@@ -162,12 +182,15 @@ public final class ConfigLoader {
     }
 
     private static void validateIntakeConfig(IntakeConfig config) {
-        if (config == null || config.motor == null) {
+        if (config == null || config.motor == null || config.extendMotor == null) {
             throw new IllegalArgumentException("intakeConfig.json is missing one or more required sections");
         }
 
         requireNonNegative(config.motor.system, "motor.system");
+        requireNonNegative(config.extendMotor.system, "extendMotor.system");
         requirePositive(config.fullSpeed, "fullSpeed");
+        requireNonZero(config.extendOutSpeed, "extendOutSpeed");
+        requireNonZero(config.retractSpeed, "retractSpeed");
     }
 
     private static void requirePositive(double value, String fieldName) {
@@ -179,6 +202,12 @@ public final class ConfigLoader {
     private static void requireNonNegative(double value, String fieldName) {
         if (!Double.isFinite(value) || value < 0.0) {
             throw new IllegalArgumentException(fieldName + " must be a finite non-negative number");
+        }
+    }
+
+    private static void requireNonZero(double value, String fieldName) {
+        if (!Double.isFinite(value) || value == 0.0) {
+            throw new IllegalArgumentException(fieldName + " must be a finite non-zero number");
         }
     }
 }

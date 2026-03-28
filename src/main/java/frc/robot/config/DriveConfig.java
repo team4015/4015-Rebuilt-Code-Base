@@ -1,4 +1,4 @@
-package frc.robot.config;
+package frc.robot.Config;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -12,6 +12,8 @@ public class DriveConfig {
     @SerializedName(value = "encoders", alternate = {"encoder"})
     public Encoders encoders;
     public Limits limits;
+    public SnapHeading snapHeading;
+    public Auto auto;
     public OI oi;
 
     /** Swerve module hardware ratios and steering gain. */
@@ -77,6 +79,27 @@ public class DriveConfig {
         public double maxSpeedMps;
         public double maxAngularSpeedRadPerSec;
         public double teleopSpeedScale;
+        public double teleopMaxAccelUnitsPerSec;
+        public double teleopMaxAngularAccelUnitsPerSec;
+    }
+
+    /** PID and tolerance used for snap heading. */
+    public static class SnapHeading {
+        public double kP;
+        public double toleranceDegrees;
+    }
+
+    /** Autonomous holonomic PID tuning. */
+    public static class Auto {
+        public PID translationPid;
+        public PID rotationPid;
+    }
+
+    /** Generic PID triple. */
+    public static class PID {
+        public double kP;
+        public double kI;
+        public double kD;
     }
 
     /** Controller bindings used by drive-related features. */
@@ -93,6 +116,7 @@ public class DriveConfig {
         public int presetShootButtonIdx;
         public int driverFieldOrientedButtonIdx;
         public int aimAtTagButtonIdx;
+        public int flopOverButtonIdx;
         public double triggerPressedThreshold;
         public double deadband;
     }

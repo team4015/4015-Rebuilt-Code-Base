@@ -2,9 +2,10 @@ package frc.robot.commands.Swerve;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
@@ -20,46 +21,44 @@ import frc.robot.subsystems.Vision.LimelightSubsystem;
  */
 public class SwerveCommands extends Command {
     private final SwerveSubsystem swerveSubsystem;
-    private final DoubleSupplier xSpeedSupplier;
-    private final DoubleSupplier ySpeedSupplier;
-    private final DoubleSupplier turningSpeedSupplier;
-    private final BooleanSupplier fieldOrientedSupplier;
+    private final Supplier<Double> xSpeedFunction, ySpeedFunction, turningSpeedFunction;
+    private final Supplier<Boolean> fieldOrientedFunction;
     private final BooleanSupplier autoAimSupplier;
     private final LimelightSubsystem limelightSubsystem;
     private final ShooterSubsystem shooterSubsystem;
 
     // Rate limiters smooth operator input and reduce jerk.
-    private final SlewRateLimiter xLimiter = new SlewRateLimiter(Constants.DriveConstants.teleDriveAngularAccelerationUnitsPerSecond);
-    private final SlewRateLimiter yLimiter = new SlewRateLimiter(Constants.DriveConstants.teleDriveMaxAccelerationUnitsPerSecond);
-    private final SlewRateLimiter turningLimiter = new SlewRateLimiter(Constants.DriveConstants.teleDriveAngularAccelerationUnitsPerSecond);
-
+    private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
     /**
      * Creates the swerve teleop command.
      *
      * @param swerveSubsystem subsystem controlled by this command
      * @param xSpeedSupplier supplier for forward/backward joystick input
      * @param ySpeedSupplier supplier for left/right joystick input
-     * @param turningSpeedSupplier supplier for rotational joystick input
+     * @param omegaSpeedSupplier supplier for rotational joystick input
      * @param fieldOrientdSupplier supplier for field-oriented enable state
      * @param autoAimSupplier supplier for whether Limelight auto-aim is enabled
      * @param limelightSubsystem Limelight interface used for AprilTag aiming and distance
      * @param shooterSubsystem shooter interface used for motion-compensated aiming while firing
      */
     public SwerveCommands(
-        SwerveSubsystem swerveSubsystem,
-        DoubleSupplier xSpeedSupplier,
-        DoubleSupplier ySpeedSupplier,
-        DoubleSupplier turningSpeedSupplier,
-        BooleanSupplier fieldOrientdSupplier,
-        BooleanSupplier autoAimSupplier,
-        LimelightSubsystem limelightSubsystem,
-        ShooterSubsystem shooterSubsystem
+            SwerveSubsystem swerveSubsystem
+            Supplier<Double> xSpeedFunction,
+            Supplier<Double>ySpeedFunction,
+            Supplier<Double>turningSpeedFunction;
+            Supplier<Boolean> fieldOrientedFunction;
+            BooleanSupplier autoAimSupplier;
+            LimelightSubsystem limelightSubsystem;
+            ShooterSubsystem shooterSubsystem;
     )    {
         this.swerveSubsystem = swerveSubsystem;
-        this.xSpeedSupplier = xSpeedSupplier;
-        this.ySpeedSupplier = ySpeedSupplier;
-        this.turningSpeedSupplier = turningSpeedSupplier;
-        this.fieldOrientedSupplier = fieldOrientdSupplier;
+        this.xSpeedFunction = xSpeedFunction;
+        this.ySpeedFunction = ySpeedFunction;
+        this.turningSpeedFunction = turningSpeedFunction;
+        this.fieldOrientedFunction = fieldOrientedFunction;
+        this.xLimiter = new SlewRateLimiter(Constants.DriveConstants.teleDriveMaxAccelerationUnitsPerSecond);
+        this.yLimiter = new SlewRateLimiter(Constants.DriveConstants.teleDriveMaxAccelerationUnitsPerSecond);
+        this.turningLimiter = new SlewRateLimiter((Constants.DriveConstants.teleDriveMaxAngularSpeedRadiansPerSecond));
         this.autoAimSupplier = autoAimSupplier;
         this.limelightSubsystem = limelightSubsystem;
         this.shooterSubsystem = shooterSubsystem;
@@ -71,27 +70,26 @@ public class SwerveCommands extends Command {
      */
     @Override
     public void execute() {
-        double rawXSpeed = xSpeedSupplier.getAsDouble();
-        double rawYSpeed = ySpeedSupplier.getAsDouble();
-        double rawTurningSpeed = turningSpeedSupplier.getAsDouble();
+        double xSpeed = xSpeedFunction.get();
+        double ySpeed = ySpeedFunction.get();
+        double turningSpeed = turningSpeedFunction.get();
 
-        // Remove small joystick noise around center.
-        double xSpeed = MathUtil.applyDeadband(rawXSpeed, Constants.OIConstants.deadband);
-        double ySpeed = MathUtil.applyDeadband(rawYSpeed, Constants.OIConstants.deadband);
-        double turningSpeed = MathUtil.applyDeadband(rawTurningSpeed, Constants.OIConstants.deadband);
+        xSpeed = Math.abs(xSpeed) > Constants.OIConstants.deadband ? xSpeed : 0.0;
+        ySpeed = Math.abs(ySpeed) > Constants.OIConstants.deadband ? ySpeed : 0.0;
+        turningSpeed = Math.abs(turningSpeed) > Constants.OIConstants.deadband ? turningSpeed : 0.0;
 
-        // Smooth and scale inputs into physical command units.
-        xSpeed = xLimiter.calculate(xSpeed) * Constants.DriveConstants.teleDriveMaxSpeedMetersPerSecond;
-        ySpeed = yLimiter.calculate(ySpeed) * Constants.DriveConstants.teleDriveMaxSpeedMetersPerSecond;
-        turningSpeed = turningLimiter.calculate(turningSpeed) * Constants.DriveConstants.teleDriveMaxAngularSpeedRadiansPerSecond;
+        xSpeed = xLimiter.calculate(xSpeed) * Constants.DriveConstants.teleDriveMaxAccelerationUnitsPerSecond;
+        ySpeed = xLimiter.calculate(ySpeed) * Constants.DriveConstants.teleDriveMaxAccelerationUnitsPerSecond;
+        turningSpeed = xLimiter.calculate(turningSpeed) * Constants.DriveConstants.teleDriveMaxAngularSpeedRadiansPerSecond;
 
-        boolean autoAimEnabled = autoAimSupplier.getAsBoolean() || shooterSubsystem.isShootingActive();
-        boolean hasVisionTarget = limelightSubsystem.hasValidTarget();
-        if (autoAimEnabled && hasVisionTarget) {
-            turningSpeed = limelightSubsystem.getAimAngularSpeedRadPerSec();
+        ChassisSpeeds chassisSpeeds;
+
+        if(fieldOrientedFunction.get()){
+            chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
         }
 
-        swerveSubsystem.drive(xSpeed, ySpeed, turningSpeed, fieldOrientedSupplier.getAsBoolean());
+
+
     }
 
     /**

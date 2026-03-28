@@ -23,8 +23,6 @@ import frc.robot.Constants.ModuleConstants;
  * Represents a single swerve module consisting of a drive motor, turning motor, and absolute encoder.
  */
 public class SwerveModule {
-    private static final double TWO_PI = 2.0 * Math.PI;
-
     private final SparkMax driveMotor;
     private final SparkMax turningMotor;
     private SparkMaxConfig driveConfig;
@@ -119,8 +117,8 @@ public class SwerveModule {
      * @return steering angle in radians
      */
     public double getTurningPosition() {
-        return normalizeTurningAngle(turningEncoder.getPosition());
-    } //check what happens when we remove the normalizeTurningAngle
+        return turningEncoder.getPosition();
+    }
 
     /**
      * Returns drive velocity in meters per second.
@@ -151,16 +149,6 @@ public class SwerveModule {
         angle -= absoluteEncoderOffsetRad;
         return angle * (absoluteEncoderReversed ? -1.0 : 1.0);
     }
-    /**
-     * Normalizes an angle into the continuous turning-controller range {@code [-pi, pi)}.
-     *
-     * @param angleRad input angle in radians
-     * @return normalized angle in radians
-     */
-    public double normalizeTurningAngle(double angleRad) {
-        return MathUtil.angleModulus(angleRad);
-    }
-
     /** Resets the drive encoder and aligns the turning encoder to the absolute encoder. */
     public void resetEncoder() {
         driveEncoder.setPosition(0);

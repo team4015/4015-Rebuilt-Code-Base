@@ -1,8 +1,6 @@
 package frc.robot.subsystems.Intake;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
-import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
@@ -16,14 +14,12 @@ public class IntakeSubsystem extends SubsystemBase {
     
     private boolean intakeEnabled = false;
     private boolean extendRunning = false;
-    private DigitalInput frontLimitSwitch = new DigitalInput(0);
-
 
     /** Creates the intake subsystem and applies configured inversion. */
     public IntakeSubsystem(){
-        intakeMotor = new PWMSparkMax(1);
-        extendMotor = new PWMSparkMax(0);
-        extendMotor.setInverted(false);
+        intakeMotor = new PWMSparkMax(IntakeConstants.intakeMotorPort);
+        extendMotor = new PWMSparkMax(IntakeConstants.extendMotorPort);
+        extendMotor.setInverted(IntakeConstants.extendMotorReversed);
         intakeMotor.setInverted(IntakeConstants.intakeMotorReversed);
     }
 
@@ -42,14 +38,14 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void extendIntake(){
         extendRunning = true;
-        extendMotor.set(0.25);
+        extendMotor.set(IntakeConstants.extendOutSpeed);
 
         
     }
 
     public void retractIntake(){
         extendRunning = true;
-        extendMotor.set(-0.4);
+        extendMotor.set(IntakeConstants.retractSpeed);
     }
 
     /** Stops the intake motor and clears the enabled flag. */
