@@ -1,4 +1,4 @@
-package frc.robot.Config;
+package frc.robot.config;
 
 /**
  * Typed representation of {@code shooterConfig.json}.

@@ -3,11 +3,11 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import frc.robot.Config.ConfigLoader;
-import frc.robot.Config.DriveConfig;
-import frc.robot.Config.IntakeConfig;
-import frc.robot.Config.ShooterConfig;
-import frc.robot.Config.VisionConfig;
+import frc.robot.config.ConfigLoader;
+import frc.robot.config.DriveConfig;
+import frc.robot.config.IntakeConfig;
+import frc.robot.config.ShooterConfig;
+import frc.robot.config.VisionConfig;
 
 /**
  * Central access point for typed, JSON-backed robot constants.

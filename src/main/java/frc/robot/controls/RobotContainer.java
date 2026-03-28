@@ -1,6 +1,8 @@
 package frc.robot.controls;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -8,7 +10,9 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.Intake.IntakeCommand;
+import frc.robot.commands.Intake.extendIntakeCommand;
 import frc.robot.commands.Shooter.ShooterCommand;
+import frc.robot.commands.Shooter.IndexerCommand;
 import frc.robot.commands.Shooter.PresetShootCommand;
 import frc.robot.commands.Swerve.SwerveCommands;
 import frc.robot.commands.Swerve.SnapHeadingCommand;
@@ -16,6 +20,11 @@ import frc.robot.subsystems.Intake.IntakeSubsystem;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
 import frc.robot.subsystems.Swerve.SwerveSubsystem;
 import frc.robot.subsystems.Vision.LimelightSubsystem;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 
 /**
@@ -28,10 +37,23 @@ public class RobotContainer {
     private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     private final Joystick driverJoystick = new Joystick(Constants.OIConstants.driverControllerPort);
 
+    private final PathPlannerAuto auto;
+    private final SendableChooser<Command> autoChooser;
+
+
     /**
      * Creates the robot container and installs default commands and button bindings.
      */
     public RobotContainer() {
+    NamedCommands.registerCommand("intake", new IntakeCommand(intakeSubsystem));
+    NamedCommands.registerCommand("extendIntake", new extendIntakeCommand(intakeSubsystem));
+    NamedCommands.registerCommand("shoot", new ShooterCommand(shooterSubsystem));
+    NamedCommands.registerCommand("index", new IndexerCommand(shooterSubsystem));
+
+    auto = new PathPlannerAuto("rebuiltAuto");
+    autoChooser = AutoBuilder.buildAutoChooser();
+
+    SmartDashboard.putData("Auto Chooser", autoChooser);
         swerveSubsystem.setDefaultCommand(
             new SwerveCommands(
                 swerveSubsystem,
@@ -107,6 +129,6 @@ public class RobotContainer {
      * @return autonomous command, or {@code null} if none is configured
      */
     public Command getAutonomousCommand() {
-        return null;
+        return auto;
     }
 }
