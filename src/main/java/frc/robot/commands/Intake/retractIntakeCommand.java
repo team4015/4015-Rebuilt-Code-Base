@@ -23,7 +23,6 @@ public class retractIntakeCommand extends Command {
       this.intake = intake;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intake);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

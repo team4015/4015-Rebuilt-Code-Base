@@ -58,7 +58,7 @@
   "limits": {
     "maxSpeedMps": 5.0,
     "maxAngularSpeedRadPerSec": 12.566,
-    "teleopSpeedScale": 0.8
+    "teleopSpeedScale": 1.00
   },
   "oi": {
     "driverControllerPort": 0,

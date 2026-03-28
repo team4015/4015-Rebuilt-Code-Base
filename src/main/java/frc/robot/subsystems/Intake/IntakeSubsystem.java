@@ -42,13 +42,14 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void extendIntake(){
         extendRunning = true;
-        extendMotor.set(0.1);
+        extendMotor.set(0.25);
+
         
     }
 
     public void retractIntake(){
         extendRunning = true;
-        extendMotor.set(-0.1);
+        extendMotor.set(-0.4);
     }
 
     /** Stops the intake motor and clears the enabled flag. */

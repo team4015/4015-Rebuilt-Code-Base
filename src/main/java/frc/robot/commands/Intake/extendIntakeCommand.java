@@ -23,15 +23,18 @@ public class extendIntakeCommand extends Command {
       this.intake = intake;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intake);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
+  public void initialize(){
     intake.extendIntake();
     System.out.println("Intake Extending");
     SmartDashboard.putBoolean("intakeExtending?", true);
+  }
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    
   }
 
   // Called once the command ends or is interrupted.
