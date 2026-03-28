@@ -72,7 +72,8 @@ public class SwerveModule {
 
         driveConfig
             .inverted(driveMotorReversed)
-            .idleMode(IdleMode.kBrake);
+            .idleMode(IdleMode.kBrake)
+            .smartCurrentLimit(60);
 
         driveConfig.encoder
             .positionConversionFactor(ModuleConstants.driveEncoderRot2Meter)
@@ -82,7 +83,8 @@ public class SwerveModule {
 
         turningConfig
             .inverted(turningMotorReversed)
-            .idleMode(IdleMode.kBrake);
+            .idleMode(IdleMode.kBrake)
+            .smartCurrentLimit(60);
 
         turningConfig.encoder
             .positionConversionFactor(ModuleConstants.turningEncoderRot2Rad)

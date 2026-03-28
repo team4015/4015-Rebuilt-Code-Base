@@ -1,0 +1,11 @@
+{
+  "motor": {
+    "system": 0,
+    "inverted": true
+  },
+  "deployDownSpeed": -0.1,
+  "limitSwitch": {
+    "dioPort": 0,
+    "activeHigh": false
+  }
+}

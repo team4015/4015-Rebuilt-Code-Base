@@ -7,6 +7,7 @@ import java.io.Reader;
 import com.google.gson.Gson;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import frc.robot.Config.FlopOverConfig;
 
 /**
  * Loads and validates JSON configuration files from the deploy directory.
@@ -87,6 +88,24 @@ public final class ConfigLoader {
         }
     }
 
+    /**
+     * Loads the flop-over arm configuration.
+     *
+     * @return validated flop-over configuration
+     */
+    public static FlopOverConfig loadFlopOverConfig() {
+        try {
+            File file = new File(Filesystem.getDeployDirectory(), "flopOverConfig.json");
+            try (Reader reader = new FileReader(file)) {
+                FlopOverConfig config = new Gson().fromJson(reader, FlopOverConfig.class);
+                validateFlopOverConfig(config);
+                return config;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load flopOver config", e);
+        }
+    }
+
     private static void validateDriveConfig(DriveConfig config) {
         if (config == null
             || config.module == null
@@ -121,6 +140,7 @@ public final class ConfigLoader {
         requireNonNegative(config.oi.triggerPressedThreshold, "oi.triggerPressedThreshold");
         requireNonNegative(config.oi.deadband, "oi.deadband");
         requireNonNegative(config.oi.presetShootButtonIdx, "oi.presetShootButtonIdx");
+        requireNonNegative(config.oi.flopOverButtonIdx, "oi.flopOverButtonIdx");
     }
 
     private static void validateVisionConfig(VisionConfig config) {
@@ -168,6 +188,18 @@ public final class ConfigLoader {
 
         requireNonNegative(config.motor.system, "motor.system");
         requirePositive(config.fullSpeed, "fullSpeed");
+    }
+
+    private static void validateFlopOverConfig(FlopOverConfig config) {
+        if (config == null || config.motor == null || config.limitSwitch == null) {
+            throw new IllegalArgumentException("flopOverConfig.json is missing one or more required sections");
+        }
+
+        requireNonNegative(config.motor.system, "motor.system");
+        if (!Double.isFinite(config.deployDownSpeed) || config.deployDownSpeed == 0.0) {
+            throw new IllegalArgumentException("deployDownSpeed must be a finite non-zero number");
+        }
+        requireNonNegative(config.limitSwitch.dioPort, "limitSwitch.dioPort");
     }
 
     private static void requirePositive(double value, String fieldName) {

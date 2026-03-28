@@ -21,7 +21,6 @@ public class IntakeCommand extends InstantCommand {
     }
 
     @Override
-    /** Toggles the intake state. */
     public void initialize() {
         intakeSubsystem.toggleIntakeMotor();
     }

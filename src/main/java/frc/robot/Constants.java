@@ -8,6 +8,7 @@ import frc.robot.Config.DriveConfig;
 import frc.robot.Config.IntakeConfig;
 import frc.robot.Config.ShooterConfig;
 import frc.robot.Config.VisionConfig;
+import frc.robot.Config.FlopOverConfig;
 
 /**
  * Central access point for typed, JSON-backed robot constants.
@@ -15,6 +16,7 @@ import frc.robot.Config.VisionConfig;
 public final class Constants {
     public static final DriveConfig DRIVE = ConfigLoader.loadDriveConfig();
     public static final IntakeConfig INTAKE = ConfigLoader.loadIntakeConfig();
+    public static final FlopOverConfig FLOPOVER = ConfigLoader.loadFlopOverConfig();
     public static final ShooterConfig SHOOTER = ConfigLoader.loadShooterConfig();
     public static final VisionConfig VISION = ConfigLoader.loadVisionConfig();
 
@@ -106,6 +108,7 @@ public final class Constants {
         public static final int presetShootButtonIdx = DRIVE.oi.presetShootButtonIdx;
         public static final int driverFieldOrientedButtonIdx = DRIVE.oi.driverFieldOrientedButtonIdx;
         public static final int aimAtTagButtonIdx = DRIVE.oi.aimAtTagButtonIdx;
+        public static final int flopOverButtonIdx = DRIVE.oi.flopOverButtonIdx;
         public static final double triggerPressedThreshold = DRIVE.oi.triggerPressedThreshold;
         public static final double deadband = DRIVE.oi.deadband;
 
@@ -213,6 +216,18 @@ public final class Constants {
         public static final double intakeFullSpeed = INTAKE.fullSpeed;
 
         private IntakeConstants() {
+        }
+    }
+
+    /** Constants used by the flop-over arm (intake arm tilt). */
+    public static final class FlopOverConstants {
+        public static final int motorPort = FLOPOVER.motor.system;
+        public static final boolean motorReversed = FLOPOVER.motor.inverted;
+        public static final double deployDownSpeed = FLOPOVER.deployDownSpeed;
+        public static final int limitSwitchDioPort = FLOPOVER.limitSwitch.dioPort;
+        public static final boolean limitSwitchActiveHigh = FLOPOVER.limitSwitch.activeHigh;
+
+        private FlopOverConstants() {
         }
     }
 }
