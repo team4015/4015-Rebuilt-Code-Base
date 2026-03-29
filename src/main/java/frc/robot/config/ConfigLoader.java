@@ -1,4 +1,4 @@
-package frc.robot.config;
+package frc.robot.Config;
 
 import java.io.File;
 import java.io.FileReader;

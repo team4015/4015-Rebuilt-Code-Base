@@ -3,11 +3,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import frc.robot.config.ConfigLoader;
-import frc.robot.config.DriveConfig;
-import frc.robot.config.IntakeConfig;
-import frc.robot.config.ShooterConfig;
-import frc.robot.config.VisionConfig;
+import frc.robot.Config.*;
 
 /**
  * Central access point for typed, JSON-backed robot constants.
@@ -214,6 +210,11 @@ public final class Constants {
         public static final int intakeMotorPort = INTAKE.motor.system;
         public static final boolean intakeMotorReversed = INTAKE.motor.inverted;
         public static final double intakeFullSpeed = INTAKE.fullSpeed;
+        public static final int intakeArmMotorId = INTAKE.arm != null ? INTAKE.arm.motorId : 0;
+        public static final boolean intakeArmMotorInverted = INTAKE.arm != null && INTAKE.arm.inverted;
+        public static final int intakeArmLimitSwitchDio = INTAKE.arm != null ? INTAKE.arm.limitSwitchDio : 0;
+        public static final double intakeArmDownSpeed = INTAKE.arm != null ? INTAKE.arm.downSpeed : 0.4;
+        public static final double intakeArmUpSpeed = INTAKE.arm != null ? INTAKE.arm.upSpeed : 0.4;
 
         private IntakeConstants() {
         }

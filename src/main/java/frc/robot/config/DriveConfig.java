@@ -1,4 +1,4 @@
-package frc.robot.config;
+package frc.robot.Config;
 
 import com.google.gson.annotations.SerializedName;
 

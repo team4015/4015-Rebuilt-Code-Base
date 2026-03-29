@@ -29,7 +29,7 @@ public class SwerveCommands extends Command {
     private final ShooterSubsystem shooterSubsystem;
 
     // Rate limiters smooth operator input and reduce jerk.
-    private final SlewRateLimiter xLimiter = new SlewRateLimiter(Constants.DriveConstants.teleDriveAngularAccelerationUnitsPerSecond);
+    private final SlewRateLimiter xLimiter = new SlewRateLimiter(Constants.DriveConstants.teleDriveMaxAccelerationUnitsPerSecond);
     private final SlewRateLimiter yLimiter = new SlewRateLimiter(Constants.DriveConstants.teleDriveMaxAccelerationUnitsPerSecond);
     private final SlewRateLimiter turningLimiter = new SlewRateLimiter(Constants.DriveConstants.teleDriveAngularAccelerationUnitsPerSecond);
 
@@ -90,7 +90,6 @@ public class SwerveCommands extends Command {
         if (autoAimEnabled && hasVisionTarget) {
             turningSpeed = limelightSubsystem.getAimAngularSpeedRadPerSec();
         }
-
         swerveSubsystem.drive(xSpeed, ySpeed, turningSpeed, fieldOrientedSupplier.getAsBoolean());
     }
 

@@ -3,5 +3,12 @@
     "system": 1,
     "inverted": false
   },
+  "arm": {
+    "motorId": 0,
+    "inverted": false,
+    "limitSwitchDio": 0,
+    "downSpeed": 0.4,
+    "upSpeed": 0.4
+  },
   "fullSpeed": 1.00
 }

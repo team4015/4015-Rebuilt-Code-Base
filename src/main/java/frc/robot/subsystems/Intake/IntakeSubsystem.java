@@ -1,8 +1,12 @@
 package frc.robot.subsystems.Intake;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkMaxConfig;
+import com.revrobotics.spark.ResetMode;
+import com.revrobotics.spark.PersistMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
-import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
@@ -12,19 +16,22 @@ import frc.robot.Constants.IntakeConstants;
  */
 public class IntakeSubsystem extends SubsystemBase {
     private final PWMSparkMax intakeMotor;
-    private final PWMSparkMax extendMotor;
+    private final SparkMax extendMotor;
+    private final SparkMaxConfig extendConfig = new SparkMaxConfig();
     
     private boolean intakeEnabled = false;
     private boolean extendRunning = false;
-    private DigitalInput frontLimitSwitch = new DigitalInput(0);
+    private final DigitalInput frontLimitSwitch = new DigitalInput(IntakeConstants.intakeArmLimitSwitchDio);
 
 
     /** Creates the intake subsystem and applies configured inversion. */
     public IntakeSubsystem(){
-        intakeMotor = new PWMSparkMax(1);
-        extendMotor = new PWMSparkMax(0);
-        extendMotor.setInverted(false);
+        intakeMotor = new PWMSparkMax(IntakeConstants.intakeMotorPort);
         intakeMotor.setInverted(IntakeConstants.intakeMotorReversed);
+
+        extendMotor = new SparkMax(IntakeConstants.intakeArmMotorId, MotorType.kBrushed);
+        extendConfig.inverted(IntakeConstants.intakeArmMotorInverted);
+        extendMotor.configure(extendConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     /**
@@ -42,14 +49,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void extendIntake(){
         extendRunning = true;
-        extendMotor.set(0.25);
-
+        extendMotor.set(IntakeConstants.intakeArmDownSpeed);
         
     }
 
     public void retractIntake(){
         extendRunning = true;
-        extendMotor.set(-0.4);
+        extendMotor.set(-IntakeConstants.intakeArmUpSpeed);
     }
 
     /** Stops the intake motor and clears the enabled flag. */
@@ -60,6 +66,11 @@ public class IntakeSubsystem extends SubsystemBase {
     public void stopExtend(){
         extendRunning = false;
         extendMotor.set(0);
+    }
+
+    /** Returns true when the lower limit switch is pressed. Assumes NC wiring. */
+    public boolean isLowerLimitPressed() {
+        return !frontLimitSwitch.get();
     }
 
     /** Toggles the intake between stopped and full-speed operation. */
@@ -102,6 +113,7 @@ public class IntakeSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("Intake/Active", intakeEnabled);
         SmartDashboard.putNumber("Intake/Output", intakeMotor.get());
         SmartDashboard.putBoolean("Extend/Active", extendRunning);
+        SmartDashboard.putBoolean("Extend/LowerLimit", isLowerLimitPressed());
 
 
     }
