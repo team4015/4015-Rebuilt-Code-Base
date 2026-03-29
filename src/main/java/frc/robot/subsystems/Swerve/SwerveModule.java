@@ -119,7 +119,7 @@ public class SwerveModule {
      * @return steering angle in radians
      */
     public double getTurningPosition() {
-        return normalizeTurningAngle(turningEncoder.getPosition());
+        return turningEncoder.getPosition();
     } //check what happens when we remove the normalizeTurningAngle
 
     /**

@@ -31,10 +31,10 @@
       "frontLeft": 2
     },
     "absoluteOffsetsRad": {
-      "frontLeft": 1.425175,
-      "frontRight": 0.183739,
-      "backLeft": 4.897104,
-      "backRight": 4.957831
+      "frontLeft": 1.44783665126,
+      "frontRight": 0.16831685504,
+      "backLeft": 4.94508686163,
+      "backRight":4.89521520087 
     },
     "driveReversed": {
       "frontLeft": false,
@@ -65,8 +65,9 @@
     "operatorControllerPort": 1,
     "driverYAxis": 1,
     "driverXAxis": 0,
-    "driverRotAxis": 2,
+    "driverRotAxis": 3,
     "intakeToggleButtonIdx": 5,
+    "intakeToggleButtonReversedIdx": 2,
     "shooterToggleButtonIdx": 6,
     "extendIntakeToggleButtonIdx": 7,
     "retractIntakeToggleButtonIdx": 8,

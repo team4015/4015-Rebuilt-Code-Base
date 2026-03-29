@@ -42,14 +42,17 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void extendIntake(){
         extendRunning = true;
-        extendMotor.set(0.25);
-
+        extendMotor.set(0.175);
+        if(!frontLimitSwitch.get()){
+            extendMotor.set(0);
+            System.out.println("Intake Extension Stopped");
+        }
         
     }
 
     public void retractIntake(){
         extendRunning = true;
-        extendMotor.set(-0.4);
+        extendMotor.set(-0.25);
     }
 
     /** Stops the intake motor and clears the enabled flag. */
@@ -70,6 +73,15 @@ public class IntakeSubsystem extends SubsystemBase {
         }
 
         startIntakeMotor(IntakeConstants.intakeFullSpeed);
+    }
+
+    public void toggleIntakeMotorReversed() {
+        if (intakeEnabled) {
+            stopIntakeMotor();
+            return;
+        }
+
+        startIntakeMotorReversed(IntakeConstants.intakeFullSpeed);
     }
 
     

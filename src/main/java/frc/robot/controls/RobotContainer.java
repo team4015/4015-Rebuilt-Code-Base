@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.Intake.IntakeCommand;
+import frc.robot.commands.Intake.OuttakeCommand;
 import frc.robot.commands.Intake.extendIntakeCommand;
 import frc.robot.commands.Intake.retractIntakeCommand;
 import frc.robot.commands.Shooter.ShooterCommand;
@@ -78,6 +79,8 @@ public class RobotContainer {
         bindOnTrue(OIConstants.shooterToggleButtonIdx, new ShooterCommand(shooterSubsystem));
         bindOnTrue(OIConstants.presetShootButtonIdx, new PresetShootCommand(shooterSubsystem, limelightSubsystem));
         bindOnTrue(OIConstants.intakeToggleButtonIdx, new IntakeCommand(intakeSubsystem));
+        bindOnTrue(OIConstants.intakeToggleButtonReversedIdx, new OuttakeCommand(intakeSubsystem));
+
         bindToggleOnTrue(OIConstants.extendIntakeToggleButtonIdx, new extendIntakeCommand(intakeSubsystem));
         bindToggleOnTrue(OIConstants.retractIntakeToggleButtonIdx, new retractIntakeCommand(intakeSubsystem));
     }

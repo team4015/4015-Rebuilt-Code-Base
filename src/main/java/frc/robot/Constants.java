@@ -103,6 +103,7 @@ public final class Constants {
         public static final int driverXAxis = DRIVE.oi.driverXAxis;
         public static final int driverRotAxis = DRIVE.oi.driverRotAxis;
         public static final int intakeToggleButtonIdx = DRIVE.oi.intakeToggleButtonIdx;
+        public static final int intakeToggleButtonReversedIdx = DRIVE.oi.intakeToggleButtonReversedIdx;
         public static final int shooterToggleButtonIdx = DRIVE.oi.shooterToggleButtonIdx;
         public static final int extendIntakeToggleButtonIdx = DRIVE.oi.extendIntakeToggleButtonIdx;
         public static final int retractIntakeToggleButtonIdx = DRIVE.oi.retractIntakeToggleButtonIdx;
