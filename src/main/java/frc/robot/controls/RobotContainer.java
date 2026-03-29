@@ -9,7 +9,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.Intake.IntakeCommand;
-import frc.robot.commands.Intake.MoveIntakeArmCommand;
+import frc.robot.commands.Intake.extendIntakeCommand;
+import frc.robot.commands.Intake.retractIntakeCommand;
 import frc.robot.commands.Shooter.ShooterCommand;
 import frc.robot.commands.Shooter.IndexerCommand;
 import frc.robot.commands.Shooter.PresetShootCommand;
@@ -43,7 +44,7 @@ public class RobotContainer {
      */
     public RobotContainer() {
     NamedCommands.registerCommand("intake", new IntakeCommand(intakeSubsystem));
-    NamedCommands.registerCommand("extendIntake", new MoveIntakeArmCommand(intakeSubsystem, MoveIntakeArmCommand.Direction.DOWN));
+    NamedCommands.registerCommand("extendIntake", new extendIntakeCommand(intakeSubsystem));
     NamedCommands.registerCommand("shoot", new ShooterCommand(shooterSubsystem));
     NamedCommands.registerCommand("index", new IndexerCommand(shooterSubsystem));
 
@@ -73,15 +74,17 @@ public class RobotContainer {
         bindOnTrue(OIConstants.presetShootButtonIdx, new PresetShootCommand(shooterSubsystem, limelightSubsystem));
         bindOnTrue(OIConstants.intakeToggleButtonIdx, new IntakeCommand(intakeSubsystem));
         new JoystickButton(driverJoystick, 2).onTrue(new InstantCommand(swerveSubsystem::zeroHeading, swerveSubsystem));
-        // Intake arm: press to drive down until limit; hold to drive up manually.
-        new JoystickButton(operatorJoystick, OIConstants.extendIntakeToggleButtonIdx)
-            .onTrue(new MoveIntakeArmCommand(intakeSubsystem, MoveIntakeArmCommand.Direction.DOWN));
-        new JoystickButton(operatorJoystick, OIConstants.retractIntakeToggleButtonIdx)
-            .whileTrue(new MoveIntakeArmCommand(intakeSubsystem, MoveIntakeArmCommand.Direction.UP));
+        // Intake arm toggles: press to start, press again to stop.
+        bindToggleOnTrue(OIConstants.extendIntakeToggleButtonIdx, new extendIntakeCommand(intakeSubsystem));
+        bindToggleOnTrue(OIConstants.retractIntakeToggleButtonIdx, new retractIntakeCommand(intakeSubsystem));
     }
 
     private void bindOnTrue(int buttonIdx, Command command) {
         new JoystickButton(operatorJoystick, buttonIdx).onTrue(command);
+    }
+
+    private void bindToggleOnTrue(int buttonIdx, Command command){
+        new JoystickButton(operatorJoystick, buttonIdx).toggleOnTrue(command);
     }
 
     /**
