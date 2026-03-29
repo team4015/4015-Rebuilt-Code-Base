@@ -157,10 +157,10 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public ChassisSpeeds getRobotRelativeSpeeds() {
         return DriveConstants.driveKinematics.toChassisSpeeds(
-            frontRight.getState(),
             frontLeft.getState(),
-            backRight.getState(),
-            backLeft.getState()
+            frontRight.getState(),
+            backLeft.getState(),
+            backRight.getState()
         );
     }
 

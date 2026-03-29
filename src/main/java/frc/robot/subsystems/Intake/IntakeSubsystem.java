@@ -42,7 +42,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void extendIntake(){
         extendRunning = true;
-        extendMotor.set(0.175);
+        extendMotor.set(0.30);
         if(!frontLimitSwitch.get()){
             extendMotor.set(0);
             System.out.println("Intake Extension Stopped");
