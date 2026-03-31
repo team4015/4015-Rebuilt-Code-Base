@@ -31,7 +31,6 @@ public class ShooterCommand extends Command {
     SmartDashboard.putBoolean("shooterRunning?", true);
 
   }
-
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {

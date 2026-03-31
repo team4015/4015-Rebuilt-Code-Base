@@ -19,23 +19,17 @@ public class extendIntakeCommand extends Command {
      *
      * @param subsystem The subsystem used by this command.
      */
-    public extendIntakeCommand(Intake intake) {
-      this.intake = intake;
-
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intake);
+  public extendIntakeCommand(Intake intake) {
+    this.intake = intake;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-
+  public void initialize() {
     intake.extendIntake();
     System.out.println("Intake Extending");
     SmartDashboard.putBoolean("intakeExtending?", true);
-
-
-    
+    SmartDashboard.putBoolean("intakeArmRunning?", true);
   }
 
   // Called once the command ends or is interrupted.
@@ -44,8 +38,7 @@ public class extendIntakeCommand extends Command {
     intake.stopExtend();
     System.out.println("Extending Stopped");
     SmartDashboard.putBoolean("intakeExtending?", false);
-
-
+    SmartDashboard.putBoolean("intakeArmRunning?", false);
   }
 
   // Returns true when the command should end.

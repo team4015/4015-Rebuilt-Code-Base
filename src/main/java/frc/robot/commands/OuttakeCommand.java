@@ -4,23 +4,23 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Intake;
 
 /** An example command that uses an example subsystem. */
-public class IntakeCommand extends Command {
+public class OuttakeCommand extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Intake intake;
 
-  
+
     /**
-     * The commands are what make the subsystems actually run. 
+     * The commands are what make the subsystems actually run.
      * Every time the scheduler runs, the command does something that makes the subsystem work.
      *
      * @param subsystem The subsystem used by this command.
      */
-    public IntakeCommand(Intake intake) {
+    public OuttakeCommand(Intake intake) {
       this.intake = intake;
       
     // Use addRequirements() here to declare subsystem dependencies.
@@ -33,11 +33,9 @@ public class IntakeCommand extends Command {
   @Override
   public void initialize() {
     intake.runIntake();
-    System.out.println("Intake Command Called");
-    SmartDashboard.putBoolean("Intaking?", true);
+    System.out.println("Outtake Command Called");
+    SmartDashboard.putBoolean("Outtaking?", true);
     SmartDashboard.putBoolean("IntakeRunning?", true);
-
-
   }
 
   // Called once the command ends or is interrupted.
@@ -45,11 +43,8 @@ public class IntakeCommand extends Command {
   public void end(boolean interrupted) {
     intake.stopIntake();
     System.out.println("Intake Command Stopped");
-    SmartDashboard.putBoolean("Intaking?", false);
+    SmartDashboard.putBoolean("Outtaking?", false);
     SmartDashboard.putBoolean("IntakeRunning?", false);
-
-
-
   }
 
   // Returns true when the command should end.

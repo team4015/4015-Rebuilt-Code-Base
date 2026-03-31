@@ -4,11 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.IndexerCommand;
-import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.ShooterCommand;
-import frc.robot.commands.extendIntakeCommand;
+import frc.robot.commands.*;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -40,8 +38,8 @@ public class RobotContainer {
   private final CommandPS4Controller operatorCtrl = new CommandPS4Controller(OperatorConstants.kOperatorControllerPort);
 
   // The robot's subsystems and commands are defined here...
-  private final Intake intake = new Intake(0.7, 0.1);
-  private final Shooter shooter = new Shooter(0.8,0.7);
+  private final Intake intake = new Intake();
+  private final Shooter shooter = new Shooter();
   
   private final PathPlannerAuto auto;
 
@@ -63,14 +61,22 @@ public class RobotContainer {
   }
 
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
-  
+
   public SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                        () -> driverCtrl.getLeftY() * -1,
-                        () -> driverCtrl.getLeftX() * 1)
-                        .withControllerRotationAxis(() -> driverCtrl.getRightX())
-                        .deadband(Constants.OperatorConstants.DEADBAND)
-                        .scaleTranslation(1)
-                        .allianceRelativeControl(true);
+                  () -> -driverCtrl.getLeftY() * -1,
+                  () -> driverCtrl.getLeftX() * 1)
+          .withControllerRotationAxis(() -> -driverCtrl.getRightX())
+          .deadband(Constants.OperatorConstants.DEADBAND)
+          .scaleTranslation(0.8)
+          .allianceRelativeControl(true);
+
+  public SwerveInputStream driveAngularVelocitySim = SwerveInputStream.of(drivebase.getSwerveDrive(),
+                  () -> -driverCtrl.getLeftX() * 1,
+                  () -> -driverCtrl.getLeftY() * -1)
+          .withControllerRotationAxis(() -> -driverCtrl.getRightX())
+          .deadband(Constants.OperatorConstants.DEADBAND)
+          .scaleTranslation(1)
+          .allianceRelativeControl(true);
                         
   public SwerveInputStream driveRobotOriented = driveAngularVelocity.copy()
                                                     .robotRelative(true)
@@ -80,17 +86,22 @@ public class RobotContainer {
   private void configureBindings() {
     //Configure drivebase command
     Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+    Command driveFieldOrientedAngularVelocitySim = drivebase.driveFieldOriented(driveAngularVelocitySim);
+    WaitCommand wait = new WaitCommand(1.25);
+
     Command driveRobotOrientedAngularVelocity = drivebase.drive(driveRobotOriented);
 
-    drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
+    drivebase.setDefaultCommand(driveFieldOrientedAngularVelocitySim);
 
     //Configure subsystem commands
-    driverCtrl.L1().toggleOnTrue(new ShooterCommand(shooter));
-    driverCtrl.R1().toggleOnTrue(new IndexerCommand(shooter));
+    driverCtrl.L1().toggleOnTrue(new IndexerCommand(shooter));
+    driverCtrl.R1().toggleOnTrue(new ShooterCommand(shooter).andThen(wait).andThen(new IndexerCommand(shooter)));
     driverCtrl.square().toggleOnTrue(new IntakeCommand(intake));
-    driverCtrl.cross().whileTrue(new extendIntakeCommand(intake));
+    driverCtrl.circle().toggleOnTrue(new OuttakeCommand(intake));
+    driverCtrl.L2().toggleOnTrue(new extendIntakeCommand(intake));
+    driverCtrl.R2().toggleOnTrue(new retractIntakeCommand(intake));
 
-    driverCtrl.circle().toggleOnTrue(driveRobotOrientedAngularVelocity
+    driverCtrl.R3().toggleOnTrue(driveRobotOrientedAngularVelocity
                                     .beforeStarting(() -> SmartDashboard.putBoolean("isRobotOriented", true))
                                     .finallyDo(() -> SmartDashboard.putBoolean("isRobotOriented", false)));
     

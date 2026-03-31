@@ -4,52 +4,41 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Intake;
 
 /** An example command that uses an example subsystem. */
-public class IntakeCommand extends Command {
+public class retractIntakeCommand extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final Intake intake;
 
-  
     /**
-     * The commands are what make the subsystems actually run. 
+     * The commands are what make the subsystems actually run.
      * Every time the scheduler runs, the command does something that makes the subsystem work.
      *
      * @param subsystem The subsystem used by this command.
      */
-    public IntakeCommand(Intake intake) {
+    public retractIntakeCommand(Intake intake) {
       this.intake = intake;
-      
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intake);
   }
 
-
-
-  // Called when the command is initially scheduled.
+  // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void initialize() {
-    intake.runIntake();
-    System.out.println("Intake Command Called");
-    SmartDashboard.putBoolean("Intaking?", true);
-    SmartDashboard.putBoolean("IntakeRunning?", true);
-
-
+  public void execute() {
+    intake.extendIntake();
+    System.out.println("Intake Extending");
+    SmartDashboard.putBoolean("intakeRetracting?", true);
+    SmartDashboard.putBoolean("intakeArmRunning?", true);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.stopIntake();
-    System.out.println("Intake Command Stopped");
-    SmartDashboard.putBoolean("Intaking?", false);
-    SmartDashboard.putBoolean("IntakeRunning?", false);
-
-
-
+    intake.stopExtend();
+    System.out.println("Extending Stopped");
+    SmartDashboard.putBoolean("intakeRetracting?", false);
+    SmartDashboard.putBoolean("intakeArmRunning?", false);
   }
 
   // Returns true when the command should end.

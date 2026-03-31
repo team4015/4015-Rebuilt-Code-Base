@@ -3,6 +3,9 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.SubsystemConstants;
+
+import static frc.robot.Constants.SubsystemConstants.*;
 
 public class Intake extends SubsystemBase{
 
@@ -13,63 +16,35 @@ public class Intake extends SubsystemBase{
     private final double intakeSpeed;
     private final double extendSpeed;
 
-    private boolean extend = true;
-
     DigitalInput m_toplimitSwitch = new DigitalInput(0);
     DigitalInput m_bottomlimitSwitch = new DigitalInput(1);
 
     //Initialize the intake
 
-    public Intake(double intakeSpeed, double extendSpeed){
-        this.intakeMotor = new VictorSP(3);
-        this.extendMotor = new VictorSP(0);
+    public Intake(){
+        this.intakeMotor = new VictorSP(intakeMotorPort); //Constants File
+        this.extendMotor = new VictorSP(extendIntakeMotorPort); //Constants File
 
-        this.intakeSpeed = intakeSpeed;
-        this.extendSpeed = extendSpeed;
+        this.intakeSpeed = ConstIntakeSpeed; //Constants File
+        this.extendSpeed = ConstExtendIntakeSpeed; //Constants File
     }
 
     //Run the intake
-
-    public void runIntake(){
-        intakeMotor.set(intakeSpeed);
-    }
-
-    //Extend or retract the intake
-
-    public void extendIntake(){
-         
-        /*if(m_bottomlimitSwitch.get()){
-            extend = false;
-            extendMotor.set(0);    
-            return;
-
-        } else if(m_toplimitSwitch.get()){
-            extend = true;
-            extendMotor.set(0);
-            return;
-
-        } else {
-            extendMotor.set((extend) ? extendSpeed : -extendSpeed);
-        }*/
-
-        extendMotor.set((extend) ? extendSpeed : -extendSpeed);
-        
-    }
-
-    //Stop everything
-
-    public void stopIntake(){
-        intakeMotor.set(0);
-    }
-
-    public void stopExtend(){
-        extendMotor.set(0);
-    }
+    public void runIntake(){intakeMotor.set(intakeSpeed);}
+    //Outtake
+    public void runOuttake(){intakeMotor.set(-intakeSpeed);}
 
 
+    //Extend the intake
+    public void extendIntake(){extendMotor.set(extendSpeed);}
+    //Retract the intake
+    public void retractIntake(){extendMotor.set(-extendSpeed);}
 
 
-
+    //Stop intake
+    public void stopIntake(){intakeMotor.set(0);}
+    //Stop extending
+    public void stopExtend(){extendMotor.set(0);}
 
 
 }
