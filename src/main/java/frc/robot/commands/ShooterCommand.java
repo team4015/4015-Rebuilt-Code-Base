@@ -17,7 +17,6 @@ public class ShooterCommand extends Command {
    * The commands are what make the subsystems actually run. 
    * Every time the scheduler runs, the command does something that makes the subsystem work.
    *
-   * @param subsystem The subsystem used by this command.
    */
   public ShooterCommand(Shooter shooter) {
     this.shooter = shooter;

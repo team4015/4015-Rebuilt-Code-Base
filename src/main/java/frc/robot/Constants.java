@@ -17,7 +17,9 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
     public static final double DEADBAND = 0.05;
-   // bro im bouta poop all over namya ong
+    // bro im bouta poop all over namya ong
+    // bro i wanna poop over namya please let me unleash the beast on em. :praying_emoji:
+    
   }
   
 }
