@@ -21,6 +21,8 @@ public class extendIntakeCommand extends Command {
      */
   public extendIntakeCommand(Intake intake) {
     this.intake = intake;
+    addRequirements(intake);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.

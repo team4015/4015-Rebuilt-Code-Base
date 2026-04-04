@@ -94,14 +94,23 @@ public class RobotContainer {
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocitySim);
 
     //Configure subsystem commands
-    driverCtrl.L1().toggleOnTrue(new IndexerCommand(shooter));
-    driverCtrl.R1().toggleOnTrue(new ShooterCommand(shooter).andThen(wait).andThen(new IndexerCommand(shooter)));
-    driverCtrl.square().toggleOnTrue(new IntakeCommand(intake));
-    driverCtrl.circle().toggleOnTrue(new OuttakeCommand(intake));
+    driverCtrl.L1().toggleOnTrue(new IntakeCommand(intake));
+    driverCtrl.R1().toggleOnTrue(new ShooterCommand(shooter)
+            .alongWith(wait
+                          .beforeStarting(
+                                  () -> SmartDashboard.putBoolean("Waiting?", true)
+                          ).finallyDo(
+                                  () -> SmartDashboard.putBoolean("Waiting?", false)
+                          ).andThen(
+                                  new IndexerCommand(shooter)
+                          )
+            )
+    );
+    driverCtrl.square().toggleOnTrue(new OuttakeCommand(intake));
     driverCtrl.L2().toggleOnTrue(new extendIntakeCommand(intake));
     driverCtrl.R2().toggleOnTrue(new retractIntakeCommand(intake));
 
-    driverCtrl.R3().toggleOnTrue(driveRobotOrientedAngularVelocity
+    driverCtrl.circle().toggleOnTrue(driveRobotOrientedAngularVelocity
                                     .beforeStarting(() -> SmartDashboard.putBoolean("isRobotOriented", true))
                                     .finallyDo(() -> SmartDashboard.putBoolean("isRobotOriented", false)));
     
@@ -118,9 +127,4 @@ public class RobotContainer {
     System.out.println("Autonomous Command Called!!!");
     return auto;
   }
-  
-
-  
-                                   
-                                                            
 }

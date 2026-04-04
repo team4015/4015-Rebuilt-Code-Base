@@ -4,22 +4,39 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import swervelib.simulation.ironmaple.simulation.SimulatedArena;
+import swervelib.simulation.ironmaple.simulation.drivesims.COTS;
+import swervelib.simulation.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import swervelib.simulation.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
+import swervelib.simulation.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnField;
+
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+
+import static edu.wpi.first.units.Units.Inches;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
  * the TimedRobot documentation. If you change the name of this class or the package after creating
  * this project, you must also update the Main.java file in the project.
  */
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
   private RobotContainer robotContainer;
-  
+  private SwerveDriveSimulation swerveDriveSimulation; // ← add here
   private Timer matchTimer = new Timer();
 
   private boolean autoStarted = false;
@@ -36,6 +53,9 @@ public class Robot extends TimedRobot {
     System.out.println("RobotContainer Constructor");
     robotContainer = new RobotContainer();
     m_autonomousCommand = robotContainer.getAutonomousCommand();
+    Logger.addDataReceiver(new NT4Publisher());
+    Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may
+
   }
 
   /**
@@ -46,7 +66,7 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
 
-  
+
 
   @Override
   public void robotPeriodic() {
@@ -73,11 +93,11 @@ public class Robot extends TimedRobot {
 
     }
   }
-  
+
 
   @Override
   public void autonomousPeriodic() {
-    
+
   }
 
   @Override
@@ -98,7 +118,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().cancelAll();
     matchTimer.reset();
     matchTimer.start();
-    
+
     autoStarted = false;
     teleOpStarted = false;
 
@@ -119,9 +139,55 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when the robot is first started up. */
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+
+    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(0, 0)));
+    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(1, 0)));
+    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(1, 1)));
+    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(1, 2)));
+    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(2, 0)));
+    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(2, 1)));
+    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(2, 2)));
+    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(3, 0)));
+    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(3, 1)));
+    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(3, 2)));
+    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(4, 0)));
+    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(4, 1)));
+    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(4, 2)));
+    
+
+
+    /*final DriveTrainSimulationConfig driveTrainSimulationConfig = DriveTrainSimulationConfig.Default()
+            // Specify gyro type (for realistic gyro drifting and error simulation)
+            .withGyro(COTS.ofNav2X())
+            // Specify swerve module (for realistic swerve dynamics)
+            .withSwerveModule(COTS.ofMark4i(
+                    DCMotor.getNEO(1), // Drive motor is a Kraken X60
+                    DCMotor.getNEO(1), // Steer motor is a Falcon 500
+                    COTS.WHEELS.COLSONS.cof, // Use the COF for Colson Wheels
+                    2)) // L2 Gear ratio
+            // Configures the track length and track width (spacing between swerve modules)
+            .withTrackLengthTrackWidth(Inches.of(21.75), Inches.of(21.75))
+            // Configures the bumper size (dimensions of the robot bumper)
+            .withBumperSize(Inches.of(32.755906), Inches.of(32.519685));
+
+    swerveDriveSimulation = new SwerveDriveSimulation(
+            driveTrainSimulationConfig,
+            new Pose2d(3, 3, new Rotation2d())
+    );
+
+    SimulatedArena.getInstance().addDriveTrainSimulation(swerveDriveSimulation);*/
+
+  }
 
   /** This function is called periodically whilst in simulation. */
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+    SimulatedArena.getInstance().simulationPeriodic();
+    Pose3d[] fuelPoses = SimulatedArena.getInstance()
+            .getGamePiecesArrayByType("Fuel");
+    // Publish to telemetry using AdvantageKit
+    Logger.recordOutput("FieldSimulation/FuelPositions", fuelPoses);
+
+  }
 }

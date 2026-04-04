@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import org.ironmaple.simulation.SimulatedArena;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -15,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import frc.robot.Constants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Robot;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import swervelib.SwerveInputStream;
@@ -49,6 +52,8 @@ public class SwerveSubsystem extends SubsystemBase {
         } catch (IOException e) {
             throw new RuntimeException("Swerve Drive directory not found. Finish those config files!");
         }
+
+  
 
         //for pathplanner reference
         swerveDrive.zeroGyro();

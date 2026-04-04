@@ -30,8 +30,6 @@ public class IndexerCommand extends Command {
     shooter.runIndexer(); 
     System.out.println("Indexer Command Called");
     SmartDashboard.putBoolean("indexerRunning?", true);
-
-
   }
 
   // Called once the command ends or is interrupted.
