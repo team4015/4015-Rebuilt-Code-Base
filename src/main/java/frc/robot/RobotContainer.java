@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.*;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeIOSim;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
@@ -23,6 +24,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import swervelib.simulation.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -56,6 +58,8 @@ public class RobotContainer {
     auto = new PathPlannerAuto("rebuiltAuto");
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+
 
     configureBindings();
   }
@@ -94,6 +98,7 @@ public class RobotContainer {
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocitySim);
 
     //Configure subsystem commands
+   
     driverCtrl.L1().toggleOnTrue(new IntakeCommand(intake));
     driverCtrl.R1().toggleOnTrue(new ShooterCommand(shooter)
             .alongWith(wait

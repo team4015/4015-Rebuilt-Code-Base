@@ -140,20 +140,9 @@ public class Robot extends LoggedRobot {
   /** This function is called once when the robot is first started up. */
   @Override
   public void simulationInit() {
+    SimulatedArena.getInstance().placeGamePiecesOnField();
 
-    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(0, 0)));
-    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(1, 0)));
-    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(1, 1)));
-    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(1, 2)));
-    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(2, 0)));
-    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(2, 1)));
-    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(2, 2)));
-    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(3, 0)));
-    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(3, 1)));
-    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(3, 2)));
-    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(4, 0)));
-    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(4, 1)));
-    SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(4, 2)));
+
     
 
 
