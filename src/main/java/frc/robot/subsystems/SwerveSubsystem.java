@@ -36,29 +36,31 @@ import swervelib.telemetry.SwerveDriveTelemetry;
 
 public class SwerveSubsystem extends SubsystemBase {
 
-    double maximumSpeed = 5;
+    double maximumSpeed = 5; //Declaring the max speed in meters/second.
+    SwerveDrive swerveDrive; //Declaring our swerve drive object that represents the robot.
+    RobotConfig config; //For autonomous
 
-    SwerveDrive swerveDrive;
-    double deadband = Constants.OperatorConstants.DEADBAND;
-    RobotConfig config;
-    private final CommandPS4Controller driverCtrl = new CommandPS4Controller(OperatorConstants.kDriverControllerPort);
+    private final CommandPS4Controller driverCtrl = new CommandPS4Controller(OperatorConstants.kDriverControllerPort); //Declaring our PS4 controller and setting it to the port declared in OperatorConstants.
 
-    public SwerveSubsystem(File directory) {
-        SwerveDriveTelemetry.verbosity = SwerveDriveTelemetry.TelemetryVerbosity.HIGH;
+    private final NetworkTableInstance inst = NetworkTableInstance.getDefault(); //Creating a NetworkTable Instance. NetworkTables is the software used to publish telemetry (info abt the robot) to a dashboard.
+    private final NetworkTable table = inst.getTable("SmartDashboard/swerve"); //Getting the table representing the swerve drive
+    DoubleArraySubscriber measuredChassisSpeedsSub = table.getDoubleArrayTopic("measuredChassisSpeeds").subscribe(new double[] {}); //Reading the value of measuredChassisSpeeds inside of the swerve table.
+    double[] measuredChassisSpeeds = measuredChassisSpeedsSub.get(); //Converting the subscriber value to a regular double array.
+
+    public SwerveSubsystem(File directory) { //SwerveSubsystem Constructor
+        SwerveDriveTelemetry.verbosity = SwerveDriveTelemetry.TelemetryVerbosity.HIGH; //There are different levels of information we can receive about the robot. We want the highest level of information.
 
         try {
-            swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, new Pose2d(new Translation2d(Meter.of(5),Meter.of(5)), Rotation2d.fromDegrees(90)));
+            swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, new Pose2d(new Translation2d(Meter.of(5),Meter.of(5)), Rotation2d.fromDegrees(90))); //Create the swerve drive at a specified position with the given json files.
         //yeah
-        } catch (IOException e) {
-            throw new RuntimeException("Swerve Drive directory not found. Finish those config files!");
+        } catch (IOException e) { //If the json files are missing or incomplete...
+            throw new RuntimeException("Swerve Drive directory not found. Finish those config files!"); //...throw an error.
         }
 
-  
-
-        //for pathplanner reference
+        /*for pathplanner reference
         swerveDrive.zeroGyro();
         swerveDrive.getPose();
-        swerveDrive.getRobotVelocity();
+        swerveDrive.getRobotVelocity();*/
 
         try{
             config = RobotConfig.fromGUISettings();
@@ -91,65 +93,35 @@ public class SwerveSubsystem extends SubsystemBase {
         );
 
     }
-
-    /**
-     * Command to drive the robot using translative values and heading as angular
-     * velocity.
-     *
-     * @param translationX     Translation in the X direction.
-     * @param translationY     Translation in the Y direction.
-     * @param angularRotationX Rotation of the robot to set
-     * @return Drive command.
-     */
-    
-    public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX){
-        return run(() -> {
-        // Make the robot move
-        swerveDrive.drive(SwerveMath.scaleTranslation(new Translation2d(
-                                translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity(),
-                                translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity()), 0.8),
-                            Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumChassisAngularVelocity(),
-                            true,
-                            false);
-        });
-    }
-
-
+    //Gets the swerve drive object representing the robot.
     public SwerveDrive getSwerveDrive(){
         return swerveDrive;
     }
-
-    public void driveFieldOriented(ChassisSpeeds velocity){
-        swerveDrive.driveFieldOriented(velocity);
-    }
-
-    private NetworkTableInstance inst = NetworkTableInstance.getDefault();
-    private NetworkTable table = inst.getTable("SmartDashboard/swerve");
-    DoubleArraySubscriber measuredChassisSpeedsSub = table.getDoubleArrayTopic("measuredChassisSpeeds").subscribe(new double[] {});
-    double[] measuredChassisSpeeds = measuredChassisSpeedsSub.get();
-
-    /*public Command drive(ChassisSpeeds velocity){
-        return run(() -> {swerveDrive.drive(velocity);});
-    }*/
-
-    public void drive(ChassisSpeeds velocity){
-        swerveDrive.drive(velocity);
+    //Drive (robot oriented) with a given ChassisSpeeds (containing X and Y, and Theta (rotation) coordinate details.
+    public void drive(ChassisSpeeds velocity){ // This specific method is used for auto.
+        swerveDrive.drive(velocity); //Drive the robot.
         System.out.println("DRIVING: " + velocity);
-
     }
 
-    public Command drive(Supplier<ChassisSpeeds> velocity){
+    /*
+    Drive (robot oriented) with a given ChassisSpeeds (containing X and Y, and Theta (rotation) coordinate details.
+    This method returns a Command to drive (with a lambda expression) so it can be set as a default command in RobotContainer.java.
+    Otherwise, this method would not be able to be used because it can't be used for the drivetrain command in RobotContainer.java,
+    since WPILIB requires commands to bind to subsystems. */
+    public Command drive(Supplier<ChassisSpeeds> velocity){ //Drive robot oriented in Teleop.
         return run(
             () -> {
+                //Drive the robot with the ChassisSpeeds supplier (SwerveInputStream in RobotContainer.java.
                 swerveDrive.drive(velocity.get());
                 System.out.println("DRIVING: " + velocity.get());
 
+                //Publish telemetry: The robot pose and the joystick inputs.
                 SmartDashboard.putString("Pose2D", swerveDrive.getPose().toString());
                 SmartDashboard.putString("leftXJoystick", String.format("%.2f", driverCtrl.getLeftX()));
                 SmartDashboard.putString("leftYJoystick", String.format("%.2f", driverCtrl.getLeftY()));
                 SmartDashboard.putString("rightXJoystick", String.format("%.2f", driverCtrl.getRightX()));
 
-
+                //Publish all the ChassisSpeeds measurements (xSpeed, ySpeed, rotational speed) as separate widgets.
                 for(int i = 0; i < measuredChassisSpeeds.length; i++){
                     measuredChassisSpeeds[i] = Math.round(measuredChassisSpeeds[i] * 100.0) / 100.0;
 
@@ -163,8 +135,13 @@ public class SwerveSubsystem extends SubsystemBase {
             }
         );
     }
-    
-    public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity){
+
+    /*
+    Drive (FIELD oriented) with a given ChassisSpeeds (containing X and Y, and Theta (rotation) coordinate details.
+    This method returns a Command to drive (with a lambda expression) so it can be set as a default command in RobotContainer.java.
+    Otherwise, this method would not be able to be used because it can't be used for the drivetrain command in RobotContainer.java,
+    since WPILIB requires commands to bind to subsystems. */
+    public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity){//Drive field oriented. This is the most used & useful method.
         return run(
             () -> {
                 swerveDrive.driveFieldOriented(velocity.get());

@@ -31,13 +31,13 @@ public class Intake extends SubsystemBase{
 
     //Run the intake
     public void runIntake(){intakeMotor.set(intakeSpeed);}
-    //Outtake
+    //Push out game pieces in case they get stuck
     public void runOuttake(){intakeMotor.set(-intakeSpeed);}
 
 
-    //Extend the intake
+    //Extend the intake outwards
     public void extendIntake(){extendMotor.set(extendSpeed);}
-    //Retract the intake
+    //Retract the intake inwards
     public void retractIntake(){extendMotor.set(-extendSpeed);}
 
 

@@ -32,7 +32,7 @@ public class OuttakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.runIntake();
+    intake.runOuttake();
     System.out.println("Outtake Command Called");
     SmartDashboard.putBoolean("Outtaking?", true);
     SmartDashboard.putBoolean("IntakeRunning?", true);

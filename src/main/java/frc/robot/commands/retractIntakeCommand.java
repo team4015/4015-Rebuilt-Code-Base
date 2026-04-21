@@ -28,7 +28,7 @@ public class retractIntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void initialize() {
-    intake.extendIntake();
+    intake.retractIntake();
     System.out.println("Intake Extending");
     SmartDashboard.putBoolean("intakeRetracting?", true);
     SmartDashboard.putBoolean("intakeArmRunning?", true);
