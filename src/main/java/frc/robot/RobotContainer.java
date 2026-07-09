@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.*;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.IntakeIOSim;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import java.io.File;
 
@@ -36,8 +36,8 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autoChooser;
 
-  private final CommandPS4Controller driverCtrl = new CommandPS4Controller(OperatorConstants.kDriverControllerPort);
-  private final CommandPS4Controller operatorCtrl = new CommandPS4Controller(OperatorConstants.kOperatorControllerPort);
+  private final CommandXboxController driverCtrl = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController operatorCtrl = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
 
   // The robot's subsystems and commands are defined here...
   private final Intake intake = new Intake();
@@ -95,12 +95,12 @@ public class RobotContainer {
 
     Command driveRobotOrientedAngularVelocity = drivebase.drive(driveRobotOriented);
 
-    drivebase.setDefaultCommand(driveFieldOrientedAngularVelocitySim);
+    drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
 
     //Configure subsystem commands
    
-    driverCtrl.L1().toggleOnTrue(new IntakeCommand(intake));
-    driverCtrl.R1().toggleOnTrue(new ShooterCommand(shooter)
+    //driverCtrl.leftBumper().toggleOnTrue(new IntakeCommand(intake));
+    /*driverCtrl.rightBumper().toggleOnTrue(new ShooterCommand(shooter)
             .alongWith(wait
                           .beforeStarting(
                                   () -> SmartDashboard.putBoolean("Waiting?", true)
@@ -110,14 +110,14 @@ public class RobotContainer {
                                   new IndexerCommand(shooter)
                           )
             )
-    );
-    driverCtrl.square().toggleOnTrue(new OuttakeCommand(intake));
-    driverCtrl.L2().toggleOnTrue(new extendIntakeCommand(intake));
-    driverCtrl.R2().toggleOnTrue(new retractIntakeCommand(intake));
+    );*/
+  //  driverCtrl.a().toggleOnTrue(new OuttakeCommand(intake));
+    //driverCtrl.leftTrigger().toggleOnTrue(new extendIntakeCommand(intake));
+    //driverCtrl.rightTrigger().toggleOnTrue(new retractIntakeCommand(intake));
 
-    driverCtrl.circle().toggleOnTrue(driveRobotOrientedAngularVelocity
-                                    .beforeStarting(() -> SmartDashboard.putBoolean("isRobotOriented", true))
-                                    .finallyDo(() -> SmartDashboard.putBoolean("isRobotOriented", false)));
+    //driverCtrl.b().toggleOnTrue(driveRobotOrientedAngularVelocitySim
+      //                              .beforeStarting(() -> SmartDashboard.putBoolean("isRobotOriented", true))
+        //                            .finallyDo(() -> SmartDashboard.putBoolean("isRobotOriented", false)));
     
   }
 

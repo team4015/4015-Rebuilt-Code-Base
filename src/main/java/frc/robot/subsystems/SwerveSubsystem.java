@@ -15,6 +15,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Robot;
@@ -40,7 +41,7 @@ public class SwerveSubsystem extends SubsystemBase {
     SwerveDrive swerveDrive; //Declaring our swerve drive object that represents the robot.
     RobotConfig config; //For autonomous
 
-    private final CommandPS4Controller driverCtrl = new CommandPS4Controller(OperatorConstants.kDriverControllerPort); //Declaring our PS4 controller and setting it to the port declared in OperatorConstants.
+    private final CommandXboxController driverCtrl = new CommandXboxController(OperatorConstants.kDriverControllerPort); //Declaring our PS4 controller and setting it to the port declared in OperatorConstants.
 
     private final NetworkTableInstance inst = NetworkTableInstance.getDefault(); //Creating a NetworkTable Instance. NetworkTables is the software used to publish telemetry (info abt the robot) to a dashboard.
     private final NetworkTable table = inst.getTable("SmartDashboard/swerve"); //Getting the table representing the swerve drive
@@ -113,7 +114,8 @@ public class SwerveSubsystem extends SubsystemBase {
             () -> {
                 //Drive the robot with the ChassisSpeeds supplier (SwerveInputStream in RobotContainer.java.
                 swerveDrive.drive(velocity.get());
-                System.out.println("DRIVING: " + velocity.get());
+                //System.out.println("DRIVING: " + velocity.get());
+                System.out.println(driverCtrl.getRightX());
 
                 //Publish telemetry: The robot pose and the joystick inputs.
                 SmartDashboard.putString("Pose2D", swerveDrive.getPose().toString());
