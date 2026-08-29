@@ -16,14 +16,14 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
-    public static final double DEADBAND = 0.05;
+    public static final double DEADBAND = 0.025;
   }
 
   public static class SubsystemConstants{
-    public static final int extendIntakeMotorPort = 0;
-    public static final int intakeMotorPort = 1;
-    public static final int shooterMotorPort = 8;
-    public static final int indexerMotorPort = 9;
+    public static final int extendIntakeMotorPort = 9;
+    public static final int intakeMotorPort = 8;
+    public static final int shooterMotorPort = 0;
+    public static final int indexerMotorPort = 1;
 
     public static final double ConstExtendIntakeSpeed = 0.3;
     public static final double ConstIntakeSpeed = 0.8;

@@ -151,7 +151,8 @@ public class SwerveSubsystem extends SubsystemBase {
                 SmartDashboard.putString("leftXJoystick", String.format("%.2f", driverCtrl.getLeftX()));
                 SmartDashboard.putString("leftYJoystick", String.format("%.2f", driverCtrl.getLeftY()));
                 SmartDashboard.putString("rightXJoystick", String.format("%.2f", driverCtrl.getRightX()));
-
+                SmartDashboard.putNumber( "GyroYaw",swerveDrive.getYaw().getDegrees());
+                System.out.println(swerveDrive.getYaw().getDegrees());
                 double[] measuredChassisSpeeds = measuredChassisSpeedsSub.get();
 
                 for(int i = 0; i < measuredChassisSpeeds.length; i++){
