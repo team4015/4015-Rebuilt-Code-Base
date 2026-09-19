@@ -22,7 +22,7 @@ import frc.robot.Robot;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import swervelib.SwerveInputStream;
-import swervelib.math.SwerveMath;
+import swervelib.math.SwerveMath;   
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -146,6 +146,8 @@ public class SwerveSubsystem extends SubsystemBase {
     public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity){//Drive field oriented. This is the most used & useful method.
         return run(
             () -> {
+                //ChassisSpeeds rawVelocity = velocity.get();
+                //ChassisSpeeds correctedVelocity = ChassisSpeeds.discretize(rawVelocity, 0.02);
                 swerveDrive.driveFieldOriented(velocity.get());
 
                 SmartDashboard.putString("leftXJoystick", String.format("%.2f", driverCtrl.getLeftX()));

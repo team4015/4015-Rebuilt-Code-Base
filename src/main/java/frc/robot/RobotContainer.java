@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.*;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -24,7 +23,6 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import swervelib.simulation.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -50,29 +48,49 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
 
-    NamedCommands.registerCommand("intake", new IntakeCommand(intake));
-    NamedCommands.registerCommand("extendIntake", new extendIntakeCommand(intake));
-    NamedCommands.registerCommand("shoot", new ShooterCommand(shooter));
-    NamedCommands.registerCommand("index", new IndexerCommand(shooter));
+    NamedCommands.registerCommand("intake", runIntake);
+    NamedCommands.registerCommand("extendIntake", extendIntake);
+    NamedCommands.registerCommand("shoot", runShooter);
+    NamedCommands.registerCommand("index", runIndexer);
 
     auto = new PathPlannerAuto("baneOfMyExistence");
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
-
-
     configureBindings();
+
+       // drivebase.getSwerveDrive().getSwerveController().addSlewRateLimiters(limiter, limiter, limiter);
+
+
   }
 
-  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+  
 
+
+  //Intake Commands
+  Command runIntake = intake.runIntake2();
+  Command runOuttake = intake.runOuttake2();
+  Command extendIntake = intake.extendIntake2();
+  Command retractIntake = intake.retractIntake2();
+
+  //Shooter Commands
+  Command runShooter = shooter.runShooter2();
+  Command runIndexer = shooter.runIndexer2();
+
+  
+
+  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+  
   public SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                  () -> -driverCtrl.getLeftX() * 0.4,
-                  () -> -driverCtrl.getLeftY() * 0.4)
+                  () -> -driverCtrl.getLeftX() * 0.2,
+                  () -> driverCtrl.getLeftY() * 0.2)
           .withControllerRotationAxis(() -> -driverCtrl.getRightX() * 0.5)
+
           .deadband(Constants.OperatorConstants.DEADBAND)
-          .scaleTranslation(0.8)
-          .allianceRelativeControl(true);
+          .scaleTranslation(1)
+          .allianceRelativeControl(true)
+          .cubeTranslationControllerAxis(false)
+          .scaleRotation(0.6);
 
   public SwerveInputStream driveAngularVelocitySim = SwerveInputStream.of(drivebase.getSwerveDrive(),
                   () -> -driverCtrl.getLeftX() * 1,
@@ -93,27 +111,26 @@ public class RobotContainer {
     Command driveFieldOrientedAngularVelocitySim = drivebase.driveFieldOriented(driveAngularVelocitySim);
     WaitCommand wait = new WaitCommand(1.25);
 
-    Command driveRobotOrientedAngularVelocity = drivebase.drive(driveRobotOriented);
 
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
 
     //Configure subsystem commands
 
-    driverCtrl.leftBumper().toggleOnTrue(new IntakeCommand(intake));
-    driverCtrl.rightBumper().toggleOnTrue(new ShooterCommand(shooter)
+    driverCtrl.leftBumper().toggleOnTrue(runIntake);
+    driverCtrl.rightBumper().toggleOnTrue(runShooter
             .alongWith(wait
                           .beforeStarting(
                                   () -> SmartDashboard.putBoolean("Waiting?", true)
                           ).finallyDo(
                                   () -> SmartDashboard.putBoolean("Waiting?", false)
                           ).andThen(
-                                  new IndexerCommand(shooter)
+                                  runIndexer
                           )
             )
     );
-    driverCtrl.a().toggleOnTrue(new OuttakeCommand(intake));
-    driverCtrl.leftTrigger().toggleOnTrue(new extendIntakeCommand(intake));
-    driverCtrl.rightTrigger().toggleOnTrue(new retractIntakeCommand(intake));
+    driverCtrl.a().toggleOnTrue(runOuttake);
+    driverCtrl.leftTrigger().toggleOnTrue(extendIntake);
+    driverCtrl.rightTrigger().toggleOnTrue(retractIntake);
 
     //driverCtrl.b().toggleOnTrue(driveRobotOrientedAngularVelocitySim
       //                              .beforeStarting(() -> SmartDashboard.putBoolean("isRobotOriented", true))

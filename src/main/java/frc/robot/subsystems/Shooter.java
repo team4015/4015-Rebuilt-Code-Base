@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.SubsystemConstants.*;
@@ -26,21 +28,36 @@ public class Shooter extends SubsystemBase{
         this.indexerSpeed = ConstIndexerSpeed; //Constants File
     }
 
-    public void runShooter(){
-        shooterMotor.set(shooterSpeed);
+    public Command runShooter2(){
+        return startEnd(
+                () -> {
+                    shooterMotor.set(shooterSpeed);
+                    System.out.println("Shooter Command Called");
+                    SmartDashboard.putBoolean("shooterRunning?", true);
+                },
+                () -> {
+                    shooterMotor.set(0);
+                    System.out.println("Shooter Command Stopped");
+                    SmartDashboard.putBoolean("shooterRunning?", false);
+                }
+        );
     }
 
-    public void runIndexer(){
-        indexerMotor.set(indexerSpeed);
+    public Command runIndexer2(){
+        return startEnd(
+                () -> {
+                    indexerMotor.set(indexerSpeed);
+                    System.out.println("Indexer Command Called");
+                    SmartDashboard.putBoolean("indexerRunning?", true);
+                },
+                () -> {
+                    indexerMotor.set(0);
+                    System.out.println("Indexer Command Stopped");
+                    SmartDashboard.putBoolean("indexerRunning?", false);
+                }
+        );
     }
 
-    public void stopShooter(){
-        shooterMotor.set(0);
-    }
-
-    public void stopIndexer(){
-        indexerMotor.set(0);
-    }
     
     //Stop everything
     public void stop(){
